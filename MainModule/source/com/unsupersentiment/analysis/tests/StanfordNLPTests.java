@@ -110,6 +110,8 @@ public class StanfordNLPTests extends TestCase {
 				String pos = token.get(PartOfSpeechAnnotation.class);
 				System.out.println("word-pos :" + word + "-" + pos);
 				String ne = token.get(NamedEntityTagAnnotation.class);
+				
+				// http://nlp.stanford.edu/software/corenlp.shtml for more info on NER
 				System.out.println("NER:" + ne);
 			}
 			// this is the parse tree of the current sentence
