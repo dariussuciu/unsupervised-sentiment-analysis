@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -11,6 +12,7 @@ import java.util.Properties;
 import com.unsupervisedsentiment.analysis.test.constants.StanfordNLPTestConstants;
 
 import junit.framework.TestCase;
+import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
@@ -162,14 +164,41 @@ public class StanfordNLPTests extends TestCase {
 		}
 		return word_posList;
 	}
+	
+	private String doLemmatization(String documentText)
+    {
+        List<String> lemmas = new LinkedList<String>();
+        String result = "";
+        // create an empty Annotation just with the given text
+        Annotation document = new Annotation(documentText);
+
+        // run all Annotators on this text
+        coreNlp.annotate(document);
+
+        // Iterate over all of the sentences found
+        List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+        for(CoreMap sentence: sentences) {
+            // Iterate over all tokens in a sentence
+            for (CoreLabel token: sentence.get(TokensAnnotation.class)) {
+                // Retrieve and add the lemma for each word into the
+                // list of lemmas
+                lemmas.add(token.get(LemmaAnnotation.class));
+                result += token.get(LemmaAnnotation.class)+ " ";
+            }
+        }
+        return result;
+    }
 
 	public void testPreprocessing(String text) {
-		List<CoreMap> annotatedSentences = annotateSentences(text);
+		String lemmatizedText = doLemmatization(text);
+		List<CoreMap> annotatedSentences = annotateSentences(lemmatizedText);
 		printSentences(annotatedSentences);
 		
 		List<HashMap<String, String>> word_posList = doPOSAnnotation(annotatedSentences);
 		for (HashMap<String, String> map : word_posList){
 			System.out.println(map.toString());
 		}
+		
+		
 	}
 }
