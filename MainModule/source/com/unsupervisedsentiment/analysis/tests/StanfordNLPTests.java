@@ -1,9 +1,14 @@
-package com.unsupersentiment.analysis.tests;
+package com.unsupervisedsentiment.analysis.tests;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-import com.unsupresentiment.analysis.test.constants.StanfordNLPTestConstants;
+import com.unsupervisedsentiment.analysis.test.constants.StanfordNLPTestConstants;
 
 import junit.framework.TestCase;
 import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
@@ -19,7 +24,16 @@ import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcess
 import edu.stanford.nlp.util.CoreMap;
 
 public class StanfordNLPTests extends TestCase {
-	protected StanfordCoreNLP snlp;
+	protected StanfordCoreNLP coreNlp;
+
+	public StanfordNLPTests() {
+		try {
+			setUp();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -39,7 +53,7 @@ public class StanfordNLPTests extends TestCase {
 				+ StanfordCoreNLP.STANFORD_POS + ","
 				+ StanfordCoreNLP.STANFORD_LEMMA + ","
 				+ StanfordCoreNLP.STANFORD_PARSE);
-		snlp = new StanfordCoreNLP(props);
+		coreNlp = new StanfordCoreNLP(props);
 	}
 
 	/**
@@ -48,21 +62,22 @@ public class StanfordNLPTests extends TestCase {
 	public void testSentencesAnnotation() {
 		String oneSentence = StanfordNLPTestConstants.SENTENCE_ONE;
 		Annotation document = new Annotation(oneSentence);
-		snlp.annotate(document);
+		coreNlp.annotate(document);
 		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
 		assertEquals(sentences.size(), 1);
 
 		String twoSentence = StanfordNLPTestConstants.SENTENCE_TWO;
 		document = new Annotation(twoSentence);
-		snlp.annotate(document);
+		coreNlp.annotate(document);
 		sentences = document.get(SentencesAnnotation.class);
 		assertEquals(sentences.size(), 2);
 
 		int n = 20;
 		String nSentence = StanfordNLPTestConstants.generateNSentencesString(n);
 		document = new Annotation(nSentence);
-		snlp.annotate(document);
+		coreNlp.annotate(document);
 		sentences = document.get(SentencesAnnotation.class);
+		printSentences(sentences);
 		assertEquals(sentences.size(), n);
 	}
 
@@ -72,20 +87,20 @@ public class StanfordNLPTests extends TestCase {
 	public void testTokensAnnotation() {
 		String oneSentence = StanfordNLPTestConstants.SENTENCE_ONE;
 		Annotation document = new Annotation(oneSentence);
-		snlp.annotate(document);
+		coreNlp.annotate(document);
 		List<CoreLabel> tokens = document.get(TokensAnnotation.class);
 		assertEquals(tokens.size(), 10);
 
 		String twoSentence = StanfordNLPTestConstants.SENTENCE_TWO;
 		document = new Annotation(twoSentence);
-		snlp.annotate(document);
+		coreNlp.annotate(document);
 		tokens = document.get(TokensAnnotation.class);
 		assertEquals(tokens.size(), 18);
 
 		int n = 20;
 		String nSentence = StanfordNLPTestConstants.generateNSentencesString(n);
 		document = new Annotation(nSentence);
-		snlp.annotate(document);
+		coreNlp.annotate(document);
 		tokens = document.get(TokensAnnotation.class);
 		assertEquals(tokens.size(), 10 * n);
 	}
@@ -96,11 +111,15 @@ public class StanfordNLPTests extends TestCase {
 	public void testPartOfSpeechAnnotation() {
 		String text = StanfordNLPTestConstants.SENTENCE_TWO;
 		Annotation doc = new Annotation(text);
-		snlp.annotate(doc);
+		coreNlp.annotate(doc);
 		// these are all the sentences in this document
 		// a CoreMap is essentially a Map that uses class objects as keys and
 		// has values with custom types
 		List<CoreMap> sentences = doc.get(SentencesAnnotation.class);
+		printSentences(sentences);
+	}
+
+	private void printSentences(List<CoreMap> sentences) {
 		for (CoreMap sentence : sentences) {
 			// traversing the words in the current sentence
 			// a CoreLabel is a CoreMap with additional token-specific methods
@@ -118,6 +137,39 @@ public class StanfordNLPTests extends TestCase {
 			SemanticGraph dependencies = sentence
 					.get(CollapsedCCProcessedDependenciesAnnotation.class);
 			System.out.println("DEP:" + dependencies);
+		}
+	}
+
+	private List<CoreMap> annotateSentences(String text) {
+		Annotation document = new Annotation(text);
+		coreNlp.annotate(document);
+		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+		return sentences;
+	}
+
+	private List<HashMap<String, String>> doPOSAnnotation(List<CoreMap> sentences) {
+		List<HashMap<String, String>> word_posList = new ArrayList<HashMap<String, String>>();
+		for (CoreMap sentence : sentences) {
+			for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
+				String word = token.get(TextAnnotation.class);
+				String pos = token.get(PartOfSpeechAnnotation.class);
+				System.out.println("word-pos :" + word + "-" + pos);
+
+				HashMap<String, String> wordMap = new HashMap<String, String>();
+				wordMap.put(word,pos);
+				word_posList.add(wordMap);
+			}
+		}
+		return word_posList;
+	}
+
+	public void testPreprocessing(String text) {
+		List<CoreMap> annotatedSentences = annotateSentences(text);
+		printSentences(annotatedSentences);
+		
+		List<HashMap<String, String>> word_posList = doPOSAnnotation(annotatedSentences);
+		for (HashMap<String, String> map : word_posList){
+			System.out.println(map.toString());
 		}
 	}
 }
