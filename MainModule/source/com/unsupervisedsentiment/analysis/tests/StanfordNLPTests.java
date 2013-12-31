@@ -121,6 +121,22 @@ public class StanfordNLPTests extends TestCase {
 		printSentences(sentences);
 	}
 
+	public void testPreprocessing() {
+		String text = StanfordNLPTestConstants.SENTENCE_TWO;
+		String lemmatizedText = doLemmatization(text);
+		List<CoreMap> annotatedSentences = annotateSentences(lemmatizedText);
+		printSentences(annotatedSentences);
+
+		List<HashMap<String, String>> word_posList = doPOSAnnotation(annotatedSentences);
+		for (HashMap<String, String> map : word_posList) {
+			System.out.println(map.toString());
+		}
+	}
+
+	/*
+	 * Helper functions
+	 */
+
 	private void printSentences(List<CoreMap> sentences) {
 		for (CoreMap sentence : sentences) {
 			// traversing the words in the current sentence
@@ -131,8 +147,9 @@ public class StanfordNLPTests extends TestCase {
 				String pos = token.get(PartOfSpeechAnnotation.class);
 				System.out.println("word-pos :" + word + "-" + pos);
 				String ne = token.get(NamedEntityTagAnnotation.class);
-				
-				// http://nlp.stanford.edu/software/corenlp.shtml for more info on NER
+
+				// http://nlp.stanford.edu/software/corenlp.shtml for more info
+				// on NER
 				System.out.println("NER:" + ne);
 			}
 			// this is the parse tree of the current sentence
@@ -151,7 +168,8 @@ public class StanfordNLPTests extends TestCase {
 		return sentences;
 	}
 
-	private List<HashMap<String, String>> doPOSAnnotation(List<CoreMap> sentences) {
+	private List<HashMap<String, String>> doPOSAnnotation(
+			List<CoreMap> sentences) {
 		List<HashMap<String, String>> word_posList = new ArrayList<HashMap<String, String>>();
 		for (CoreMap sentence : sentences) {
 			for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
@@ -160,47 +178,33 @@ public class StanfordNLPTests extends TestCase {
 				System.out.println("word-pos :" + word + "-" + pos);
 
 				HashMap<String, String> wordMap = new HashMap<String, String>();
-				wordMap.put(word,pos);
+				wordMap.put(word, pos);
 				word_posList.add(wordMap);
 			}
 		}
 		return word_posList;
 	}
-	
-	private String doLemmatization(String documentText)
-    {
-        List<String> lemmas = new LinkedList<String>();
-        String result = "";
-        // create an empty Annotation just with the given text
-        Annotation document = new Annotation(documentText);
 
-        // run all Annotators on this text
-        coreNlp.annotate(document);
+	private String doLemmatization(String documentText) {
+		List<String> lemmas = new LinkedList<String>();
+		String result = "";
+		// create an empty Annotation just with the given text
+		Annotation document = new Annotation(documentText);
 
-        // Iterate over all of the sentences found
-        List<CoreMap> sentences = document.get(SentencesAnnotation.class);
-        for(CoreMap sentence: sentences) {
-            // Iterate over all tokens in a sentence
-            for (CoreLabel token: sentence.get(TokensAnnotation.class)) {
-                // Retrieve and add the lemma for each word into the
-                // list of lemmas
-                lemmas.add(token.get(LemmaAnnotation.class));
-                result += token.get(LemmaAnnotation.class)+ " ";
-            }
-        }
-        return result;
-    }
+		// run all Annotators on this text
+		coreNlp.annotate(document);
 
-	public void testPreprocessing(String text) {
-		String lemmatizedText = doLemmatization(text);
-		List<CoreMap> annotatedSentences = annotateSentences(lemmatizedText);
-		printSentences(annotatedSentences);
-		
-		List<HashMap<String, String>> word_posList = doPOSAnnotation(annotatedSentences);
-		for (HashMap<String, String> map : word_posList){
-			System.out.println(map.toString());
+		// Iterate over all of the sentences found
+		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+		for (CoreMap sentence : sentences) {
+			// Iterate over all tokens in a sentence
+			for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
+				// Retrieve and add the lemma for each word into the
+				// list of lemmas
+				lemmas.add(token.get(LemmaAnnotation.class));
+				result += token.get(LemmaAnnotation.class) + " ";
+			}
 		}
-		
-		
+		return result;
 	}
 }
