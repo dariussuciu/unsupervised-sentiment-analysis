@@ -121,8 +121,20 @@ public class StanfordNLPTests extends TestCase {
 		printSentences(sentences);
 	}
 
-	public void testPreprocessing() {
+	public void testLemmatization() {
 		String text = StanfordNLPTestConstants.SENTENCE_TWO;
+		String lemmatizedText = doLemmatization(text);
+		List<CoreMap> annotatedSentences = annotateSentences(lemmatizedText);
+		printSentences(annotatedSentences);
+
+		List<HashMap<String, String>> word_posList = doPOSAnnotation(annotatedSentences);
+		for (HashMap<String, String> map : word_posList) {
+			System.out.println(map.toString());
+		}
+	}
+
+	public void testLiuSentence() {
+		String text = StanfordNLPTestConstants.SENTENCE_LIU;
 		String lemmatizedText = doLemmatization(text);
 		List<CoreMap> annotatedSentences = annotateSentences(lemmatizedText);
 		printSentences(annotatedSentences);
