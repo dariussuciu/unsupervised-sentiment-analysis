@@ -121,7 +121,7 @@ public class StanfordNLPTests extends TestCase {
 		printSentences(sentences);
 	}
 
-	public void testLemmatization() {
+	public void testProcessing() {
 		String text = StanfordNLPTestConstants.SENTENCE_TWO;
 		String lemmatizedText = doLemmatization(text);
 		List<CoreMap> annotatedSentences = annotateSentences(lemmatizedText);
@@ -133,7 +133,7 @@ public class StanfordNLPTests extends TestCase {
 		}
 	}
 
-	public void testLiuSentence() {
+	public void testLiuSentenceProcessing() {
 		String text = StanfordNLPTestConstants.SENTENCE_LIU;
 		String lemmatizedText = doLemmatization(text);
 		List<CoreMap> annotatedSentences = annotateSentences(lemmatizedText);
