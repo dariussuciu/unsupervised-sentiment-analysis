@@ -8,6 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+
+import org.junit.Ignore;
 
 import com.unsupervisedsentiment.analysis.test.constants.StanfordNLPTestConstants;
 
@@ -19,10 +22,13 @@ import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation;
+import edu.stanford.nlp.semgraph.SemanticGraphEdge;
+import edu.stanford.nlp.trees.EnglishGrammaticalRelations;
 import edu.stanford.nlp.util.CoreMap;
 
 public class StanfordNLPTests extends TestCase {
@@ -61,6 +67,7 @@ public class StanfordNLPTests extends TestCase {
 	/**
 	 * Basically, splits the phrase in sentences.
 	 */
+	@Ignore
 	public void testSentencesAnnotation() {
 		String oneSentence = StanfordNLPTestConstants.SENTENCE_ONE;
 		Annotation document = new Annotation(oneSentence);
@@ -169,6 +176,30 @@ public class StanfordNLPTests extends TestCase {
 			// this is the Stanford dependency graph of the current sentence
 			SemanticGraph dependencies = sentence
 					.get(CollapsedCCProcessedDependenciesAnnotation.class);
+
+			final Set<SemanticGraphEdge> edgeSet = dependencies.getEdgeSet();
+
+			for (SemanticGraphEdge egi : edgeSet) {
+				System.out.println("Source-Target:\n");
+				System.out.println("The word '" + egi.getSource().toString()
+						+ "' is linked to '" + egi.getTarget().toString()
+						+ "' with a relation of type '"
+						+ egi.getRelation().toString() + "'\n");
+
+				System.out.println("Gov-Dep:\n");
+				System.out.println("The word '" + egi.getGovernor().toString()
+						+ "' is linked to '" + egi.getDependent().toString()
+						+ "' with a relation of type '"
+						+ egi.getRelation().toString() + "'\n");
+
+				// (Governor = Source && Dependent = Target) for some reason
+				// relation.toString() = short representation (see code in
+				// GrammaticalRelation class)
+
+				// TODO: Check EnglishGrammaticalRelations class for types
+				
+			}
+
 			System.out.println("DEP:" + dependencies);
 		}
 	}
