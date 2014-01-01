@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.junit.Ignore;
 
+import com.unsupervisedsentiment.analysis.model.Dependency;
+import com.unsupervisedsentiment.analysis.model.Quadruple;
 import com.unsupervisedsentiment.analysis.test.constants.StanfordNLPTestConstants;
 
 import junit.framework.TestCase;
@@ -197,7 +199,14 @@ public class StanfordNLPTests extends TestCase {
 				// GrammaticalRelation class)
 
 				// TODO: Check EnglishGrammaticalRelations class for types
-				
+
+				Quadruple q = new Quadruple();
+				q.setDependency(Dependency.DIRECT_DEPENDENCY);
+				q.setPosTag_x(egi.getSource().toString());
+				q.setPosTag_y(egi.getTarget().toString());
+				q.setRelation(egi.getRelation().toString());
+
+				// should this be enough?
 			}
 
 			System.out.println("DEP:" + dependencies);
