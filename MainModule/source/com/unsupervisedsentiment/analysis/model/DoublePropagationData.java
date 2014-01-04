@@ -5,19 +5,19 @@ import java.util.HashSet;
 
 public class DoublePropagationData {
 	//input
-	private HashSet<DoublePropagationElement> opinionWordDictionary;
+	private HashSet<Tuple> opinionWordDictionary;
 	private ArrayList<String> inputSentences;
 	
 	//output
-	private HashSet<DoublePropagationElement> featuresDictionary;
-	private HashSet<DoublePropagationElement> expandedOpinionWordDictionary;
+	private HashSet<Tuple> featuresDictionary;
+	private HashSet<Tuple> expandedOpinionWordDictionary;
 	
 	
-	public HashSet<DoublePropagationElement> getOpinionWordDictionary() {
+	public HashSet<Tuple> getOpinionWordDictionary() {
 		return opinionWordDictionary;
 	}
 	public void setOpinionWordDictionary(
-			HashSet<DoublePropagationElement> opinionWordDictionary) {
+			HashSet<Tuple> opinionWordDictionary) {
 		this.opinionWordDictionary = opinionWordDictionary;
 	}
 	public ArrayList<String> getInputSentences() {
@@ -26,18 +26,18 @@ public class DoublePropagationData {
 	public void setInputSentences(ArrayList<String> inputSentences) {
 		this.inputSentences = inputSentences;
 	}
-	public HashSet<DoublePropagationElement> getFeaturesDictionary() {
+	public HashSet<Tuple> getFeaturesDictionary() {
 		return featuresDictionary;
 	}
 	public void setFeaturesDictionary(
-			HashSet<DoublePropagationElement> featuresDictionary) {
+			HashSet<Tuple> featuresDictionary) {
 		this.featuresDictionary = featuresDictionary;
 	}
-	public HashSet<DoublePropagationElement> getExpandedOpinionWordDictionary() {
+	public HashSet<Tuple> getExpandedOpinionWordDictionary() {
 		return expandedOpinionWordDictionary;
 	}
 	public void setExpandedOpinionWordDictionary(
-			HashSet<DoublePropagationElement> expandedOpinionWordDictionary) {
+			HashSet<Tuple> expandedOpinionWordDictionary) {
 		this.expandedOpinionWordDictionary = expandedOpinionWordDictionary;
 	}
 }

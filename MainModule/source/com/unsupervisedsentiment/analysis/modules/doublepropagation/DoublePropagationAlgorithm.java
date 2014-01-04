@@ -3,7 +3,7 @@ package com.unsupervisedsentiment.analysis.modules.doublepropagation;
 import java.util.HashSet;
 
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
-import com.unsupervisedsentiment.analysis.model.DoublePropagationElement;
+import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.modules.targetextraction.IOpinionWordExtractorService;
 import com.unsupervisedsentiment.analysis.modules.targetextraction.ITargetExtractorService;
 import com.unsupervisedsentiment.analysis.modules.targetextraction.OpinionWordExtractorService;
@@ -14,10 +14,10 @@ public class DoublePropagationAlgorithm {
 	private IOpinionWordExtractorService opinionWordExtractorService;
 	private ITargetExtractorService targetExtractorService;
 	private DoublePropagationData data;
-	private HashSet<DoublePropagationElement> featuresIteration1;
-	private HashSet<DoublePropagationElement> opinionWordsIteration1;
-	private HashSet<DoublePropagationElement> featuresIteration2;
-	private HashSet<DoublePropagationElement> opinionWordsIteration2;
+	private HashSet<Tuple> featuresIteration1;
+	private HashSet<Tuple> opinionWordsIteration1;
+	private HashSet<Tuple> featuresIteration2;
+	private HashSet<Tuple> opinionWordsIteration2;
 	
 	public DoublePropagationAlgorithm(DoublePropagationData data) {
 		opinionWordExtractorService = new OpinionWordExtractorService();
@@ -26,11 +26,11 @@ public class DoublePropagationAlgorithm {
 	}
 	
 	private void Initialize() {
-		data.setExpandedOpinionWordDictionary(new HashSet<DoublePropagationElement>());
-		featuresIteration1 = new HashSet<DoublePropagationElement>();
-		opinionWordsIteration1 = new HashSet<DoublePropagationElement>(); 
-		featuresIteration2 = new HashSet<DoublePropagationElement>();
-		opinionWordsIteration2 = new HashSet<DoublePropagationElement>();
+		data.setExpandedOpinionWordDictionary(new HashSet<Tuple>());
+		featuresIteration1 = new HashSet<Tuple>();
+		opinionWordsIteration1 = new HashSet<Tuple>(); 
+		featuresIteration2 = new HashSet<Tuple>();
+		opinionWordsIteration2 = new HashSet<Tuple>();
 	}
 	
 	public DoublePropagationData Execute(DoublePropagationData data) {

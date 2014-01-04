@@ -4,15 +4,15 @@ import java.util.List;
 import  com.unsupervisedsentiment.analysis.model.*;
 
 public interface ITargetExtractorService {
-	public List<DoublePropagationElement> ExtractTargetUsingR1(String sentence);
+	public List<Tuple> ExtractTargetUsingR1(String sentence);
 	
-	public List<DoublePropagationElement> ExtractTargetUsingR3(String sentence);
+	public List<Tuple> ExtractTargetUsingR3(String sentence);
 	
-	public List<DoublePropagationElement> ExtractTargetUsingR11(String sentence);
+	public List<Tuple> ExtractTargetUsingR11(String sentence);
 	
-	public List<DoublePropagationElement> ExtractTargetUsingR12(String sentence);
+	public List<Tuple> ExtractTargetUsingR12(String sentence);
 	
-	public List<DoublePropagationElement> ExtractTargetUsingR31(String sentence);
+	public List<Tuple> ExtractTargetUsingR31(String sentence);
 	
-	public List<DoublePropagationElement> ExtractTargetUsingR32(String sentence);
+	public List<Tuple> ExtractTargetUsingR32(String sentence);
 }

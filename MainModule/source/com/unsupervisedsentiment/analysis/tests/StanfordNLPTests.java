@@ -13,7 +13,7 @@ import java.util.Set;
 import org.junit.Ignore;
 
 import com.unsupervisedsentiment.analysis.model.Dependency;
-import com.unsupervisedsentiment.analysis.model.Quadruple;
+import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.test.constants.StanfordNLPTestConstants;
 
 import junit.framework.TestCase;
@@ -200,7 +200,7 @@ public class StanfordNLPTests extends TestCase {
 
 				// TODO: Check EnglishGrammaticalRelations class for types
 
-				Quadruple q = new Quadruple();
+				Tuple q = new Tuple();
 				q.setDependency(Dependency.DIRECT_DEPENDENCY);
 				q.setPosTag_x(egi.getSource().toString());
 				q.setPosTag_y(egi.getTarget().toString());
