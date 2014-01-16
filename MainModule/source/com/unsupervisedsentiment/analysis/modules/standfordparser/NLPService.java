@@ -41,8 +41,26 @@ public class NLPService {
 		return annotateSentences(lemmatizedText);
 	}
 
-	public List<Tuple> GetTupleFromSentence(CoreMap sentence) {
+	public List<Tuple> GetTuplesFromSentence(CoreMap sentence) {
 		List<Tuple> tuples = new ArrayList<Tuple>();
+			SemanticGraph dependencies = GetSemanticGraphFromSentence(sentence);
+			
+			final Set<SemanticGraphEdge> edgeSet = dependencies.getEdgeSet();
+
+			for (SemanticGraphEdge egi : edgeSet) {
+				Tuple tuple = new Tuple();
+				tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
+				tuple.setWord_x(egi.getSource().get(TextAnnotation.class));
+				tuple.setPosTag_x(egi.getSource().get(PartOfSpeechAnnotation.class));
+				tuple.setWord_y(egi.getTarget().get(TextAnnotation.class));
+				tuple.setPosTag_y(egi.getTarget().get(PartOfSpeechAnnotation.class));
+				tuple.setRelation(egi.getRelation().toString());
+				tuples.add(tuple);
+			}
+		return tuples;
+	}
+	
+	public SemanticGraph GetSemanticGraphFromSentence(CoreMap sentence) {
 		
 			// traversing the words in the current sentence
 			// a CoreLabel is a CoreMap with additional token-specific methods
@@ -60,22 +78,8 @@ public class NLPService {
 			// this is the parse tree of the current sentence
 			// Tree tree = sentence.get(TreeAnnotation.class);
 			// this is the Stanford dependency graph of the current sentence
-			SemanticGraph dependencies = sentence
+			return sentence
 					.get(CollapsedCCProcessedDependenciesAnnotation.class);
-
-			final Set<SemanticGraphEdge> edgeSet = dependencies.getEdgeSet();
-
-			for (SemanticGraphEdge egi : edgeSet) {
-				Tuple tuple = new Tuple();
-				tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
-				tuple.setWord_x(egi.getSource().get(TextAnnotation.class));
-				tuple.setPosTag_x(egi.getSource().get(PartOfSpeechAnnotation.class));
-				tuple.setWord_x(egi.getTarget().get(TextAnnotation.class));
-				tuple.setPosTag_y(egi.getTarget().get(PartOfSpeechAnnotation.class));
-				tuple.setRelation(egi.getRelation().toString());
-				tuples.add(tuple);
-			}
-		return tuples;
 	}
 	
 	private List<CoreMap> annotateSentences(String text) {
