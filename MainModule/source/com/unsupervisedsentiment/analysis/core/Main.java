@@ -12,8 +12,13 @@ public class Main {
 	public static void main(String[] args) {
 		
 		DoublePropagationData inputData = new DoublePropagationData();
-		inputData.setInput(StanfordNLPTestConstants.SENTENCE_LIU);
-		
+		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_LIU);
+		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1);
+		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST2);
+		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST3);
+		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST4);
+		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST5);
+		inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST6);
 		DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
 		algorithm.Execute();	
 	}
