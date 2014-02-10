@@ -96,6 +96,7 @@ public class StanfordNLPTests extends TestCase {
 	 * Tokens = words + punctuations
 	 */
 	public void testTokensAnnotation() {
+		System.out.println ("TEST TOKENS ANNOTATION");
 		String oneSentence = StanfordNLPTestConstants.SENTENCE_ONE;
 		Annotation document = new Annotation(oneSentence);
 		coreNlp.annotate(document);
@@ -114,12 +115,15 @@ public class StanfordNLPTests extends TestCase {
 		coreNlp.annotate(document);
 		tokens = document.get(TokensAnnotation.class);
 		assertEquals(tokens.size(), 10 * n);
+		
+		coreNlp.clearAnnotatorPool();
 	}
 
 	/**
 	 * PartOfSpeechAnnotation
 	 */
 	public void testPartOfSpeechAnnotation() {
+		System.err.println ("TEST POS ANNOTATION");
 		String text = StanfordNLPTestConstants.SENTENCE_TWO;
 		Annotation doc = new Annotation(text);
 		coreNlp.annotate(doc);
@@ -128,9 +132,12 @@ public class StanfordNLPTests extends TestCase {
 		// has values with custom types
 		List<CoreMap> sentences = doc.get(SentencesAnnotation.class);
 		printSentences(sentences);
+		
+		coreNlp.clearAnnotatorPool();
 	}
 
-	public void testProcessing() {
+	public void testPreProcessing() {
+		System.err.println ("TEST PRE PROCESSING");
 		String text = StanfordNLPTestConstants.SENTENCE_TWO;
 		String lemmatizedText = doLemmatization(text);
 		List<CoreMap> annotatedSentences = annotateSentences(lemmatizedText);
@@ -140,9 +147,12 @@ public class StanfordNLPTests extends TestCase {
 		for (HashMap<String, String> map : word_posList) {
 			System.out.println(map.toString());
 		}
+		
+		coreNlp.clearAnnotatorPool();
 	}
 
-	public void testLiuSentenceProcessing() {
+	public void testLiuSentencePreProcessing() {
+		System.err.println ("LIU SENTENCE PRE PROCESSING");
 		String text = StanfordNLPTestConstants.SENTENCE_LIU;
 		String lemmatizedText = doLemmatization(text);
 		List<CoreMap> annotatedSentences = annotateSentences(lemmatizedText);
@@ -152,6 +162,8 @@ public class StanfordNLPTests extends TestCase {
 		for (HashMap<String, String> map : word_posList) {
 			System.out.println(map.toString());
 		}
+		
+		coreNlp.clearAnnotatorPool();
 	}
 
 	/*
@@ -159,6 +171,7 @@ public class StanfordNLPTests extends TestCase {
 	 */
 
 	private void printSentences(List<CoreMap> sentences) {
+		System.err.println ("PRINTING SENTENCES");
 		for (CoreMap sentence : sentences) {
 			// traversing the words in the current sentence
 			// a CoreLabel is a CoreMap with additional token-specific methods

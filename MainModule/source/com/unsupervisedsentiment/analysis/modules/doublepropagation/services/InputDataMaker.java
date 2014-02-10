@@ -47,22 +47,42 @@ public class InputDataMaker {
 	
 	private void ProcessEdge(SemanticGraphEdge edge, String partOfSpeech, boolean reverse)
 	{
-		switch(partOfSpeech)
+		if (partOfSpeech.equals("NN"))
 		{
-			case "NN":
-				Targets.add(GetTupleFromEdge(edge,reverse));
-				break;
-			case "NNS":
-				Targets.add(GetTupleFromEdge(edge,reverse));
-			case "JJ":
-				OpinionWords.add(GetTupleFromEdge(edge,reverse));
-			case "JJS":
-				OpinionWords.add(GetTupleFromEdge(edge,reverse));
-			case "JJR":
-				OpinionWords.add(GetTupleFromEdge(edge,reverse));
-			default:
-				break;
+			Targets.add(GetTupleFromEdge(edge,reverse));
 		}
+		else if (partOfSpeech.equals("NNS"))
+		{
+			Targets.add(GetTupleFromEdge(edge,reverse));
+		}
+		else if (partOfSpeech.equals("JJ"))
+		{
+			OpinionWords.add(GetTupleFromEdge(edge,reverse));
+		}
+		else if (partOfSpeech.equals("JJS"))
+		{
+			OpinionWords.add(GetTupleFromEdge(edge,reverse));
+		}
+		else if (partOfSpeech.equals("JJR"))
+		{
+			OpinionWords.add(GetTupleFromEdge(edge,reverse));
+		}
+//		switch(partOfSpeech)
+//		{
+//			case "NN":
+//				Targets.add(GetTupleFromEdge(edge,reverse));
+//				break;
+//			case "NNS":
+//				Targets.add(GetTupleFromEdge(edge,reverse));
+//			case "JJ":
+//				OpinionWords.add(GetTupleFromEdge(edge,reverse));
+//			case "JJS":
+//				OpinionWords.add(GetTupleFromEdge(edge,reverse));
+//			case "JJR":
+//				OpinionWords.add(GetTupleFromEdge(edge,reverse));
+//			default:
+//				break;
+//		}
 	}
 	
 	private Tuple GetTupleFromEdge(SemanticGraphEdge edge, boolean reverse) {
