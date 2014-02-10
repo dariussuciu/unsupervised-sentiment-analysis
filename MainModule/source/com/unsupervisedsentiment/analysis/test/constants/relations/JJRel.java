@@ -7,10 +7,21 @@ public class JJRel extends GenericRelation{
 		JJR,
 		JJS
 	}
+	
+	private static JJRel jjRel;
+	
+	private JJRel() {}
+	
+	public static JJRel getInstance() {
+		if(isInstantiated)
+			return jjRel;
+		
+		isInstantiated = true;
+		return jjRel = new JJRel();
+	}
 
 	@Override
 	public boolean Contains(String word) {
-		// TODO Auto-generated method stub
-		return false;
+		return super.isInEnum(word, JJ.class);
 	};
 }

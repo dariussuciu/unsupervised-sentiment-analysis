@@ -1,7 +1,7 @@
 package com.unsupervisedsentiment.analysis.test.constants.relations;
 
 public class ConjRel extends GenericRelation{
-	public enum CONJ {
+	public static enum CONJ {
 		conj("conj"),
 		conjand("conj-and");
 		
@@ -16,10 +16,21 @@ public class ConjRel extends GenericRelation{
 	        return text;
 	    }
 	}
+	
+	private static ConjRel conjRel;
+	
+	private ConjRel() {}
+	
+	public static ConjRel getInstance() {
+		if(isInstantiated)
+			return conjRel;
+		
+		isInstantiated = true;
+		return conjRel = new ConjRel();
+	}
 
 	@Override
 	public boolean Contains(String word) {
-		// TODO Auto-generated method stub
-		return false;
+		return  super.isInEnum(word, CONJ.class);
 	};
 }

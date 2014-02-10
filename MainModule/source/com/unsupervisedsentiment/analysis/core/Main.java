@@ -3,6 +3,7 @@ package com.unsupervisedsentiment.analysis.core;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.DoublePropagationAlgorithm;
 import com.unsupervisedsentiment.analysis.test.constants.*;
+import com.unsupervisedsentiment.analysis.test.constants.relations.JJRel;
 
 public class Main {
 
@@ -10,6 +11,8 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		boolean ok = JJRel.getInstance().Contains("JJR");
 		
 		DoublePropagationData inputData = new DoublePropagationData();
 		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_LIU);

@@ -1,6 +1,6 @@
 package com.unsupervisedsentiment.analysis.test.constants.relations;
 
-public class MR extends GenericRelation{
+public class MRRel extends GenericRelation{
 	public enum mod {
 		amod,
 		appos,
@@ -54,10 +54,27 @@ public class MR extends GenericRelation{
 	public enum desc {
 		
 	}
+	
+	private static MRRel mrRel;
+	
+	private MRRel() {}
+	
+	public static MRRel getInstance() {
+		if(isInstantiated)
+			return mrRel;
+		
+		isInstantiated = true;
+		return mrRel = new MRRel();
+	}
 
 	@Override
 	public boolean Contains(String word) {
-		// TODO Auto-generated method stub
-		return false;
+		return     super.isInEnum(word, mod.class)
+				|| super.isInEnum(word, pmod.class)
+				|| super.isInEnum(word, subj.class)
+				|| super.isInEnum(word, s.class)
+				|| super.isInEnum(word, obj.class)
+				|| super.isInEnum(word, obj2.class)
+				|| super.isInEnum(word, desc.class);
 	};
 }

@@ -7,10 +7,21 @@ public class NNRel extends GenericRelation {
 		NNPS,
 		NNS
 	}
+	
+	private static NNRel nnRel;
+	
+	private NNRel() {}
+	
+	public static NNRel getInstance() {
+		if(isInstantiated)
+			return nnRel;
+		
+		isInstantiated = true;
+		return nnRel = new NNRel();
+	}
 
 	@Override
 	public boolean Contains(String word) {
-		// TODO Auto-generated method stub
-		return false;
+		return super.isInEnum(word, NN.class);
 	};
 }
