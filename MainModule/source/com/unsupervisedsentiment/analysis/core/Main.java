@@ -20,8 +20,8 @@ public class Main {
 		
 		DoublePropagationData inputData = new DoublePropagationData();
 		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_LIU);
-		inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1);
-		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST2);
+		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1);
+		inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST2);
 		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST3);
 		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST4);
 		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST5);
@@ -33,6 +33,7 @@ public class Main {
 		Tuple test = new Tuple();
 		
 		test.setOpinion(new Word("JJ", "good"));
+		test.setOpinion(new Word("JJ", "best"));
 		
 		seed.add(test);
 		
