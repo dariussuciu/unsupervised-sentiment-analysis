@@ -21,7 +21,7 @@ public class JJRel extends GenericRelation{
 	}
 
 	@Override
-	public boolean Contains(String word) {
+	public boolean contains(String word) {
 		return super.isInEnum(word, JJ.class);
 	};
 }

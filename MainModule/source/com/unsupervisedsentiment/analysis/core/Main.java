@@ -12,7 +12,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		
-		boolean ok = JJRel.getInstance().Contains("JJR");
+		boolean ok = JJRel.getInstance().contains("JJR");
 		
 		DoublePropagationData inputData = new DoublePropagationData();
 		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_LIU);
@@ -23,7 +23,7 @@ public class Main {
 		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST5);
 		inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST6);
 		DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
-		algorithm.Execute();	
+		algorithm.execute();	
 	}
 
 }

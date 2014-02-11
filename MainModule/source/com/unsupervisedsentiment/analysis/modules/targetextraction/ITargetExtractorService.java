@@ -5,15 +5,15 @@ import java.util.List;
 import  com.unsupervisedsentiment.analysis.model.*;
 
 public interface ITargetExtractorService {
-	public List<Tuple> ExtractTargetUsingR1(HashSet<Tuple> opinionWords);
+	public List<Tuple> extractTargetUsingR1(HashSet<Tuple> opinionWords);
 	
-	public List<Tuple> ExtractTargetUsingR3(HashSet<Tuple> targets);
+	public List<Tuple> extractTargetUsingR3(HashSet<Tuple> targets);
 	
-	public List<Tuple> ExtractTargetUsingR11(HashSet<Tuple> opinionWords);
+	public List<Tuple> extractTargetUsingR11(HashSet<Tuple> opinionWords);
 	
-	public List<Tuple> ExtractTargetUsingR12(HashSet<Tuple> opinionWords);
+	public List<Tuple> extractTargetUsingR12(HashSet<Tuple> opinionWords);
 	
-	public List<Tuple> ExtractTargetUsingR31(HashSet<Tuple> targets);
+	public List<Tuple> extractTargetUsingR31(HashSet<Tuple> targets);
 	
-	public List<Tuple> ExtractTargetUsingR32(HashSet<Tuple> targets);
+	public List<Tuple> extractTargetUsingR32(HashSet<Tuple> targets);
 }

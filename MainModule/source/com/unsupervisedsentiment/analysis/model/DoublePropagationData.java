@@ -10,8 +10,8 @@ public class DoublePropagationData {
 	private String input;
 	
 	//processed sentences, an HashSet for each sentence
-	private List<HashSet<Tuple>> AllOpinionWords;
-	private List<HashSet<Tuple>> AllTargets;
+	private List<HashSet<Tuple>> allOpinionWords;
+	private List<HashSet<Tuple>> allTargets;
 	
 	//output
 	private HashSet<Tuple> featuresDictionary;
@@ -19,8 +19,8 @@ public class DoublePropagationData {
 	
 	public DoublePropagationData() {
 		opinionWordDictionary = new HashSet<Tuple>();
-		AllOpinionWords = new ArrayList<HashSet<Tuple>>();
-		AllTargets = new ArrayList<HashSet<Tuple>>();
+		allOpinionWords = new ArrayList<HashSet<Tuple>>();
+		allTargets = new ArrayList<HashSet<Tuple>>();
 		featuresDictionary = new HashSet<Tuple>();
 		expandedOpinionWordDictionary = new HashSet<Tuple>();
 	}
@@ -47,16 +47,16 @@ public class DoublePropagationData {
 		this.expandedOpinionWordDictionary = expandedOpinionWordDictionary;
 	}
 	public List<HashSet<Tuple>> getAllOpinionWords() {
-		return AllOpinionWords;
+		return allOpinionWords;
 	}
 	public void setAllOpinionWords(List<HashSet<Tuple>> allOpinionWords) {
-		AllOpinionWords = allOpinionWords;
+		this.allOpinionWords = allOpinionWords;
 	}
 	public List<HashSet<Tuple>> getAllTargets() {
-		return AllTargets;
+		return allTargets;
 	}
 	public void setAllTargets(List<HashSet<Tuple>> allTargets) {
-		AllTargets = allTargets;
+		this.allTargets = allTargets;
 	}
 	public String getInput() {
 		return input;

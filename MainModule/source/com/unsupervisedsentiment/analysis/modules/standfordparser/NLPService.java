@@ -24,9 +24,17 @@ import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcess
 import edu.stanford.nlp.util.CoreMap;
 
 public class NLPService {
-	protected StanfordCoreNLP coreNlp;
-	
-	public NLPService() {
+
+	private static NLPService instance;
+	private StanfordCoreNLP coreNlp;
+
+	public static NLPService getInstance() {
+		if (instance == null)
+			instance = new NLPService();
+		return instance;
+	}
+
+	private NLPService() {
 		Properties props = new Properties();
 		props.put("annotators", StanfordCoreNLP.STANFORD_TOKENIZE + ","
 				+ StanfordCoreNLP.STANFORD_SSPLIT + ","
@@ -35,60 +43,59 @@ public class NLPService {
 				+ StanfordCoreNLP.STANFORD_PARSE);
 		coreNlp = new StanfordCoreNLP(props);
 	}
-	
-	public List<CoreMap> GetAnnotatedSentencesFromText(String text) {
+
+	public List<CoreMap> getAnnotatedSentencesFromText(String text) {
 		String lemmatizedText = doLemmatization(text);
 		return annotateSentences(lemmatizedText);
 	}
 
-	public List<Tuple> GetTuplesFromSentence(CoreMap sentence) {
+	public List<Tuple> getTuplesFromSentence(CoreMap sentence) {
 		List<Tuple> tuples = new ArrayList<Tuple>();
-			SemanticGraph dependencies = GetSemanticGraphFromSentence(sentence);
-			
-			final Set<SemanticGraphEdge> edgeSet = dependencies.getEdgeSet();
+		SemanticGraph dependencies = getSemanticGraphFromSentence(sentence);
 
-			for (SemanticGraphEdge egi : edgeSet) {
-				Tuple tuple = new Tuple();
-				tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
-				tuple.setWord_x(egi.getSource().get(TextAnnotation.class));
-				tuple.setPosTag_x(egi.getSource().get(PartOfSpeechAnnotation.class));
-				tuple.setWord_y(egi.getTarget().get(TextAnnotation.class));
-				tuple.setPosTag_y(egi.getTarget().get(PartOfSpeechAnnotation.class));
-				tuple.setRelation(egi.getRelation().toString());
-				tuples.add(tuple);
-			}
+		final Set<SemanticGraphEdge> edgeSet = dependencies.getEdgeSet();
+
+		for (SemanticGraphEdge egi : edgeSet) {
+			Tuple tuple = new Tuple();
+			tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
+			tuple.setWord_x(egi.getSource().get(TextAnnotation.class));
+			tuple.setPosTag_x(egi.getSource().get(PartOfSpeechAnnotation.class));
+			tuple.setWord_y(egi.getTarget().get(TextAnnotation.class));
+			tuple.setPosTag_y(egi.getTarget().get(PartOfSpeechAnnotation.class));
+			tuple.setRelation(egi.getRelation().toString());
+			tuples.add(tuple);
+		}
 		return tuples;
 	}
-	
-	public SemanticGraph GetSemanticGraphFromSentence(CoreMap sentence) {
-		
-			// traversing the words in the current sentence
-			// a CoreLabel is a CoreMap with additional token-specific methods
-			for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
-				// this is the text of the token
-				String word = token.get(TextAnnotation.class);
-				String pos = token.get(PartOfSpeechAnnotation.class);
-				System.out.println("word-pos :" + word + "-" + pos);
-				String ne = token.get(NamedEntityTagAnnotation.class);
 
-				// http://nlp.stanford.edu/software/corenlp.shtml for more info
-				// on NER
-				System.out.println("NER:" + ne);
-			}
-			// this is the parse tree of the current sentence
-			// Tree tree = sentence.get(TreeAnnotation.class);
-			// this is the Stanford dependency graph of the current sentence
-			return sentence
-					.get(CollapsedCCProcessedDependenciesAnnotation.class);
+	public SemanticGraph getSemanticGraphFromSentence(CoreMap sentence) {
+
+		// traversing the words in the current sentence
+		// a CoreLabel is a CoreMap with additional token-specific methods
+		for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
+			// this is the text of the token
+			String word = token.get(TextAnnotation.class);
+			String pos = token.get(PartOfSpeechAnnotation.class);
+			System.out.println("word-pos :" + word + "-" + pos);
+			String ne = token.get(NamedEntityTagAnnotation.class);
+
+			// http://nlp.stanford.edu/software/corenlp.shtml for more info
+			// on NER
+			System.out.println("NER:" + ne);
+		}
+		// this is the parse tree of the current sentence
+		// Tree tree = sentence.get(TreeAnnotation.class);
+		// this is the Stanford dependency graph of the current sentence
+		return sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
 	}
-	
+
 	private List<CoreMap> annotateSentences(String text) {
 		Annotation document = new Annotation(text);
 		coreNlp.annotate(document);
 		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
 		return sentences;
 	}
-	
+
 	private String doLemmatization(String documentText) {
 		List<String> lemmas = new LinkedList<String>();
 		String result = "";

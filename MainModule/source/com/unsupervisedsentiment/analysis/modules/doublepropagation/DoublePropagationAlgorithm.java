@@ -16,7 +16,7 @@ import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.util.CoreMap;
 
 public class DoublePropagationAlgorithm {
-	
+
 	private IOpinionWordExtractorService opinionWordExtractorService;
 	private ITargetExtractorService targetExtractorService;
 	private DoublePropagationData data;
@@ -24,57 +24,65 @@ public class DoublePropagationAlgorithm {
 	private HashSet<Tuple> opinionWordsIteration1;
 	private HashSet<Tuple> featuresIteration2;
 	private HashSet<Tuple> opinionWordsIteration2;
-	private NLPService NLPServiceInstance;
-	
+	private NLPService nlpService;
+
 	public DoublePropagationAlgorithm(DoublePropagationData data) {
 		opinionWordExtractorService = new OpinionWordExtractorService();
 		targetExtractorService = new TargetExtractorService();
 		this.data = data;
-		NLPServiceInstance = new NLPService();
+		nlpService = NLPService.getInstance();
 	}
-	
-	private void Initialize() {
+
+	private void initialize() {
 		data.setExpandedOpinionWordDictionary(new HashSet<Tuple>());
 		featuresIteration1 = new HashSet<Tuple>();
-		opinionWordsIteration1 = new HashSet<Tuple>(); 
+		opinionWordsIteration1 = new HashSet<Tuple>();
 		featuresIteration2 = new HashSet<Tuple>();
 		opinionWordsIteration2 = new HashSet<Tuple>();
-		List<CoreMap> annotatedSentences =  NLPServiceInstance.GetAnnotatedSentencesFromText(data.getInput());
-		for(CoreMap sentence : annotatedSentences)
-		{
-			SemanticGraph graph = NLPServiceInstance.GetSemanticGraphFromSentence(sentence);
+		List<CoreMap> annotatedSentences = nlpService
+				.getAnnotatedSentencesFromText(data.getInput());
+		for (CoreMap sentence : annotatedSentences) {
+			SemanticGraph graph = nlpService
+					.getSemanticGraphFromSentence(sentence);
 			InputDataMaker inputGenerator = new InputDataMaker(graph);
-			data.getAllOpinionWords().add(inputGenerator.OpinionWords);
-			data.getAllTargets().add(inputGenerator.Targets);
+			data.getAllOpinionWords().add(inputGenerator.opinionWords);
+			data.getAllTargets().add(inputGenerator.targets);
 		}
 	}
-	
-	public DoublePropagationData Execute() {
-		Initialize();
-		
-		do
-		{
-			ExecuteStep();
-		}
-		while(featuresIteration1.size() > 0 && opinionWordsIteration1.size() > 0);
-		
-		return data;		
+
+	public DoublePropagationData execute() {
+		initialize();
+
+		do {
+			executeStep();
+		} while (featuresIteration1.size() > 0
+				&& opinionWordsIteration1.size() > 0);
+
+		return data;
 	}
-	
-	private void ExecuteStep(){
-/*		for(String sentence : data.getInputSentences()){
-			featuresIteration1.addAll(targetExtractorService.ExtractTargetUsingR1(sentence));
-			opinionWordsIteration1.addAll(opinionWordExtractorService.ExtractOpinionWordR2(sentence));
-		}	*/
-		
-	    data.getFeaturesDictionary().addAll(featuresIteration1);
-	    data.getExpandedOpinionWordDictionary().addAll(opinionWordsIteration1);
-	    
-/*		for(String sentence : data.getInputSentences()){
-			featuresIteration2.addAll(targetExtractorService.ExtractTargetUsingR3(sentence));
-			opinionWordsIteration2.addAll(opinionWordExtractorService.ExtractOpinionWordR4(sentence));
-		}*/	
-		
+
+	private void executeStep() {
+		/*
+		 * for(String sentence : data.getInputSentences()){
+		 * featuresIteration1.addAll
+		 * (targetExtractorService.ExtractTargetUsingR1(sentence));
+		 * opinionWordsIteration1
+		 * .addAll(opinionWordExtractorService.ExtractOpinionWordR2(sentence));
+		 * }
+		 */
+
+		data.getFeaturesDictionary().addAll(featuresIteration1);
+		data.getExpandedOpinionWordDictionary().addAll(opinionWordsIteration1);
+
+		/*
+		 * for(String sentence : data.getInputSentences()){
+		 * featuresIteration2.addAll
+		 * (targetExtractorService.ExtractTargetUsingR3(sentence));
+		 * opinionWordsIteration2
+		 * .addAll(opinionWordExtractorService.ExtractOpinionWordR4(sentence));
+		 * }
+		 */
+
 		featuresIteration1.addAll(featuresIteration2);
 		opinionWordsIteration1.addAll(opinionWordsIteration1);
 		data.getFeaturesDictionary().addAll(featuresIteration2);

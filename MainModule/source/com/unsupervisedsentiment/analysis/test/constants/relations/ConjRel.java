@@ -30,7 +30,7 @@ public class ConjRel extends GenericRelation{
 	}
 
 	@Override
-	public boolean Contains(String word) {
+	public boolean contains(String word) {
 		return  super.isInEnum(word, CONJ.class);
 	};
 }

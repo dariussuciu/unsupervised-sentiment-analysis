@@ -68,7 +68,7 @@ public class MRRel extends GenericRelation{
 	}
 
 	@Override
-	public boolean Contains(String word) {
+	public boolean contains(String word) {
 		return     super.isInEnum(word, mod.class)
 				|| super.isInEnum(word, pmod.class)
 				|| super.isInEnum(word, subj.class)
