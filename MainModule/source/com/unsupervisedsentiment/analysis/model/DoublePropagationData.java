@@ -7,7 +7,7 @@ import edu.stanford.nlp.semgraph.SemanticGraph;
 
 public class DoublePropagationData {
 	// input
-	private HashSet<Tuple> opinionWords;
+	private HashSet<Word> seedWords;
 	private String input;
 
 	// processed sentences, an HashSet for each sentence
@@ -18,7 +18,7 @@ public class DoublePropagationData {
 	private HashSet<Tuple> expandedOpinionWords;
 
 	public DoublePropagationData() {
-		opinionWords = new HashSet<Tuple>();
+		setSeedWords(new HashSet<Word>());
 		setFeatures(new HashSet<Tuple>());
 		setExpandedOpinionWords(new HashSet<Tuple>());
 	}
@@ -40,7 +40,7 @@ public class DoublePropagationData {
 		this.sentancesSemanticGraphs = sentancesSemanticGraph;
 	}
 
-	public HashSet<Tuple> getFeatures() {
+	public HashSet<Tuple> getFeatureTuples() {
 		return features;
 	}
 
@@ -48,20 +48,40 @@ public class DoublePropagationData {
 		this.features = features;
 	}
 
-	public HashSet<Tuple> getExpandedOpinionWords() {
+	public HashSet<Tuple> getExpandedOpinionWordsTuples() {
 		return expandedOpinionWords;
 	}
 
 	public void setExpandedOpinionWords(HashSet<Tuple> expandedOpinionWords) {
 		this.expandedOpinionWords = expandedOpinionWords;
 	}
-
-	public HashSet<Tuple> getOpinionWords() {
+	
+	public HashSet<Word> getExpandedOpinionWords()
+	{
+		HashSet<Word> opinionWords = new HashSet<Word>();
+		for(Tuple tuple : expandedOpinionWords)
+		{
+			opinionWords.add(tuple.getOpinion());
+		}
 		return opinionWords;
+	} 
+	
+	public HashSet<Word> getFeatures()
+	{
+		HashSet<Word> featureWords = new HashSet<Word>();
+		for(Tuple tuple : features)
+		{
+			featureWords.add(tuple.getTarget());
+		}
+		return featureWords;
 	}
 
-	public void setOpinionWords(HashSet<Tuple> opinionWords) {
-		this.opinionWords = opinionWords;
+	public HashSet<Word> getSeedWords() {
+		return seedWords;
+	}
+
+	public void setSeedWords(HashSet<Word> seedWords) {
+		this.seedWords = seedWords;
 	}
 
 }

@@ -22,22 +22,22 @@ public class OpinionWordExtractorService implements
 		return null;
 	}
 
-	public Set<Tuple> extractOpinionWordUsingR21(HashSet<Tuple> targets) {
+	public Set<Tuple> extractOpinionWordUsingR21(SemanticGraph semanticGraph) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<Tuple> extractOpinionWordUsingR22(HashSet<Tuple> targets) {
+	public Set<Tuple> extractOpinionWordUsingR22(SemanticGraph semanticGraph) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<Tuple> extractOpinionWordUsingR41(HashSet<Tuple> opinionWords) {
+	public Set<Tuple> extractOpinionWordUsingR41(SemanticGraph semanticGraph) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<Tuple> extractOpinionWordUsingR42(HashSet<Tuple> opinionWords) {
+	public Set<Tuple> extractOpinionWordUsingR42(SemanticGraph semanticGraph) {
 		// TODO Auto-generated method stub
 		return null;
 	}

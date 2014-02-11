@@ -3,6 +3,10 @@ package com.unsupervisedsentiment.analysis.test.constants.relations;
 public abstract class GenericRelation {
 	public abstract boolean contains(String word);
 
+	protected GenericRelation() {
+		isInstantiated = false;
+	}
+	
 	public static <E extends Enum<E>> boolean isInEnum(String value,
 			Class<E> enumClass) {
 		for (E e : enumClass.getEnumConstants()) {
@@ -13,5 +17,5 @@ public abstract class GenericRelation {
 		return false;
 	}
 
-	protected static boolean isInstantiated;
+	protected static boolean isInstantiated = false;
 }

@@ -14,6 +14,7 @@ import org.junit.Ignore;
 
 import com.unsupervisedsentiment.analysis.model.Dependency;
 import com.unsupervisedsentiment.analysis.model.Tuple;
+import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.test.constants.StanfordNLPTestConstants;
 
 import junit.framework.TestCase;
@@ -215,8 +216,8 @@ public class StanfordNLPTests extends TestCase {
 
 				Tuple q = new Tuple();
 				q.setDependency(Dependency.DIRECT_DEPENDENCY);
-				q.setPosTag_x(egi.getSource().toString());
-				q.setPosTag_y(egi.getTarget().toString());
+				q.setOpinion(new Word(egi.getSource().toString()));
+				q.setTarget(new Word(egi.getTarget().toString()));
 				q.setRelation(egi.getRelation().toString());
 
 				// should this be enough?

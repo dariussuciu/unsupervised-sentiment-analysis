@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.model.Dependency;
 import com.unsupervisedsentiment.analysis.model.Tuple;
+import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.services.InputDataMaker;
 
 import edu.stanford.nlp.ling.CoreLabel;
@@ -59,10 +60,8 @@ public class NLPService {
 		for (SemanticGraphEdge egi : edgeSet) {
 			Tuple tuple = new Tuple();
 			tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
-			tuple.setWord_x(egi.getSource().get(TextAnnotation.class));
-			tuple.setPosTag_x(egi.getSource().get(PartOfSpeechAnnotation.class));
-			tuple.setWord_y(egi.getTarget().get(TextAnnotation.class));
-			tuple.setPosTag_y(egi.getTarget().get(PartOfSpeechAnnotation.class));
+			tuple.setOpinion(new Word(egi.getSource().get(TextAnnotation.class),egi.getSource().get(PartOfSpeechAnnotation.class)));
+			tuple.setTarget(new Word(egi.getTarget().get(TextAnnotation.class), egi.getTarget().get(PartOfSpeechAnnotation.class)));
 			tuple.setRelation(egi.getRelation().toString());
 			tuples.add(tuple);
 		}

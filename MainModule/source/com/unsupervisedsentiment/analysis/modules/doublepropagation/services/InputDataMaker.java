@@ -13,52 +13,20 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 
 public class InputDataMaker {
 
-	public HashSet<Tuple> opinionWords;
-	public HashSet<Tuple> targets;
 
-	public InputDataMaker() {
-		opinionWords = new HashSet<Tuple>();
-		targets = new HashSet<Tuple>();
-	}
-
-	public InputDataMaker(SemanticGraph graph) {
-		opinionWords = new HashSet<Tuple>();
-		targets = new HashSet<Tuple>();
-		convert(graph);
-	}
-
-	public void reset() {
-		opinionWords = new HashSet<Tuple>();
-		targets = new HashSet<Tuple>();
-	}
-
-	public void convert(SemanticGraph graph) {
-		Set<SemanticGraphEdge> edgeSet = graph.getEdgeSet();
-
-		for (SemanticGraphEdge edge : edgeSet) {
-			String sourcePartOfSpeech = edge.getSource().get(
-					PartOfSpeechAnnotation.class);
-			String destinationPartOfSpeech = edge.getTarget().get(
-					PartOfSpeechAnnotation.class);
-
-			processEdge(edge, sourcePartOfSpeech, false);
-			processEdge(edge, destinationPartOfSpeech, true);
-		}
-	}
-
-	private void processEdge(SemanticGraphEdge edge, String partOfSpeech,
-			boolean reverse) {
-		if (partOfSpeech.equals("NN")) {
-			targets.add(getTupleFromEdge(edge, reverse));
-		} else if (partOfSpeech.equals("NNS")) {
-			targets.add(getTupleFromEdge(edge, reverse));
-		} else if (partOfSpeech.equals("JJ")) {
-			opinionWords.add(getTupleFromEdge(edge, reverse));
-		} else if (partOfSpeech.equals("JJS")) {
-			opinionWords.add(getTupleFromEdge(edge, reverse));
-		} else if (partOfSpeech.equals("JJR")) {
-			opinionWords.add(getTupleFromEdge(edge, reverse));
-		}
+//	private void processEdge(SemanticGraphEdge edge, String partOfSpeech,
+//			boolean reverse) {
+//		if (partOfSpeech.equals("NN")) {
+//			targets.add(getTupleFromEdge(edge, reverse));
+//		} else if (partOfSpeech.equals("NNS")) {
+//			targets.add(getTupleFromEdge(edge, reverse));
+//		} else if (partOfSpeech.equals("JJ")) {
+//			opinionWords.add(getTupleFromEdge(edge, reverse));
+//		} else if (partOfSpeech.equals("JJS")) {
+//			opinionWords.add(getTupleFromEdge(edge, reverse));
+//		} else if (partOfSpeech.equals("JJR")) {
+//			opinionWords.add(getTupleFromEdge(edge, reverse));
+//		}
 		// switch(partOfSpeech)
 		// {
 		// case "NN":
@@ -75,28 +43,28 @@ public class InputDataMaker {
 		// default:
 		// break;
 		// }
-	}
+	//}
 
-	private Tuple getTupleFromEdge(SemanticGraphEdge edge, boolean reverse) {
-		Tuple tuple = new Tuple();
-		tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
-		if (!reverse) {
-			tuple.setWord_x(edge.getSource().get(TextAnnotation.class));
-			tuple.setPosTag_x(edge.getSource()
-					.get(PartOfSpeechAnnotation.class));
-			tuple.setWord_y(edge.getTarget().get(TextAnnotation.class));
-			tuple.setPosTag_y(edge.getTarget()
-					.get(PartOfSpeechAnnotation.class));
-		} else {
-			tuple.setWord_y(edge.getSource().get(TextAnnotation.class));
-			tuple.setPosTag_y(edge.getSource()
-					.get(PartOfSpeechAnnotation.class));
-			tuple.setWord_x(edge.getTarget().get(TextAnnotation.class));
-			tuple.setPosTag_x(edge.getTarget()
-					.get(PartOfSpeechAnnotation.class));
-		}
-
-		tuple.setRelation(edge.getRelation().toString());
-		return tuple;
-	}
+//	private Tuple getTupleFromEdge(SemanticGraphEdge edge, boolean reverse) {
+//		Tuple tuple = new Tuple();
+//		tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
+//		if (!reverse) {
+//			tuple.setWord_x(edge.getSource().get(TextAnnotation.class));
+//			tuple.setPosTag_x(edge.getSource()
+//					.get(PartOfSpeechAnnotation.class));
+//			tuple.setWord_y(edge.getTarget().get(TextAnnotation.class));
+//			tuple.setPosTag_y(edge.getTarget()
+//					.get(PartOfSpeechAnnotation.class));
+//		} else {
+//			tuple.setWord_y(edge.getSource().get(TextAnnotation.class));
+//			tuple.setPosTag_y(edge.getSource()
+//					.get(PartOfSpeechAnnotation.class));
+//			tuple.setWord_x(edge.getTarget().get(TextAnnotation.class));
+//			tuple.setPosTag_x(edge.getTarget()
+//					.get(PartOfSpeechAnnotation.class));
+//		}
+//
+//		tuple.setRelation(edge.getRelation().toString());
+//		return tuple;
+//	}
 }
