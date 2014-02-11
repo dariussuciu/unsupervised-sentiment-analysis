@@ -2,6 +2,7 @@ package com.unsupervisedsentiment.analysis.modules.doublepropagation;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.Tuple;
@@ -20,10 +21,10 @@ public class DoublePropagationAlgorithm {
 	private IOpinionWordExtractorService opinionWordExtractorService;
 	private ITargetExtractorService targetExtractorService;
 	private DoublePropagationData data;
-	private HashSet<Tuple> featuresIteration1;
-	private HashSet<Tuple> opinionWordsIteration1;
-	private HashSet<Tuple> featuresIteration2;
-	private HashSet<Tuple> opinionWordsIteration2;
+	private Set<Tuple> featuresIteration1;
+	private Set<Tuple> opinionWordsIteration1;
+	private Set<Tuple> featuresIteration2;
+	private Set<Tuple> opinionWordsIteration2;
 	private NLPService nlpService;
 
 	public DoublePropagationAlgorithm(DoublePropagationData data) {
@@ -34,25 +35,13 @@ public class DoublePropagationAlgorithm {
 	}
 
 	private void initialize() {
-		data.setExpandedOpinionWordDictionary(new HashSet<Tuple>());
-		featuresIteration1 = new HashSet<Tuple>();
-		opinionWordsIteration1 = new HashSet<Tuple>();
-		featuresIteration2 = new HashSet<Tuple>();
-		opinionWordsIteration2 = new HashSet<Tuple>();
-		List<CoreMap> annotatedSentences = nlpService
-				.getAnnotatedSentencesFromText(data.getInput());
-		for (CoreMap sentence : annotatedSentences) {
-			SemanticGraph graph = nlpService
-					.getSemanticGraphFromSentence(sentence);
-			InputDataMaker inputGenerator = new InputDataMaker(graph);
-			data.getAllOpinionWords().add(inputGenerator.opinionWords);
-			data.getAllTargets().add(inputGenerator.targets);
-		}
+		data.setExpandedOpinionWords(new HashSet<Tuple>());
+		data.setSentancesSemanticGraphs(nlpService
+				.createSemanticGraphsListForSentances(data.getInput()));
 	}
 
 	public DoublePropagationData execute() {
 		initialize();
-
 		do {
 			executeStep();
 		} while (featuresIteration1.size() > 0
@@ -62,30 +51,35 @@ public class DoublePropagationAlgorithm {
 	}
 
 	private void executeStep() {
-		/*
-		 * for(String sentence : data.getInputSentences()){
-		 * featuresIteration1.addAll
-		 * (targetExtractorService.ExtractTargetUsingR1(sentence));
-		 * opinionWordsIteration1
-		 * .addAll(opinionWordExtractorService.ExtractOpinionWordR2(sentence));
-		 * }
-		 */
+		resetIterationFeaturesAndOpinionWords();
 
-		data.getFeaturesDictionary().addAll(featuresIteration1);
-		data.getExpandedOpinionWordDictionary().addAll(opinionWordsIteration1);
+		for (SemanticGraph semanticGraph : data.getSentancesSemanticGraphs()) {
+			featuresIteration1.addAll(targetExtractorService
+					.extractTargetUsingR1(semanticGraph));
+			opinionWordsIteration1.addAll(opinionWordExtractorService
+					.extractOpinionWordR4(semanticGraph));
+		}
 
-		/*
-		 * for(String sentence : data.getInputSentences()){
-		 * featuresIteration2.addAll
-		 * (targetExtractorService.ExtractTargetUsingR3(sentence));
-		 * opinionWordsIteration2
-		 * .addAll(opinionWordExtractorService.ExtractOpinionWordR4(sentence));
-		 * }
-		 */
+		data.getFeatures().addAll(featuresIteration1);
+		data.getExpandedOpinionWords().addAll(opinionWordsIteration1);
+
+		for (SemanticGraph semanticGraph : data.getSentancesSemanticGraphs()) {
+			featuresIteration2.addAll(targetExtractorService
+					.extractTargetUsingR3(semanticGraph));
+			opinionWordsIteration2.addAll(opinionWordExtractorService
+					.extractOpinionWordR2(semanticGraph));
+		}
 
 		featuresIteration1.addAll(featuresIteration2);
-		opinionWordsIteration1.addAll(opinionWordsIteration1);
-		data.getFeaturesDictionary().addAll(featuresIteration2);
-		data.getExpandedOpinionWordDictionary().addAll(opinionWordsIteration2);
+		opinionWordsIteration1.addAll(opinionWordsIteration2);
+		data.getFeatures().addAll(featuresIteration2);
+		data.getExpandedOpinionWords().addAll(opinionWordsIteration2);
+	}
+
+	void resetIterationFeaturesAndOpinionWords() {
+		featuresIteration1 = new HashSet<Tuple>();
+		opinionWordsIteration1 = new HashSet<Tuple>();
+		featuresIteration2 = new HashSet<Tuple>();
+		opinionWordsIteration2 = new HashSet<Tuple>();
 	}
 }

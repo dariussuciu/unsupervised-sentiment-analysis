@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.model.Dependency;
 import com.unsupervisedsentiment.analysis.model.Tuple;
+import com.unsupervisedsentiment.analysis.modules.doublepropagation.services.InputDataMaker;
 
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
@@ -117,6 +118,16 @@ public class NLPService {
 			}
 		}
 		return result;
+	}
+
+	public List<SemanticGraph> createSemanticGraphsListForSentances(String s) {
+		List<SemanticGraph> semanticGraphs = new ArrayList<SemanticGraph>();
+		List<CoreMap> annotatedSentences = getAnnotatedSentencesFromText(s);
+		for (CoreMap sentence : annotatedSentences) {
+			SemanticGraph graph = getSemanticGraphFromSentence(sentence);
+			semanticGraphs.add(graph);
+		}
+		return semanticGraphs;
 	}
 
 }
