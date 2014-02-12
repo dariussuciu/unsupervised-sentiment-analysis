@@ -11,6 +11,7 @@ import com.unsupervisedsentiment.analysis.model.Triple;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
+import com.unsupervisedsentiment.analysis.modules.doublepropagation.services.Helpers;
 import com.unsupervisedsentiment.analysis.test.constants.relations.Dep_MRRel;
 import com.unsupervisedsentiment.analysis.test.constants.relations.GenericRelation;
 import com.unsupervisedsentiment.analysis.test.constants.relations.Pos_NNRel;
@@ -23,186 +24,129 @@ import edu.stanford.nlp.trees.GrammaticalRelation;
 public class TargetExtractorService implements ITargetExtractorService {
 
 	@Override
-	public Set<Tuple> extractTargetUsingR1(SemanticGraph semanticGraph, Set<Word> opinionWords)
-	{
+	public Set<Tuple> extractTargetUsingR1(SemanticGraph semanticGraph, Set<Word> opinionWords) {
 		Set<Tuple> foundTargets = new HashSet<Tuple>();
-		
+
 		foundTargets.addAll(extractTargetUsingR11(semanticGraph, opinionWords));
 		foundTargets.addAll(extractTargetUsingR12(semanticGraph, opinionWords));
 		return foundTargets;
 	}
 
 	@Override
-	public Set<Tuple> extractTargetUsingR3(SemanticGraph semanticGraph, Set<Word> targets)
-	{
+	public Set<Tuple> extractTargetUsingR3(SemanticGraph semanticGraph, Set<Word> targets) {
 		Set<Tuple> foundTargets = new HashSet<Tuple>();
-		
-		//foundTargets.addAll(extractTargetUsingR31(semanticGraph, targets));
-		//foundTargets.addAll(extractTargetUsingR32(semanticGraph, targets));
+
+		// foundTargets.addAll(extractTargetUsingR31(semanticGraph, targets));
+		// foundTargets.addAll(extractTargetUsingR32(semanticGraph, targets));
 		return foundTargets;
 	}
 
-	public Set<Tuple> extractTargetUsingR11(SemanticGraph semanticGraph, Set<Word> opinionWords)
-	{
+	public Set<Tuple> extractTargetUsingR11(SemanticGraph semanticGraph, Set<Word> opinionWords) {
 		Set<Tuple> targets = new HashSet<Tuple>();
-		
-		for(Word opinionWord : opinionWords)
-		{
+
+		for (Word opinionWord : opinionWords) {
 			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(opinionWord.getValue());
-			for(IndexedWord vertex : vertexes)
-			{
-				//for outgoing edges
-				List<SemanticGraphEdge> outgoingTargetEdges = getTargetEdges(semanticGraph.outgoingEdgeIterable(vertex), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), false);
-				for (SemanticGraphEdge edge : outgoingTargetEdges)
-				{
-					targets.add(getPair(opinionWord.getValue(), opinionWord.getPosTag(), edge.getTarget().word(), edge.getTarget().tag(), edge.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
+			for (IndexedWord vertex : vertexes) {
+				// for outgoing edges
+				List<SemanticGraphEdge> outgoingTargetEdges = Helpers.getTargetEdges(
+						semanticGraph.outgoingEdgeIterable(vertex), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(),
+						false);
+				for (SemanticGraphEdge edge : outgoingTargetEdges) {
+					targets.add(Helpers.getPair(opinionWord.getValue(), opinionWord.getPosTag(), edge.getTarget()
+							.word(), edge.getTarget().tag(), edge.getRelation().toString(),
+							Dependency.DIRECT_DEPENDENCY));
 				}
-				
-				//for incoming edges
-				List<SemanticGraphEdge> incomingTargetEdges = getTargetEdges(semanticGraph.incomingEdgeIterable(vertex), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), true);
-				for (SemanticGraphEdge edge : incomingTargetEdges)
-				{
-					targets.add(getPair(opinionWord.getValue(), opinionWord.getPosTag(), edge.getSource().word(), edge.getSource().tag(), edge.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
+
+				// for incoming edges
+				List<SemanticGraphEdge> incomingTargetEdges = Helpers.getTargetEdges(
+						semanticGraph.incomingEdgeIterable(vertex), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(),
+						true);
+				for (SemanticGraphEdge edge : incomingTargetEdges) {
+					targets.add(Helpers.getPair(opinionWord.getValue(), opinionWord.getPosTag(), edge.getSource()
+							.word(), edge.getSource().tag(), edge.getRelation().toString(),
+							Dependency.DIRECT_DEPENDENCY));
 				}
 			}
 		}
-		
+
 		return targets;
 	}
 
-	public Set<Triple> extractTargetUsingR12(SemanticGraph semanticGraph, Set<Word> opinionWords)
-	{
+	public Set<Triple> extractTargetUsingR12(SemanticGraph semanticGraph, Set<Word> opinionWords) {
 		Set<Triple> targets = new HashSet<Triple>();
-		
-		for(Word opinionWord : opinionWords)
-		{
+
+		for (Word opinionWord : opinionWords) {
 			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(opinionWord.getValue());
-			for(IndexedWord vertex : vertexes)
-			{
-				//for outgoing edges
-				List<SemanticGraphEdge> outgoingEdgesWithH = getTargetEdges(semanticGraph.outgoingEdgeIterable(vertex), Dep_MRRel.getInstance());
-				for (SemanticGraphEdge edgeWithH : outgoingEdgesWithH)
-				{
+			for (IndexedWord vertex : vertexes) {
+				// for outgoing edges
+				List<SemanticGraphEdge> outgoingEdgesWithH = Helpers.getTargetEdges(
+						semanticGraph.outgoingEdgeIterable(vertex), Dep_MRRel.getInstance());
+				for (SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
 					IndexedWord H = edgeWithH.getTarget();
-					
-					//for incoming target edges
-					List<SemanticGraphEdge> incomingEdgesWithTargets = getTargetEdges(semanticGraph.incomingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), false);
-					for(SemanticGraphEdge edgeWithTarget : incomingEdgesWithTargets)
-					{
-						targets.add(getTriple(opinionWord.getValue(), opinionWord.getPosTag(),
-								edgeWithTarget.getSource().word(), edgeWithTarget.getSource().tag(),
-								H.word(), H.tag(),
-								edgeWithH.getRelation().toString(), edgeWithTarget.getRelation().toString(), 
+
+					// for incoming target edges
+					List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers.getTargetEdges(
+							semanticGraph.incomingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(),
+							false);
+					for (SemanticGraphEdge edgeWithTarget : incomingEdgesWithTargets) {
+						targets.add(Helpers.getTriple(opinionWord.getValue(), opinionWord.getPosTag(), edgeWithTarget
+								.getSource().word(), edgeWithTarget.getSource().tag(), H.word(), H.tag(), edgeWithH
+								.getRelation().toString(), edgeWithTarget.getRelation().toString(),
 								Dependency.DIRECT_DEPENDENCY));
 					}
-					
-					//for outgoing target edges
-					List<SemanticGraphEdge> outgoingEdgesWithTargets = getTargetEdges(semanticGraph.outgoingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), true);
-					for(SemanticGraphEdge edgeWithTarget : outgoingEdgesWithTargets)
-					{
-						targets.add(getTriple(opinionWord.getValue(), opinionWord.getPosTag(),
-								edgeWithTarget.getTarget().word(), edgeWithTarget.getTarget().tag(),
-								H.word(), H.tag(), 
-								edgeWithH.getRelation().toString(), edgeWithTarget.getRelation().toString(), 
+
+					// for outgoing target edges
+					List<SemanticGraphEdge> outgoingEdgesWithTargets = Helpers.getTargetEdges(
+							semanticGraph.outgoingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(),
+							true);
+					for (SemanticGraphEdge edgeWithTarget : outgoingEdgesWithTargets) {
+						targets.add(Helpers.getTriple(opinionWord.getValue(), opinionWord.getPosTag(), edgeWithTarget
+								.getTarget().word(), edgeWithTarget.getTarget().tag(), H.word(), H.tag(), edgeWithH
+								.getRelation().toString(), edgeWithTarget.getRelation().toString(),
 								Dependency.DIRECT_DEPENDENCY));
 					}
 				}
-				
-				//for incoming edges
-				List<SemanticGraphEdge> incomingEdgesWithH = getTargetEdges(semanticGraph.incomingEdgeIterable(vertex), Dep_MRRel.getInstance());
-				for (SemanticGraphEdge edgeWithH : incomingEdgesWithH)
-				{
+
+				// for incoming edges
+				List<SemanticGraphEdge> incomingEdgesWithH = Helpers.getTargetEdges(
+						semanticGraph.incomingEdgeIterable(vertex), Dep_MRRel.getInstance());
+				for (SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
 					IndexedWord H = edgeWithH.getSource();
-					//for incoming target edges
-					List<SemanticGraphEdge> incomingEdgesWithTargets = getTargetEdges(semanticGraph.incomingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), true);
-					for(SemanticGraphEdge edgeWithTarget : incomingEdgesWithTargets)
-					{
-						targets.add(getTriple(opinionWord.getValue(), opinionWord.getPosTag(),
-								edgeWithTarget.getSource().word(), edgeWithTarget.getSource().tag(),
-								H.word(), H.tag(), 
-								edgeWithH.getRelation().toString(), edgeWithTarget.getRelation().toString(),
+					// for incoming target edges
+					List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers.getTargetEdges(
+							semanticGraph.incomingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(),
+							true);
+					for (SemanticGraphEdge edgeWithTarget : incomingEdgesWithTargets) {
+						targets.add(Helpers.getTriple(opinionWord.getValue(), opinionWord.getPosTag(), edgeWithTarget
+								.getSource().word(), edgeWithTarget.getSource().tag(), H.word(), H.tag(), edgeWithH
+								.getRelation().toString(), edgeWithTarget.getRelation().toString(),
 								Dependency.DIRECT_DEPENDENCY));
 					}
-					
-					//for outgoing target edges
-					List<SemanticGraphEdge> outgoingEdgesWithTargets = getTargetEdges(semanticGraph.outgoingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), false);
-					for(SemanticGraphEdge edgeWithTarget : outgoingEdgesWithTargets)
-					{
-						targets.add(getTriple(opinionWord.getValue(), opinionWord.getPosTag(), 
-								edgeWithTarget.getTarget().word(), edgeWithTarget.getTarget().tag(),
-								H.word(), H.tag(), 
-								edgeWithH.getRelation().toString(), edgeWithTarget.getRelation().toString(),
+
+					// for outgoing target edges
+					List<SemanticGraphEdge> outgoingEdgesWithTargets = Helpers.getTargetEdges(
+							semanticGraph.outgoingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(),
+							false);
+					for (SemanticGraphEdge edgeWithTarget : outgoingEdgesWithTargets) {
+						targets.add(Helpers.getTriple(opinionWord.getValue(), opinionWord.getPosTag(), edgeWithTarget
+								.getTarget().word(), edgeWithTarget.getTarget().tag(), H.word(), H.tag(), edgeWithH
+								.getRelation().toString(), edgeWithTarget.getRelation().toString(),
 								Dependency.DIRECT_DEPENDENCY));
 					}
 				}
 			}
 		}
-		
+
 		return targets;
 	}
 
-	private List<SemanticGraphEdge> getTargetEdges(Iterable<SemanticGraphEdge> edges, GenericRelation targetType, GenericRelation relationType, boolean isSource)
-	{
-		List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
-		
-		for (SemanticGraphEdge edge : edges)
-		{
-			GrammaticalRelation relation = edge.getRelation();
-			if(relationType.contains(relation.toString()))
-			{
-				if(!isSource && targetType.contains(edge.getTarget().tag()))
-				{
-					targetEdges.add(edge);
-				}
-				if(isSource && targetType.contains(edge.getSource().tag()))
-				{
-					targetEdges.add(edge);
-				}
-			}
-		}
-		return targetEdges;
-	}
-	
-	private List<SemanticGraphEdge> getTargetEdges(Iterable<SemanticGraphEdge> edges, GenericRelation relationType)
-	{
-		List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
-		
-		for (SemanticGraphEdge edge : edges)
-		{
-			GrammaticalRelation relation = edge.getRelation();
-			if(relationType.contains(relation.toString()))
-			{
-				targetEdges.add(edge);
-			}
-		}
-		return targetEdges;
-	}
-	
-	public Set<Tuple> extractTargetUsingR31(SemanticGraph semanticGraph, Set<Word> targets) 
-	{
+	public Set<Tuple> extractTargetUsingR31(SemanticGraph semanticGraph, Set<Word> targets) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public Set<Tuple> extractTargetUsingR32(SemanticGraph semanticGraph, Set<Word> targets)
-	{
+	public Set<Tuple> extractTargetUsingR32(SemanticGraph semanticGraph, Set<Word> targets) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-	private Pair getPair(String valueOpinion, String posOpinion, String valueTarget, String posTarget, String relation, Dependency dependency)
-	{
-		Word opinion = new Word(posOpinion,valueOpinion);
-		Word target = new Word(posTarget, valueTarget);
-		
-		return new Pair(opinion, target, dependency, TupleType.Pair, relation);
-	}
-	
-	private Triple getTriple(String valueOpinion, String posOpinion, String valueTarget, String posTarget, String valueH, String posH, String relationHOpinion, String relationHTarget, Dependency dependency)
-	{
-		Word opinion = new Word(posOpinion,valueOpinion);
-		Word target = new Word(posTarget, valueTarget);
-		Word H = new Word(posH, valueH);
-		
-		return new Triple(opinion, target, H, dependency, TupleType.Triple, relationHOpinion, relationHTarget);
 	}
 }

@@ -1,9 +1,9 @@
 package com.unsupervisedsentiment.analysis.model;
 
-public class Pair extends Tuple{
+public class Pair extends Tuple {
 
 	private String relation;
-	
+
 	/**
 	 * @return the relation
 	 */
@@ -19,12 +19,11 @@ public class Pair extends Tuple{
 		this.relation = relation;
 	}
 
-	public Pair(Word opinion, Word target, Dependency dependency,
-			TupleType tupleType, String relation) {
+	public Pair(Word opinion, Word target, Dependency dependency, TupleType tupleType, String relation) {
 		super(opinion, target, dependency, tupleType);
 		this.relation = relation;
 	}
-	
+
 	public Pair() {
 		super();
 	}

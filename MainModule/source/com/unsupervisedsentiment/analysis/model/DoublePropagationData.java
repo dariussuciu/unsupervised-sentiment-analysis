@@ -35,8 +35,7 @@ public class DoublePropagationData {
 		return sentancesSemanticGraphs;
 	}
 
-	public void setSentancesSemanticGraphs(
-			List<SemanticGraph> sentancesSemanticGraph) {
+	public void setSentancesSemanticGraphs(List<SemanticGraph> sentancesSemanticGraph) {
 		this.sentancesSemanticGraphs = sentancesSemanticGraph;
 	}
 
@@ -55,22 +54,18 @@ public class DoublePropagationData {
 	public void setExpandedOpinionWords(HashSet<Tuple> expandedOpinionWords) {
 		this.expandedOpinionWords = expandedOpinionWords;
 	}
-	
-	public HashSet<Word> getExpandedOpinionWords()
-	{
+
+	public HashSet<Word> getExpandedOpinionWords() {
 		HashSet<Word> opinionWords = new HashSet<Word>();
-		for(Tuple tuple : expandedOpinionWords)
-		{
+		for (Tuple tuple : expandedOpinionWords) {
 			opinionWords.add(tuple.getOpinion());
 		}
 		return opinionWords;
-	} 
-	
-	public HashSet<Word> getFeatures()
-	{
+	}
+
+	public HashSet<Word> getFeatures() {
 		HashSet<Word> featureWords = new HashSet<Word>();
-		for(Tuple tuple : features)
-		{
+		for (Tuple tuple : features) {
 			featureWords.add(tuple.getTarget());
 		}
 		return featureWords;

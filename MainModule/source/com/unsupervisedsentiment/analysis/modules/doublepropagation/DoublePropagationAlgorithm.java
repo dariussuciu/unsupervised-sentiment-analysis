@@ -22,6 +22,7 @@ public class DoublePropagationAlgorithm {
 	private IOpinionWordExtractorService opinionWordExtractorService;
 	private ITargetExtractorService targetExtractorService;
 	private DoublePropagationData data;
+
 	public DoublePropagationData getData() {
 		return data;
 	}
@@ -41,8 +42,7 @@ public class DoublePropagationAlgorithm {
 
 	private void initialize(HashSet<Tuple> seedWords) {
 		data.setExpandedOpinionWords(new HashSet<Tuple>());
-		data.setSentancesSemanticGraphs(nlpService
-				.createSemanticGraphsListForSentances(data.getInput()));
+		data.setSentancesSemanticGraphs(nlpService.createSemanticGraphsListForSentances(data.getInput()));
 		data.setExpandedOpinionWords(seedWords);
 	}
 
@@ -50,8 +50,7 @@ public class DoublePropagationAlgorithm {
 		initialize(seedWords);
 		do {
 			executeStep();
-		} while (featuresIteration1.size() > 0
-				&& opinionWordsIteration1.size() > 0);
+		} while (featuresIteration1.size() > 0 && opinionWordsIteration1.size() > 0);
 
 		return data;
 	}
@@ -60,20 +59,20 @@ public class DoublePropagationAlgorithm {
 		resetIterationFeaturesAndOpinionWords();
 
 		for (SemanticGraph semanticGraph : data.getSentancesSemanticGraphs()) {
-			featuresIteration1.addAll(targetExtractorService
-					.extractTargetUsingR1(semanticGraph, data.getExpandedOpinionWords()));
-//			opinionWordsIteration1.addAll(opinionWordExtractorService
-//					.extractOpinionWordR4(semanticGraph, data.getExpandedOpinionWords()));
+			featuresIteration1.addAll(targetExtractorService.extractTargetUsingR1(semanticGraph,
+					data.getExpandedOpinionWords()));
+			// opinionWordsIteration1.addAll(opinionWordExtractorService
+			// .extractOpinionWordR4(semanticGraph,
+			// data.getExpandedOpinionWords()));
 		}
 
 		data.getFeatureTuples().addAll(featuresIteration1);
 		data.getExpandedOpinionWordsTuples().addAll(opinionWordsIteration1);
 
 		for (SemanticGraph semanticGraph : data.getSentancesSemanticGraphs()) {
-			featuresIteration2.addAll(targetExtractorService
-					.extractTargetUsingR3(semanticGraph, data.getFeatures()));
-//			opinionWordsIteration2.addAll(opinionWordExtractorService
-//					.extractOpinionWordR2(semanticGraph));
+			featuresIteration2.addAll(targetExtractorService.extractTargetUsingR3(semanticGraph, data.getFeatures()));
+			// opinionWordsIteration2.addAll(opinionWordExtractorService
+			// .extractOpinionWordR2(semanticGraph));
 		}
 
 		featuresIteration1.addAll(featuresIteration2);

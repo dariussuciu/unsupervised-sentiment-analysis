@@ -7,22 +7,19 @@ public class Tuple {
 
 	private Dependency dependency;
 
-	
 	private TupleType tupleType;
-	
+
 	public Tuple() {
-		
+
 	}
-	
-	public Tuple(Word opinion, Word target, Dependency dependency,
-			TupleType tupleType) {
+
+	public Tuple(Word opinion, Word target, Dependency dependency, TupleType tupleType) {
 		super();
 		this.opinion = opinion;
 		this.target = target;
 		this.dependency = dependency;
 		this.tupleType = tupleType;
 	}
-
 
 	/**
 	 * @return the dependency
@@ -46,7 +43,6 @@ public class Tuple {
 	public void setTupleType(TupleType tupleType) {
 		this.tupleType = tupleType;
 	}
-	
 
 	public Word getTarget() {
 		return target;

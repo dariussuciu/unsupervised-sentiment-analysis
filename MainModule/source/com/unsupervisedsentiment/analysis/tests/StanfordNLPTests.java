@@ -60,10 +60,8 @@ public class StanfordNLPTests extends TestCase {
 		 * static values from the StanfordCoreNLP class.
 		 * StanfordCoreNLP.STANFORD_TOKENIZE; (ex)
 		 */
-		props.put("annotators", StanfordCoreNLP.STANFORD_TOKENIZE + ","
-				+ StanfordCoreNLP.STANFORD_SSPLIT + ","
-				+ StanfordCoreNLP.STANFORD_POS + ","
-				+ StanfordCoreNLP.STANFORD_LEMMA + ","
+		props.put("annotators", StanfordCoreNLP.STANFORD_TOKENIZE + "," + StanfordCoreNLP.STANFORD_SSPLIT + ","
+				+ StanfordCoreNLP.STANFORD_POS + "," + StanfordCoreNLP.STANFORD_LEMMA + ","
 				+ StanfordCoreNLP.STANFORD_PARSE);
 		coreNlp = new StanfordCoreNLP(props);
 	}
@@ -98,7 +96,7 @@ public class StanfordNLPTests extends TestCase {
 	 * Tokens = words + punctuations
 	 */
 	public void testTokensAnnotation() {
-		System.out.println ("TEST TOKENS ANNOTATION");
+		System.out.println("TEST TOKENS ANNOTATION");
 		String oneSentence = StanfordNLPTestConstants.SENTENCE_ONE;
 		Annotation document = new Annotation(oneSentence);
 		coreNlp.annotate(document);
@@ -117,7 +115,7 @@ public class StanfordNLPTests extends TestCase {
 		coreNlp.annotate(document);
 		tokens = document.get(TokensAnnotation.class);
 		assertEquals(tokens.size(), 10 * n);
-		
+
 		coreNlp.clearAnnotatorPool();
 	}
 
@@ -125,7 +123,7 @@ public class StanfordNLPTests extends TestCase {
 	 * PartOfSpeechAnnotation
 	 */
 	public void testPartOfSpeechAnnotation() {
-		System.err.println ("TEST POS ANNOTATION");
+		System.err.println("TEST POS ANNOTATION");
 		String text = StanfordNLPTestConstants.SENTENCE_TWO;
 		Annotation doc = new Annotation(text);
 		coreNlp.annotate(doc);
@@ -134,12 +132,12 @@ public class StanfordNLPTests extends TestCase {
 		// has values with custom types
 		List<CoreMap> sentences = doc.get(SentencesAnnotation.class);
 		printSentences(sentences);
-		
+
 		coreNlp.clearAnnotatorPool();
 	}
 
 	public void testPreProcessing() {
-		System.err.println ("TEST PRE PROCESSING");
+		System.err.println("TEST PRE PROCESSING");
 		String text = StanfordNLPTestConstants.SENTENCE_TWO;
 		String lemmatizedText = doLemmatization(text);
 		List<CoreMap> annotatedSentences = annotateSentences(lemmatizedText);
@@ -149,12 +147,12 @@ public class StanfordNLPTests extends TestCase {
 		for (HashMap<String, String> map : word_posList) {
 			System.out.println(map.toString());
 		}
-		
+
 		coreNlp.clearAnnotatorPool();
 	}
 
 	public void testLiuSentencePreProcessing() {
-		System.err.println ("LIU SENTENCE PRE PROCESSING");
+		System.err.println("LIU SENTENCE PRE PROCESSING");
 		String text = StanfordNLPTestConstants.SENTENCE_LIU;
 		String lemmatizedText = doLemmatization(text);
 		List<CoreMap> annotatedSentences = annotateSentences(lemmatizedText);
@@ -164,7 +162,7 @@ public class StanfordNLPTests extends TestCase {
 		for (HashMap<String, String> map : word_posList) {
 			System.out.println(map.toString());
 		}
-		
+
 		coreNlp.clearAnnotatorPool();
 	}
 
@@ -173,7 +171,7 @@ public class StanfordNLPTests extends TestCase {
 	 */
 
 	private void printSentences(List<CoreMap> sentences) {
-		System.err.println ("PRINTING SENTENCES");
+		System.err.println("PRINTING SENTENCES");
 		for (CoreMap sentence : sentences) {
 			// traversing the words in the current sentence
 			// a CoreLabel is a CoreMap with additional token-specific methods
@@ -191,23 +189,20 @@ public class StanfordNLPTests extends TestCase {
 			// this is the parse tree of the current sentence
 			// Tree tree = sentence.get(TreeAnnotation.class);
 			// this is the Stanford dependency graph of the current sentence
-			SemanticGraph dependencies = sentence
-					.get(CollapsedCCProcessedDependenciesAnnotation.class);
+			SemanticGraph dependencies = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
 
 			final Set<SemanticGraphEdge> edgeSet = dependencies.getEdgeSet();
 
 			for (SemanticGraphEdge egi : edgeSet) {
 				System.out.println("Source-Target:\n");
-				System.out.println("The word '" + egi.getSource().toString()
-						+ "' is linked to '" + egi.getTarget().toString()
-						+ "' with a relation of type '"
-						+ egi.getRelation().toString() + "'\n");
+				System.out.println("The word '" + egi.getSource().toString() + "' is linked to '"
+						+ egi.getTarget().toString() + "' with a relation of type '" + egi.getRelation().toString()
+						+ "'\n");
 
 				System.out.println("Gov-Dep:\n");
-				System.out.println("The word '" + egi.getGovernor().toString()
-						+ "' is linked to '" + egi.getDependent().toString()
-						+ "' with a relation of type '"
-						+ egi.getRelation().toString() + "'\n");
+				System.out.println("The word '" + egi.getGovernor().toString() + "' is linked to '"
+						+ egi.getDependent().toString() + "' with a relation of type '" + egi.getRelation().toString()
+						+ "'\n");
 
 				// (Governor = Source && Dependent = Target) for some reason
 				// relation.toString() = short representation (see code in
@@ -235,8 +230,7 @@ public class StanfordNLPTests extends TestCase {
 		return sentences;
 	}
 
-	private List<HashMap<String, String>> doPOSAnnotation(
-			List<CoreMap> sentences) {
+	private List<HashMap<String, String>> doPOSAnnotation(List<CoreMap> sentences) {
 		List<HashMap<String, String>> word_posList = new ArrayList<HashMap<String, String>>();
 		for (CoreMap sentence : sentences) {
 			for (CoreLabel token : sentence.get(TokensAnnotation.class)) {

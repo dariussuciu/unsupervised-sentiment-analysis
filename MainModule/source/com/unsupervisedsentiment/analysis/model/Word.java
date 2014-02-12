@@ -19,19 +19,21 @@ public class Word {
 	public void setValue(String value) {
 		this.value = value;
 	}
-	
+
 	public Word(String posTag, String value) {
 		super();
 		this.posTag = posTag;
 		this.value = value;
 	}
-	
+
 	public Word(String posTag) {
 		super();
 		this.posTag = posTag;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -43,7 +45,9 @@ public class Word {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

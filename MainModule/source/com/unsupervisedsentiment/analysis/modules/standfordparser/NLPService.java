@@ -39,10 +39,8 @@ public class NLPService {
 
 	private NLPService() {
 		Properties props = new Properties();
-		props.put("annotators", StanfordCoreNLP.STANFORD_TOKENIZE + ","
-				+ StanfordCoreNLP.STANFORD_SSPLIT + ","
-				+ StanfordCoreNLP.STANFORD_POS + ","
-				+ StanfordCoreNLP.STANFORD_LEMMA + ","
+		props.put("annotators", StanfordCoreNLP.STANFORD_TOKENIZE + "," + StanfordCoreNLP.STANFORD_SSPLIT + ","
+				+ StanfordCoreNLP.STANFORD_POS + "," + StanfordCoreNLP.STANFORD_LEMMA + ","
 				+ StanfordCoreNLP.STANFORD_PARSE);
 		coreNlp = new StanfordCoreNLP(props);
 	}
@@ -61,8 +59,10 @@ public class NLPService {
 		for (SemanticGraphEdge egi : edgeSet) {
 			Pair tuple = new Pair();
 			tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
-			tuple.setOpinion(new Word(egi.getSource().get(TextAnnotation.class),egi.getSource().get(PartOfSpeechAnnotation.class)));
-			tuple.setTarget(new Word(egi.getTarget().get(TextAnnotation.class), egi.getTarget().get(PartOfSpeechAnnotation.class)));
+			tuple.setOpinion(new Word(egi.getSource().get(TextAnnotation.class), egi.getSource().get(
+					PartOfSpeechAnnotation.class)));
+			tuple.setTarget(new Word(egi.getTarget().get(TextAnnotation.class), egi.getTarget().get(
+					PartOfSpeechAnnotation.class)));
 			tuple.setRelation(egi.getRelation().toString());
 			tuples.add(tuple);
 		}
