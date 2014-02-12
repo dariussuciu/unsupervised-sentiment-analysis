@@ -2,18 +2,7 @@ package com.unsupervisedsentiment.analysis.test.constants.relations;
 
 public class Dep_ConjRel extends GenericRelation {
 	public static enum CONJ {
-		conj("conj"), conjand("conj-and");
-
-		CONJ(final String text) {
-			this.text = text;
-		}
-
-		private final String text;
-
-		@Override
-		public String toString() {
-			return text;
-		}
+		conj, conj_and
 	}
 
 	private static Dep_ConjRel conjRel;

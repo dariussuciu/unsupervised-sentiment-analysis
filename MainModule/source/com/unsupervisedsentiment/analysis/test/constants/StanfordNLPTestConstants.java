@@ -7,7 +7,7 @@ public class StanfordNLPTestConstants {
 
 	public static final String SENTENCE_TEST1 = "The phone has a good screen.";
 	public static final String SENTENCE_TEST2 = "IPOD is the best mp3 player.";
-	public static final String SENTENCE_TEST3 = "Does the player play DVD with audio and video?";
+	public static final String SENTENCE_TEST3 = "Does the player play DVD with good audio and video?";
 	public static final String SENTENCE_TEST4 = "Canon G3 has a great lens.";
 	public static final String SENTENCE_TEST5 = "The camera is amazing and easy to use.";
 	public static final String SENTENCE_TEST6 = "If you want to buy a sexy, cool, accessory-available mp3 player, you can choose IPod";

@@ -212,7 +212,7 @@ public class StanfordNLPTests extends TestCase {
 
 				Pair q = new Pair();
 				q.setDependency(Dependency.DIRECT_DEPENDENCY);
-				q.setOpinion(new Word(egi.getSource().toString()));
+				q.setSource(new Word(egi.getSource().toString()));
 				q.setTarget(new Word(egi.getTarget().toString()));
 				q.setRelation(egi.getRelation().toString());
 

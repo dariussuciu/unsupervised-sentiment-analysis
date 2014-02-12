@@ -59,7 +59,7 @@ public class NLPService {
 		for (SemanticGraphEdge egi : edgeSet) {
 			Pair tuple = new Pair();
 			tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
-			tuple.setOpinion(new Word(egi.getSource().get(TextAnnotation.class), egi.getSource().get(
+			tuple.setSource(new Word(egi.getSource().get(TextAnnotation.class), egi.getSource().get(
 					PartOfSpeechAnnotation.class)));
 			tuple.setTarget(new Word(egi.getTarget().get(TextAnnotation.class), egi.getTarget().get(
 					PartOfSpeechAnnotation.class)));

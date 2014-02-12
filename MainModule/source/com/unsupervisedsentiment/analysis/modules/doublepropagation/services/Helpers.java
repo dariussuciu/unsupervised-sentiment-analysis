@@ -14,6 +14,15 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.trees.GrammaticalRelation;
 
 public class Helpers {
+	
+	/**
+	 * Gets the target edges based on the relation pos tag and the target pos tag
+	 * @param edges
+	 * @param targetType
+	 * @param relationType
+	 * @param isSource
+	 * @return
+	 */
 	public static List<SemanticGraphEdge> getTargetEdges(Iterable<SemanticGraphEdge> edges, GenericRelation targetType,
 			GenericRelation relationType, boolean isSource) {
 		List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
@@ -31,7 +40,14 @@ public class Helpers {
 		}
 		return targetEdges;
 	}
-
+	/**
+	 * Gets the target edges based only on the relation pos tag
+	 * @param edges
+	 * @param targetType
+	 * @param relationType
+	 * @param isSource
+	 * @return
+	 */
 	public static List<SemanticGraphEdge> getTargetEdges(Iterable<SemanticGraphEdge> edges, GenericRelation relationType) {
 		List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 

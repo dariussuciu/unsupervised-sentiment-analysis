@@ -1,8 +1,14 @@
 package com.unsupervisedsentiment.analysis.model;
 
+/**
+ * 
+ * Tuple contains a source word and a target. The source is the starting
+ * word/point and the target is found through this source.
+ * 
+ */
 public class Tuple {
 
-	private Word opinion;
+	private Word source;
 	private Word target;
 
 	private Dependency dependency;
@@ -13,9 +19,9 @@ public class Tuple {
 
 	}
 
-	public Tuple(Word opinion, Word target, Dependency dependency, TupleType tupleType) {
+	public Tuple(Word source, Word target, Dependency dependency, TupleType tupleType) {
 		super();
-		this.opinion = opinion;
+		this.source = source;
 		this.target = target;
 		this.dependency = dependency;
 		this.tupleType = tupleType;
@@ -52,12 +58,12 @@ public class Tuple {
 		this.target = target;
 	}
 
-	public Word getOpinion() {
-		return opinion;
+	public Word getSource() {
+		return source;
 	}
 
-	public void setOpinion(Word opinion) {
-		this.opinion = opinion;
+	public void setSource(Word source) {
+		this.source = source;
 	}
 
 }

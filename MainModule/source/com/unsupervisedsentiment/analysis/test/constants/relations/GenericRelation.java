@@ -17,4 +17,5 @@ public abstract class GenericRelation {
 	}
 
 	protected static boolean isInstantiated = false;
+	
 }

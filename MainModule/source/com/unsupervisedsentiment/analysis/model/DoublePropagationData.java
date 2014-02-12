@@ -58,7 +58,7 @@ public class DoublePropagationData {
 	public HashSet<Word> getExpandedOpinionWords() {
 		HashSet<Word> opinionWords = new HashSet<Word>();
 		for (Tuple tuple : expandedOpinionWords) {
-			opinionWords.add(tuple.getOpinion());
+			opinionWords.add(tuple.getSource());
 		}
 		return opinionWords;
 	}
