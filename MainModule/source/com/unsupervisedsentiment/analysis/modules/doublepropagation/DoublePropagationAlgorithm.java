@@ -22,6 +22,10 @@ public class DoublePropagationAlgorithm {
 	private IOpinionWordExtractorService opinionWordExtractorService;
 	private ITargetExtractorService targetExtractorService;
 	private DoublePropagationData data;
+	public DoublePropagationData getData() {
+		return data;
+	}
+
 	private Set<Tuple> featuresIteration1;
 	private Set<Tuple> opinionWordsIteration1;
 	private Set<Tuple> featuresIteration2;

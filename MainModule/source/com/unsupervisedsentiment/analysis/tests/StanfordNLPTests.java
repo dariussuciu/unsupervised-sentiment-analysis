@@ -13,6 +13,7 @@ import java.util.Set;
 import org.junit.Ignore;
 
 import com.unsupervisedsentiment.analysis.model.Dependency;
+import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.test.constants.StanfordNLPTestConstants;
@@ -214,7 +215,7 @@ public class StanfordNLPTests extends TestCase {
 
 				// TODO: Check EnglishGrammaticalRelations class for types
 
-				Tuple q = new Tuple();
+				Pair q = new Pair();
 				q.setDependency(Dependency.DIRECT_DEPENDENCY);
 				q.setOpinion(new Word(egi.getSource().toString()));
 				q.setTarget(new Word(egi.getTarget().toString()));

@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.model.Dependency;
+import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.services.InputDataMaker;
@@ -58,7 +59,7 @@ public class NLPService {
 		final Set<SemanticGraphEdge> edgeSet = dependencies.getEdgeSet();
 
 		for (SemanticGraphEdge egi : edgeSet) {
-			Tuple tuple = new Tuple();
+			Pair tuple = new Pair();
 			tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
 			tuple.setOpinion(new Word(egi.getSource().get(TextAnnotation.class),egi.getSource().get(PartOfSpeechAnnotation.class)));
 			tuple.setTarget(new Word(egi.getTarget().get(TextAnnotation.class), egi.getTarget().get(PartOfSpeechAnnotation.class)));

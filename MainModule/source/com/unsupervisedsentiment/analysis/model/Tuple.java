@@ -6,20 +6,23 @@ public class Tuple {
 	private Word target;
 
 	private Dependency dependency;
-	private String relation;
+
+	
+	private TupleType tupleType;
 	
 	public Tuple() {
 		
 	}
 	
 	public Tuple(Word opinion, Word target, Dependency dependency,
-			String relation) {
+			TupleType tupleType) {
 		super();
 		this.opinion = opinion;
 		this.target = target;
 		this.dependency = dependency;
-		this.relation = relation;
+		this.tupleType = tupleType;
 	}
+
 
 	/**
 	 * @return the dependency
@@ -36,20 +39,14 @@ public class Tuple {
 		this.dependency = dependency;
 	}
 
-	/**
-	 * @return the relation
-	 */
-	public String getRelation() {
-		return relation;
+	public TupleType getTupleType() {
+		return tupleType;
 	}
 
-	/**
-	 * @param relation
-	 *            the relation to set
-	 */
-	public void setRelation(String relation) {
-		this.relation = relation;
+	public void setTupleType(TupleType tupleType) {
+		this.tupleType = tupleType;
 	}
+	
 
 	public Word getTarget() {
 		return target;

@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.model.Dependency;
+import com.unsupervisedsentiment.analysis.model.Pair;
+import com.unsupervisedsentiment.analysis.model.Triple;
 import com.unsupervisedsentiment.analysis.model.Tuple;
+import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.test.constants.relations.Dep_MRRel;
 import com.unsupervisedsentiment.analysis.test.constants.relations.GenericRelation;
@@ -34,8 +37,8 @@ public class TargetExtractorService implements ITargetExtractorService {
 	{
 		Set<Tuple> foundTargets = new HashSet<Tuple>();
 		
-		foundTargets.addAll(extractTargetUsingR31(semanticGraph, targets));
-		foundTargets.addAll(extractTargetUsingR32(semanticGraph, targets));
+		//foundTargets.addAll(extractTargetUsingR31(semanticGraph, targets));
+		//foundTargets.addAll(extractTargetUsingR32(semanticGraph, targets));
 		return foundTargets;
 	}
 
@@ -49,17 +52,17 @@ public class TargetExtractorService implements ITargetExtractorService {
 			for(IndexedWord vertex : vertexes)
 			{
 				//for outgoing edges
-				List<SemanticGraphEdge> outgoingTargetEdges = getTargetEdges(semanticGraph.outgoingEdgeIterable(vertex), Pos_NNRel.getInstance(), Dep_MRRel.getInstance());
+				List<SemanticGraphEdge> outgoingTargetEdges = getTargetEdges(semanticGraph.outgoingEdgeIterable(vertex), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), false);
 				for (SemanticGraphEdge edge : outgoingTargetEdges)
 				{
-					targets.add(getTuple(opinionWord.getValue(), opinionWord.getPosTag(), edge.getTarget().word(), edge.getTarget().tag(), edge.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
+					targets.add(getPair(opinionWord.getValue(), opinionWord.getPosTag(), edge.getTarget().word(), edge.getTarget().tag(), edge.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
 				}
 				
 				//for incoming edges
-				List<SemanticGraphEdge> incomingTargetEdges = getTargetEdges(semanticGraph.incomingEdgeIterable(vertex), Pos_NNRel.getInstance(), Dep_MRRel.getInstance());
+				List<SemanticGraphEdge> incomingTargetEdges = getTargetEdges(semanticGraph.incomingEdgeIterable(vertex), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), true);
 				for (SemanticGraphEdge edge : incomingTargetEdges)
 				{
-					targets.add(getTuple(opinionWord.getValue(), opinionWord.getPosTag(), edge.getSource().word(), edge.getSource().tag(), edge.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
+					targets.add(getPair(opinionWord.getValue(), opinionWord.getPosTag(), edge.getSource().word(), edge.getSource().tag(), edge.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
 				}
 			}
 		}
@@ -67,9 +70,9 @@ public class TargetExtractorService implements ITargetExtractorService {
 		return targets;
 	}
 
-	public Set<Tuple> extractTargetUsingR12(SemanticGraph semanticGraph, Set<Word> opinionWords)
+	public Set<Triple> extractTargetUsingR12(SemanticGraph semanticGraph, Set<Word> opinionWords)
 	{
-		Set<Tuple> targets = new HashSet<Tuple>();
+		Set<Triple> targets = new HashSet<Triple>();
 		
 		for(Word opinionWord : opinionWords)
 		{
@@ -83,17 +86,25 @@ public class TargetExtractorService implements ITargetExtractorService {
 					IndexedWord H = edgeWithH.getTarget();
 					
 					//for incoming target edges
-					List<SemanticGraphEdge> incomingEdgesWithTargets = getTargetEdges(semanticGraph.incomingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance());
+					List<SemanticGraphEdge> incomingEdgesWithTargets = getTargetEdges(semanticGraph.incomingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), false);
 					for(SemanticGraphEdge edgeWithTarget : incomingEdgesWithTargets)
 					{
-						targets.add(getTuple(opinionWord.getValue(), opinionWord.getPosTag(), edgeWithTarget.getSource().word(), edgeWithTarget.getSource().tag(), edgeWithTarget.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
+						targets.add(getTriple(opinionWord.getValue(), opinionWord.getPosTag(),
+								edgeWithTarget.getSource().word(), edgeWithTarget.getSource().tag(),
+								H.word(), H.tag(),
+								edgeWithH.getRelation().toString(), edgeWithTarget.getRelation().toString(), 
+								Dependency.DIRECT_DEPENDENCY));
 					}
 					
 					//for outgoing target edges
-					List<SemanticGraphEdge> outgoingEdgesWithTargets = getTargetEdges(semanticGraph.outgoingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance());
+					List<SemanticGraphEdge> outgoingEdgesWithTargets = getTargetEdges(semanticGraph.outgoingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), true);
 					for(SemanticGraphEdge edgeWithTarget : outgoingEdgesWithTargets)
 					{
-						targets.add(getTuple(opinionWord.getValue(), opinionWord.getPosTag(), edgeWithTarget.getTarget().word(), edgeWithTarget.getTarget().tag(), edgeWithTarget.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
+						targets.add(getTriple(opinionWord.getValue(), opinionWord.getPosTag(),
+								edgeWithTarget.getTarget().word(), edgeWithTarget.getTarget().tag(),
+								H.word(), H.tag(), 
+								edgeWithH.getRelation().toString(), edgeWithTarget.getRelation().toString(), 
+								Dependency.DIRECT_DEPENDENCY));
 					}
 				}
 				
@@ -103,17 +114,25 @@ public class TargetExtractorService implements ITargetExtractorService {
 				{
 					IndexedWord H = edgeWithH.getSource();
 					//for incoming target edges
-					List<SemanticGraphEdge> incomingEdgesWithTargets = getTargetEdges(semanticGraph.incomingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance());
+					List<SemanticGraphEdge> incomingEdgesWithTargets = getTargetEdges(semanticGraph.incomingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), true);
 					for(SemanticGraphEdge edgeWithTarget : incomingEdgesWithTargets)
 					{
-						targets.add(getTuple(opinionWord.getValue(), opinionWord.getPosTag(), edgeWithTarget.getSource().word(), edgeWithTarget.getSource().tag(), edgeWithTarget.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
+						targets.add(getTriple(opinionWord.getValue(), opinionWord.getPosTag(),
+								edgeWithTarget.getSource().word(), edgeWithTarget.getSource().tag(),
+								H.word(), H.tag(), 
+								edgeWithH.getRelation().toString(), edgeWithTarget.getRelation().toString(),
+								Dependency.DIRECT_DEPENDENCY));
 					}
 					
 					//for outgoing target edges
-					List<SemanticGraphEdge> outgoingEdgesWithTargets = getTargetEdges(semanticGraph.outgoingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance());
+					List<SemanticGraphEdge> outgoingEdgesWithTargets = getTargetEdges(semanticGraph.outgoingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), false);
 					for(SemanticGraphEdge edgeWithTarget : outgoingEdgesWithTargets)
 					{
-						targets.add(getTuple(opinionWord.getValue(), opinionWord.getPosTag(), edgeWithTarget.getTarget().word(), edgeWithTarget.getTarget().tag(), edgeWithTarget.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
+						targets.add(getTriple(opinionWord.getValue(), opinionWord.getPosTag(), 
+								edgeWithTarget.getTarget().word(), edgeWithTarget.getTarget().tag(),
+								H.word(), H.tag(), 
+								edgeWithH.getRelation().toString(), edgeWithTarget.getRelation().toString(),
+								Dependency.DIRECT_DEPENDENCY));
 					}
 				}
 			}
@@ -122,7 +141,7 @@ public class TargetExtractorService implements ITargetExtractorService {
 		return targets;
 	}
 
-	private List<SemanticGraphEdge> getTargetEdges(Iterable<SemanticGraphEdge> edges, GenericRelation targetType, GenericRelation relationType)
+	private List<SemanticGraphEdge> getTargetEdges(Iterable<SemanticGraphEdge> edges, GenericRelation targetType, GenericRelation relationType, boolean isSource)
 	{
 		List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 		
@@ -131,7 +150,11 @@ public class TargetExtractorService implements ITargetExtractorService {
 			GrammaticalRelation relation = edge.getRelation();
 			if(relationType.contains(relation.toString()))
 			{
-				if(targetType.contains(edge.getTarget().tag()))
+				if(!isSource && targetType.contains(edge.getTarget().tag()))
+				{
+					targetEdges.add(edge);
+				}
+				if(isSource && targetType.contains(edge.getSource().tag()))
 				{
 					targetEdges.add(edge);
 				}
@@ -166,11 +189,20 @@ public class TargetExtractorService implements ITargetExtractorService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	private Tuple getTuple(String valueOpinion, String posOpinion, String valueTarget, String posTarget, String relation, Dependency dependency)
+	private Pair getPair(String valueOpinion, String posOpinion, String valueTarget, String posTarget, String relation, Dependency dependency)
 	{
 		Word opinion = new Word(posOpinion,valueOpinion);
 		Word target = new Word(posTarget, valueTarget);
 		
-		return new Tuple(opinion, target, dependency, relation);
+		return new Pair(opinion, target, dependency, TupleType.Pair, relation);
+	}
+	
+	private Triple getTriple(String valueOpinion, String posOpinion, String valueTarget, String posTarget, String valueH, String posH, String relationHOpinion, String relationHTarget, Dependency dependency)
+	{
+		Word opinion = new Word(posOpinion,valueOpinion);
+		Word target = new Word(posTarget, valueTarget);
+		Word H = new Word(posH, valueH);
+		
+		return new Triple(opinion, target, H, dependency, TupleType.Triple, relationHOpinion, relationHTarget);
 	}
 }
