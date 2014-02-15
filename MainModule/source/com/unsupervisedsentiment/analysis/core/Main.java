@@ -27,11 +27,15 @@ public class Main {
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1);
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST2);
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST3);
-		 inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST4);
+		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST4);
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST5);
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST6);
 
-		//inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " " + StanfordNLPTestConstants.SENTENCE_TEST2);
+		inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " " + StanfordNLPTestConstants.SENTENCE_TEST2
+				+ " " + StanfordNLPTestConstants.SENTENCE_TEST3
+				+ " " + StanfordNLPTestConstants.SENTENCE_TEST4
+				+ " " + StanfordNLPTestConstants.SENTENCE_TEST5
+				+ " " + StanfordNLPTestConstants.SENTENCE_TEST6);
 		DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
 
 		HashSet<Tuple> seed = new HashSet<Tuple>();
@@ -71,15 +75,15 @@ public class Main {
 		for (Tuple tuple : tuples) {
 			if (tuple.getTupleType().equals(TupleType.Pair)) {
 				Pair pair = (Pair) tuple;
-				System.out.println("Pair:  " + tuple.getSource().getValue() + "{O}" + "("
+				System.out.println("Pair:  " + tuple.getSource().getValue() + "("
 						+ tuple.getSource().getPosTag() + ")" + " --(" + pair.getRelation() + ")--> "
-						+ tuple.getTarget().getValue() + "{T}" + "(" + tuple.getTarget().getPosTag() + ")");
+						+ tuple.getTarget().getValue() + "(" + tuple.getTarget().getPosTag() + ")");
 			} else if (tuple.getTupleType().equals(TupleType.Triple)) {
 				Triple triple = (Triple) tuple;
-				System.out.println("Triple:  " + tuple.getSource().getValue() + "{O}" + "("
+				System.out.println("Triple:  " + tuple.getSource().getValue() + "("
 						+ tuple.getSource().getPosTag() + ")" + " --(" + triple.getRelationHOpinion() + ")--> "
-						+ triple.getH().getValue() + "{H}" + "(" + triple.getH().getPosTag() + ")" + " --("
-						+ triple.getRelationHTarget() + ")--> " + tuple.getTarget().getValue() + "{T}" + "("
+						+ triple.getH().getValue() + "(" + triple.getH().getPosTag() + ")" + " --("
+						+ triple.getRelationHTarget() + ")--> " + tuple.getTarget().getValue() + "("
 						+ tuple.getTarget().getPosTag() + ")");
 			}
 		}

@@ -174,9 +174,9 @@ public class Helpers {
 		return targets;
 	}
 
-	public static Set<Triple> getTriplesRelativeToH(SemanticGraph semanticGraph, Word source,
+	public static Set<Tuple> getTriplesRelativeToH(SemanticGraph semanticGraph, Word source,
 			SemanticGraphEdge edgeWithH, IndexedWord H, boolean isSource, GenericRelation targetPos, GenericRelation relationPos) {
-		Set<Triple> targets = new HashSet<Triple>();
+		Set<Tuple> targets = new HashSet<Tuple>();
 		// for incoming target edges
 		List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers.getTargetEdgesOnRelAndTarget(
 				semanticGraph.incomingEdgeIterable(H), targetPos, relationPos, !isSource);
@@ -234,9 +234,9 @@ public class Helpers {
 	}
 	
 	
-	public static Set<Triple> getTriplesRelativeToHOnEquivalency(SemanticGraph semanticGraph, Word source,
+	public static Set<Tuple> getTriplesRelativeToHOnEquivalency(SemanticGraph semanticGraph, Word source,
 			SemanticGraphEdge edgeWithH, IndexedWord H, boolean isSource, GenericRelation targetPos) {
-		Set<Triple> targets = new HashSet<Triple>();
+		Set<Tuple> targets = new HashSet<Tuple>();
 		// for incoming target edges
 		List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers.getTargetEdgesOnTarget(
 				semanticGraph.incomingEdgeIterable(H), targetPos, !isSource);
@@ -269,5 +269,16 @@ public class Helpers {
 			}
 		}
 		return targets;
+	}
+	
+	public static Set<Tuple> getNewTuples(Set<? extends Tuple> sourceTuples, Set<? extends Tuple> existingTuples)
+	{
+		Set<Tuple> newTuples = new HashSet<Tuple>();
+		for(Tuple tuple : sourceTuples)
+		{
+			if(!existingTuples.contains(tuple))
+				newTuples.add(tuple);
+		}
+		return newTuples;
 	}
 }

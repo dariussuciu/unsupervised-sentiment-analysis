@@ -59,20 +59,20 @@ public class DoublePropagationAlgorithm {
 		resetIterationFeaturesAndOpinionWords();
 
 		for (SemanticGraph semanticGraph : data.getSentancesSemanticGraphs()) {
-			featuresIteration1.addAll(targetExtractorService.extractTargetUsingR1(semanticGraph,
-					data.getExpandedOpinionWords()));
-			// opinionWordsIteration1.addAll(opinionWordExtractorService
-			// .extractOpinionWordR4(semanticGraph,
-			// data.getExpandedOpinionWords()));
+			featuresIteration1.addAll(targetExtractorService
+					.extractTargetsUsingR1(semanticGraph, data.getExpandedOpinionWords(), data.getFeatureTuples()));
+			 opinionWordsIteration1.addAll(opinionWordExtractorService
+					 .extractOpinionWordsUsingR4(semanticGraph, data.getExpandedOpinionWords(), data.getExpandedOpinionWordsTuples()));
 		}
 
 		data.getFeatureTuples().addAll(featuresIteration1);
 		data.getExpandedOpinionWordsTuples().addAll(opinionWordsIteration1);
 
 		for (SemanticGraph semanticGraph : data.getSentancesSemanticGraphs()) {
-			featuresIteration2.addAll(targetExtractorService.extractTargetUsingR3(semanticGraph, data.getFeatures()));
-			// opinionWordsIteration2.addAll(opinionWordExtractorService
-			// .extractOpinionWordR2(semanticGraph));
+			featuresIteration2.addAll(targetExtractorService
+					.extractTargetsUsingR3(semanticGraph, data.getFeatures(), data.getFeatureTuples()));
+			opinionWordsIteration2.addAll(opinionWordExtractorService
+					.extractOpinionWordsUsingR2(semanticGraph, data.getFeatures(), data.getExpandedOpinionWordsTuples()));
 		}
 
 		featuresIteration1.addAll(featuresIteration2);

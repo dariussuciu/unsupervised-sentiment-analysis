@@ -37,6 +37,46 @@ public class Triple extends Tuple {
 		this.relationHTarget = relationHTarget;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((H == null) ? 0 : H.hashCode());
+		result = prime
+				* result
+				+ ((relationHOpinion == null) ? 0 : relationHOpinion.hashCode());
+		result = prime * result
+				+ ((relationHTarget == null) ? 0 : relationHTarget.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Triple other = (Triple) obj;
+		if (H == null) {
+			if (other.H != null)
+				return false;
+		} else if (!H.equals(other.H))
+			return false;
+		if (relationHOpinion == null) {
+			if (other.relationHOpinion != null)
+				return false;
+		} else if (!relationHOpinion.equals(other.relationHOpinion))
+			return false;
+		if (relationHTarget == null) {
+			if (other.relationHTarget != null)
+				return false;
+		} else if (!relationHTarget.equals(other.relationHTarget))
+			return false;
+		return true;
+	}
+
 	public Triple() {
 		super();
 	}
