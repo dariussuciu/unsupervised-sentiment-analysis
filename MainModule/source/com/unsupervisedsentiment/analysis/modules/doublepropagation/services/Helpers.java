@@ -123,7 +123,7 @@ public class Helpers {
 		RelationEquivalency relEquivalency1 = getRelationEquivalency(rel1);
 		RelationEquivalency relEquivalency2 = getRelationEquivalency(rel2);
 	
-		if(relEquivalency1.equals(relEquivalency2))
+		if(relEquivalency1.equals(relEquivalency2) && !relEquivalency1.equals(RelationEquivalency.None))
 			return true;
 		
 		return false;
@@ -131,7 +131,7 @@ public class Helpers {
 	
 	private static RelationEquivalency getRelationEquivalency(String relation)
 	{
-		if(relation.equals("s") || relation.equals("subj") || relation.equals("obj"))
+		if(relation.equals("s") || relation.equals("subj") || relation.equals("obj") || relation.equals("dobj") || relation.equals("nsubj"))
 			return RelationEquivalency.Rule32;
 		
 		if(relation.equals("mod") || relation.equals("pmod"))
