@@ -53,19 +53,19 @@ public class TargetExtractorService implements ITargetExtractorService {
 			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(opinionWord.getValue());
 			for (IndexedWord vertex : vertexes) {
 				// for outgoing edges
-				List<SemanticGraphEdge> outgoingEdgesWithH = Helpers.getTargetEdges(
+				List<SemanticGraphEdge> outgoingEdgesWithH = Helpers.getTargetEdgesOnRel(
 						semanticGraph.outgoingEdgeIterable(vertex), Dep_MRRel.getInstance());
 				for (SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
 					targets.addAll(getTriplesRelativeToH(semanticGraph, opinionWord, edgeWithH, edgeWithH.getTarget(),
-							true));
+							true, Pos_NNRel.getInstance()));
 				}
 
 				// for incoming edges
-				List<SemanticGraphEdge> incomingEdgesWithH = Helpers.getTargetEdges(
+				List<SemanticGraphEdge> incomingEdgesWithH = Helpers.getTargetEdgesOnRel(
 						semanticGraph.incomingEdgeIterable(vertex), Dep_MRRel.getInstance());
 				for (SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
 					targets.addAll(getTriplesRelativeToH(semanticGraph, opinionWord, edgeWithH, edgeWithH.getSource(),
-							false));
+							false, Pos_NNRel.getInstance()));
 				}
 			}
 		}
@@ -84,29 +84,17 @@ public class TargetExtractorService implements ITargetExtractorService {
 			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(feature.getValue());
 			for (IndexedWord vertex : vertexes) {
 				// for outgoing edges
-				List<SemanticGraphEdge> outgoingEdgesWithH = Helpers.getTargetEdges(
-						semanticGraph.outgoingEdgeIterable(vertex), Dep_ConjRel.getInstance());
+				Iterable<SemanticGraphEdge> outgoingEdgesWithH = semanticGraph.outgoingEdgeIterable(vertex);
 				for (SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
-					String relationHSource = edgeWithH.getRelation().toString();
-					String relationHTarget = edgeWithH.getRelation().toString();
-
-					if (relationHSource.equals(relationHTarget))
-						targets.addAll(getTriplesRelativeToH(semanticGraph, feature, edgeWithH, edgeWithH.getTarget(),
-								true));
+					targets.addAll(getTriplesRelativeToHOnEquivalency(semanticGraph, feature,
+							edgeWithH, edgeWithH.getTarget(), true));
 				}
 
 				// for incoming edges
-				//TODO: need a different function for Helpers.getTargetEdges(
-				//semanticGraph.incomingEdgeIterable(vertex), Dep_ConjRel.getInstance());
-				List<SemanticGraphEdge> incomingEdgesWithH = Helpers.getTargetEdges(
-						semanticGraph.incomingEdgeIterable(vertex), Dep_ConjRel.getInstance());
+				Iterable<SemanticGraphEdge> incomingEdgesWithH = semanticGraph.incomingEdgeIterable(vertex);
 				for (SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
-					String relationHSource = edgeWithH.getRelation().toString();
-					String relationHTarget = edgeWithH.getRelation().toString();
-
-					if (relationHSource.equals(relationHTarget))
-						targets.addAll(getTriplesRelativeToH(semanticGraph, feature, edgeWithH, edgeWithH.getSource(),
-								false));
+					targets.addAll(getTriplesRelativeToHOnEquivalency(semanticGraph, feature,
+							edgeWithH, edgeWithH.getSource(), false));
 				}
 			}
 		}
@@ -114,29 +102,68 @@ public class TargetExtractorService implements ITargetExtractorService {
 		return targets;
 	}
 
-	private Set<Triple> getTriplesRelativeToH(SemanticGraph semanticGraph, Word opinionWord,
-			SemanticGraphEdge edgeWithH, IndexedWord H, boolean isSource) {
+	private Set<Triple> getTriplesRelativeToH(SemanticGraph semanticGraph, Word source,
+			SemanticGraphEdge edgeWithH, IndexedWord H, boolean isSource, Pos_NNRel targetPos) {
 		Set<Triple> targets = new HashSet<Triple>();
 		// for incoming target edges
-		List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers.getTargetEdges(
-				semanticGraph.incomingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), !isSource);
+		List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers.getTargetEdgesOnRelAndTarget(
+				semanticGraph.incomingEdgeIterable(H), targetPos, Dep_MRRel.getInstance(), !isSource);
 		for (SemanticGraphEdge edgeWithTarget : incomingEdgesWithTargets) {
 
-			String relationHSource = edgeWithH.getRelation().toString();
-			String relationHTarget = edgeWithH.getRelation().toString();
-
-			targets.add(createTriple(opinionWord, edgeWithTarget.getSource(), H, relationHSource, relationHTarget));
+			GrammaticalRelation relationHSource = edgeWithH.getRelation();
+			GrammaticalRelation relationHTarget = edgeWithTarget .getRelation();
+			IndexedWord target = edgeWithTarget.getSource();
+			if(validateTriple(source, target, H))
+				targets.add(createTriple(source, target, H, relationHSource, relationHTarget));
 		}
 
 		// for outgoing target edges
-		List<SemanticGraphEdge> outgoingEdgesWithTargets = Helpers.getTargetEdges(
+		List<SemanticGraphEdge> outgoingEdgesWithTargets = Helpers.getTargetEdgesOnRelAndTarget(
 				semanticGraph.outgoingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), isSource);
 		for (SemanticGraphEdge edgeWithTarget : outgoingEdgesWithTargets) {
 
-			String relationHSource = edgeWithH.getRelation().toString();
-			String relationHTarget = edgeWithH.getRelation().toString();
+			GrammaticalRelation relationHSource = edgeWithH.getRelation();
+			GrammaticalRelation relationHTarget = edgeWithTarget .getRelation();
+			IndexedWord target = edgeWithTarget.getTarget();
+			if(validateTriple(source, target, H))
+				targets.add(createTriple(source, target, H, relationHSource, relationHTarget));
+		}
+		return targets;
+	}
+	
+	private Set<Triple> getTriplesRelativeToHOnEquivalency(SemanticGraph semanticGraph, Word source,
+			SemanticGraphEdge edgeWithH, IndexedWord H, boolean isSource) {
+		Set<Triple> targets = new HashSet<Triple>();
+		// for incoming target edges
+		List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers.getTargetEdgesOnTarget(
+				semanticGraph.incomingEdgeIterable(H), Pos_NNRel.getInstance(), !isSource);
+		for (SemanticGraphEdge edgeWithTarget : incomingEdgesWithTargets) {
 
-			targets.add(createTriple(opinionWord, edgeWithTarget.getTarget(), H, relationHSource, relationHTarget));
+			GrammaticalRelation relationHSource = edgeWithH.getRelation();
+			GrammaticalRelation relationHTarget = edgeWithTarget .getRelation();
+
+			if(Helpers.checkEquivalentRelations(relationHSource, relationHTarget))
+			{
+				IndexedWord target = edgeWithTarget.getSource();
+				if(validateTriple(source, target, H))
+					targets.add(createTriple(source, target, H, relationHSource, relationHTarget));
+			}
+		}
+
+		// for outgoing target edges
+		List<SemanticGraphEdge> outgoingEdgesWithTargets = Helpers.getTargetEdgesOnRelAndTarget(
+				semanticGraph.outgoingEdgeIterable(H), Pos_NNRel.getInstance(), Dep_MRRel.getInstance(), isSource);
+		for (SemanticGraphEdge edgeWithTarget : outgoingEdgesWithTargets) {
+
+			GrammaticalRelation relationHSource = edgeWithH.getRelation();
+			GrammaticalRelation relationHTarget = edgeWithTarget .getRelation();
+
+			if(Helpers.checkEquivalentRelations(relationHSource, relationHTarget))
+			{
+				IndexedWord target = edgeWithTarget.getTarget();
+				if(validateTriple(source, target, H))
+					targets.add(createTriple(source, target, H, relationHSource, relationHTarget));
+			}
 		}
 		return targets;
 	}
@@ -148,7 +175,7 @@ public class TargetExtractorService implements ITargetExtractorService {
 			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(word.getValue());
 			for (IndexedWord vertex : vertexes) {
 				// for outgoing edges
-				List<SemanticGraphEdge> outgoingTargetEdges = Helpers.getTargetEdges(
+				List<SemanticGraphEdge> outgoingTargetEdges = Helpers.getTargetEdgesOnRelAndTarget(
 						semanticGraph.outgoingEdgeIterable(vertex), Pos_NNRel.getInstance(), relationType, false);
 				for (SemanticGraphEdge edge : outgoingTargetEdges) {
 					targets.add(Helpers.getPair(word.getValue(), word.getPosTag(), edge.getTarget().word(), edge
@@ -156,11 +183,12 @@ public class TargetExtractorService implements ITargetExtractorService {
 				}
 
 				// for incoming edges
-				List<SemanticGraphEdge> incomingTargetEdges = Helpers.getTargetEdges(
+				List<SemanticGraphEdge> incomingTargetEdges = Helpers.getTargetEdgesOnRelAndTarget(
 						semanticGraph.incomingEdgeIterable(vertex), Pos_NNRel.getInstance(), relationType, true);
 				for (SemanticGraphEdge edge : incomingTargetEdges) {
-					targets.add(Helpers.getPair(word.getValue(), word.getPosTag(), edge.getSource().word(), edge
-							.getSource().tag(), edge.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
+					
+						targets.add(Helpers.getPair(word.getValue(), word.getPosTag(), edge.getSource().word(), edge
+								.getSource().tag(), edge.getRelation().toString(), Dependency.DIRECT_DEPENDENCY));
 				}
 			}
 		}
@@ -170,8 +198,30 @@ public class TargetExtractorService implements ITargetExtractorService {
 
 	private Triple createTriple(Word source, IndexedWord target, IndexedWord H, String relationHSource,
 			String relationHTarget) {
-
+			
 		return Helpers.getTriple(source.getValue(), source.getPosTag(), target.word(), target.tag(), H.word(), H.tag(),
 				relationHSource, relationHTarget, Dependency.DIRECT_DEPENDENCY);
+	}
+	
+	private boolean validateTriple(Word source, IndexedWord target, IndexedWord H)
+	{
+		String sourceWord = source.getValue();
+		String targetWord = target.value();
+		String sourcePosTag = source.getPosTag();
+		String targetPosTag = target.tag();
+		
+		if(sourceWord.equals(targetWord) && sourcePosTag.equals(targetPosTag))
+			return false;
+		
+		return true;
+	}
+	
+	private Triple createTriple(Word source, IndexedWord target, IndexedWord H, GrammaticalRelation relationHSource,
+			GrammaticalRelation relationHTarget) {
+
+		String relationHSourceString = relationHSource.toString();
+		String relationHTargetString = relationHTarget.toString();
+		
+		return createTriple(source, target, H, relationHSourceString, relationHTargetString);
 	}
 }
