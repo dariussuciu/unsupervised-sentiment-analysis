@@ -60,6 +60,20 @@ public class Main {
 		test3.setTupleType(TupleType.Seed);
 
 		seed.add(test3);
+		
+		Tuple test4 = new Tuple();
+
+		test4.setSource(new Word("JJ", "amazing"));
+		test4.setTupleType(TupleType.Seed);
+
+		seed.add(test4);
+		
+		Tuple test5 = new Tuple();
+
+		test5.setSource(new Word("JJ", "sexy"));
+		test5.setTupleType(TupleType.Seed);
+
+		seed.add(test5);
 
 		algorithm.execute(seed);
 

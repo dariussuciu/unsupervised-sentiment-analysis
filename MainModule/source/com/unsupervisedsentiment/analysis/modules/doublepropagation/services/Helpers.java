@@ -208,10 +208,8 @@ public class Helpers {
 	{
 		String sourceWord = source.getValue();
 		String targetWord = target.value();
-		String sourcePosTag = source.getPosTag();
-		String targetPosTag = target.tag();
 		
-		if(sourceWord.equals(targetWord) && sourcePosTag.equals(targetPosTag))
+		if(sourceWord.equals(targetWord))
 			return false;
 		
 		return true;
