@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
+import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Triple;
 import com.unsupervisedsentiment.analysis.model.Tuple;
@@ -26,7 +27,7 @@ public class Main {
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_LIU);
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1);
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST2);
-		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST3);
+	    // inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST3);
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST4);
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST5);
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST6);
@@ -42,35 +43,34 @@ public class Main {
 
 		Tuple test = new Tuple();
 
-		test.setSource(new Word("JJ", "good"));
+		test.setSource(new Word("JJ", "good", ElementType.OPINION_WORD));
 		test.setTupleType(TupleType.Seed);
-
 		seed.add(test);
 
 		Tuple test2 = new Tuple();
 
-		test2.setSource(new Word("JJ", "best"));
+		test2.setSource(new Word("JJ", "best", ElementType.OPINION_WORD));
 		test2.setTupleType(TupleType.Seed);
 
 		seed.add(test2);
 		
 		Tuple test3 = new Tuple();
 
-		test3.setSource(new Word("JJ", "great"));
+		test3.setSource(new Word("JJ", "great", ElementType.OPINION_WORD));
 		test3.setTupleType(TupleType.Seed);
 
 		seed.add(test3);
 		
 		Tuple test4 = new Tuple();
 
-		test4.setSource(new Word("JJ", "amazing"));
+		test4.setSource(new Word("JJ", "amazing", ElementType.OPINION_WORD));
 		test4.setTupleType(TupleType.Seed);
 
 		seed.add(test4);
 		
 		Tuple test5 = new Tuple();
 
-		test5.setSource(new Word("JJ", "sexy"));
+		test5.setSource(new Word("JJ", "sexy", ElementType.OPINION_WORD));
 		test5.setTupleType(TupleType.Seed);
 
 		seed.add(test5);

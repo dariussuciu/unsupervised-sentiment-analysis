@@ -7,6 +7,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.model.Dependency;
+import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.Word;
@@ -60,9 +61,9 @@ public class NLPService {
 			Pair tuple = new Pair();
 			tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
 			tuple.setSource(new Word(egi.getSource().get(TextAnnotation.class), egi.getSource().get(
-					PartOfSpeechAnnotation.class)));
+					PartOfSpeechAnnotation.class), ElementType.NONE));
 			tuple.setTarget(new Word(egi.getTarget().get(TextAnnotation.class), egi.getTarget().get(
-					PartOfSpeechAnnotation.class)));
+					PartOfSpeechAnnotation.class), ElementType.NONE));
 			tuple.setRelation(egi.getRelation().toString());
 			tuples.add(tuple);
 		}
@@ -77,12 +78,12 @@ public class NLPService {
 			// this is the text of the token
 			String word = token.get(TextAnnotation.class);
 			String pos = token.get(PartOfSpeechAnnotation.class);
-			System.out.println("word-pos :" + word + "-" + pos);
+			//System.out.println("word-pos :" + word + "-" + pos);
 			String ne = token.get(NamedEntityTagAnnotation.class);
 
 			// http://nlp.stanford.edu/software/corenlp.shtml for more info
 			// on NER
-			System.out.println("NER:" + ne);
+			//System.out.println("NER:" + ne);
 		}
 		// this is the parse tree of the current sentence
 		// Tree tree = sentence.get(TreeAnnotation.class);

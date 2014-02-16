@@ -3,6 +3,7 @@ package com.unsupervisedsentiment.analysis.model;
 public class Word {
 	private String posTag;
 	private String value;
+	private ElementType type;
 
 	public String getPosTag() {
 		return posTag;
@@ -20,10 +21,11 @@ public class Word {
 		this.value = value;
 	}
 
-	public Word(String posTag, String value) {
+	public Word(String posTag, String value, ElementType type) {
 		super();
 		this.posTag = posTag;
 		this.value = value;
+		this.type = type;
 	}
 
 	public Word(String posTag) {
@@ -70,5 +72,13 @@ public class Word {
 		} else if (!value.equals(other.value))
 			return false;
 		return true;
+	}
+
+	public ElementType getType() {
+		return type;
+	}
+
+	public void setType(ElementType type) {
+		this.type = type;
 	}
 }

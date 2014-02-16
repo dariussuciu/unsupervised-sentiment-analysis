@@ -58,7 +58,9 @@ public class DoublePropagationData {
 	public HashSet<Word> getExpandedOpinionWords() {
 		HashSet<Word> opinionWords = new HashSet<Word>();
 		for (Tuple tuple : expandedOpinionWords) {
-			opinionWords.add(tuple.getSource());
+			Word foundOpinionWord = getWord(tuple, ElementType.OPINION_WORD);
+			if(foundOpinionWord != null)
+				opinionWords.add(foundOpinionWord);
 		}
 		return opinionWords;
 	}
@@ -66,9 +68,28 @@ public class DoublePropagationData {
 	public HashSet<Word> getFeatures() {
 		HashSet<Word> featureWords = new HashSet<Word>();
 		for (Tuple tuple : features) {
-			featureWords.add(tuple.getTarget());
+			Word foundFeature = getWord(tuple, ElementType.FEATURE);
+			if(foundFeature != null)
+				featureWords.add(foundFeature);
 		}
 		return featureWords;
+	}
+	
+	private Word getWord(Tuple tuple, ElementType type)
+	{
+		// seed words tuples don`t have targets 
+		if(tuple.getTupleType().equals(TupleType.Seed))
+		{
+			return tuple.getSource();
+		}
+		
+		ElementType sourceType = tuple.getSource().getType();
+		ElementType targetType = tuple.getTarget().getType();
+		if(sourceType.equals(type))
+			return tuple.getSource();
+		if(targetType.equals(type))
+			return tuple.getTarget();
+		return null;
 	}
 
 	public HashSet<Word> getSeedWords() {
