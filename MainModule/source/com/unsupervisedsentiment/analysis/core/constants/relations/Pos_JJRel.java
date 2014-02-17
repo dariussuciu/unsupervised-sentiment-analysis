@@ -20,6 +20,14 @@ public class Pos_JJRel extends GenericRelation {
 	}
 
 	@Override
+	public Class<? extends Enum<?>> getContainingEnum(String word) {
+		if (super.isInEnum(word, JJ.class)) {
+			return JJ.class;
+		}
+		return null;
+	}
+
+	@Override
 	public boolean contains(String word) {
 		return super.isInEnum(word, JJ.class);
 	};

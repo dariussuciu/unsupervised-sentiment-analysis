@@ -39,8 +39,9 @@ public class TargetExtractorService implements ITargetExtractorService {
 
 	public Set<Tuple> extractTargetsUsingR11(SemanticGraph semanticGraph, Set<Word> opinionWords,
 			Set<Tuple> existingFeatures, ElementType targetType) {
-		return Helpers.extractTargets(semanticGraph, opinionWords, Dep_MRRel.getInstance(), Pos_NNRel.getInstance(),
+		Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph, opinionWords, Dep_MRRel.getInstance(), Pos_NNRel.getInstance(),
 				targetType);
+		return Helpers.getNewTuples(foundTargets, existingFeatures);
 	}
 
 	public Set<Tuple> extractTargetsUsingR12(SemanticGraph semanticGraph, Set<Word> opinionWords,

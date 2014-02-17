@@ -1,5 +1,7 @@
 package com.unsupervisedsentiment.analysis.model;
 
+import com.unsupervisedsentiment.analysis.core.constants.relations.RelationsContainer;
+
 public class Word {
 	private String posTag;
 	private String value;
@@ -64,8 +66,11 @@ public class Word {
 		if (posTag == null) {
 			if (other.posTag != null)
 				return false;
-		} else if (!posTag.equals(other.posTag))
-			return false;
+		} else if (!posTag.equals(other.posTag)) {
+			if (!RelationsContainer.arePosEquivalent(posTag, other.posTag)) {
+				return false;
+			}
+		}
 		if (value == null) {
 			if (other.value != null)
 				return false;

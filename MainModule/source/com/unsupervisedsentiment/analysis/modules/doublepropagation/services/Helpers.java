@@ -278,9 +278,19 @@ public class Helpers {
 	public static Set<Tuple> getNewTuples(Set<? extends Tuple> sourceTuples, Set<? extends Tuple> existingTuples) {
 		Set<Tuple> newTuples = new HashSet<Tuple>();
 		for (Tuple tuple : sourceTuples) {
-			if (!existingTuples.contains(tuple))
+			boolean duplicate = false;
+			for(Tuple existingTuple : existingTuples) {
+				if(existingTuple.equals(tuple))
+				{
+					duplicate = true;
+					break;
+				}
+			}
+			
+			if (!duplicate)
 				newTuples.add(tuple);
 		}
 		return newTuples;
 	}
+	
 }

@@ -1,5 +1,7 @@
 package com.unsupervisedsentiment.analysis.core.constants.relations;
 
+import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel.JJ;
+
 public class Pos_NNRel extends GenericRelation {
 	public enum NN {
 		NN, NNP, NNPS, NNS
@@ -16,6 +18,14 @@ public class Pos_NNRel extends GenericRelation {
 
 		isInstantiated = true;
 		return nnRel = new Pos_NNRel();
+	}
+
+	@Override
+	public Class<? extends Enum<?>> getContainingEnum(String word) {
+		if (super.isInEnum(word, NN.class)) {
+			return NN.class;
+		}
+		return null;
 	}
 
 	@Override

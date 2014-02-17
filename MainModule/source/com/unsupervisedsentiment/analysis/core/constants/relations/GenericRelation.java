@@ -7,6 +7,8 @@ public abstract class GenericRelation {
 		isInstantiated = false;
 	}
 
+	public abstract Class<? extends Enum<?>> getContainingEnum(String word);
+
 	public static <E extends Enum<E>> boolean isInEnum(String value, Class<E> enumClass) {
 		for (E e : enumClass.getEnumConstants()) {
 			if (e.name().equals(value)) {
@@ -17,5 +19,5 @@ public abstract class GenericRelation {
 	}
 
 	protected static boolean isInstantiated = false;
-	
+
 }
