@@ -11,20 +11,18 @@ import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.Word;
-import com.unsupervisedsentiment.analysis.modules.doublepropagation.services.InputDataMaker;
 
-import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.semgraph.SemanticGraph;
-import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation;
+import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.util.CoreMap;
 
 public class NLPService {
@@ -53,7 +51,7 @@ public class NLPService {
 
 	public List<Tuple> getTuplesFromSentence(CoreMap sentence) {
 		List<Tuple> tuples = new ArrayList<Tuple>();
-		SemanticGraph dependencies = getSemanticGraphFromSentence(sentence);
+		SemanticGraph dependencies = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
 
 		final Set<SemanticGraphEdge> edgeSet = dependencies.getEdgeSet();
 
@@ -68,27 +66,6 @@ public class NLPService {
 			tuples.add(tuple);
 		}
 		return tuples;
-	}
-
-	public SemanticGraph getSemanticGraphFromSentence(CoreMap sentence) {
-
-		// traversing the words in the current sentence
-		// a CoreLabel is a CoreMap with additional token-specific methods
-		for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
-			// this is the text of the token
-			String word = token.get(TextAnnotation.class);
-			String pos = token.get(PartOfSpeechAnnotation.class);
-			//System.out.println("word-pos :" + word + "-" + pos);
-			String ne = token.get(NamedEntityTagAnnotation.class);
-
-			// http://nlp.stanford.edu/software/corenlp.shtml for more info
-			// on NER
-			//System.out.println("NER:" + ne);
-		}
-		// this is the parse tree of the current sentence
-		// Tree tree = sentence.get(TreeAnnotation.class);
-		// this is the Stanford dependency graph of the current sentence
-		return sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
 	}
 
 	private List<CoreMap> annotateSentences(String text) {
@@ -125,7 +102,7 @@ public class NLPService {
 		List<SemanticGraph> semanticGraphs = new ArrayList<SemanticGraph>();
 		List<CoreMap> annotatedSentences = getAnnotatedSentencesFromText(s);
 		for (CoreMap sentence : annotatedSentences) {
-			SemanticGraph graph = getSemanticGraphFromSentence(sentence);
+			SemanticGraph graph = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
 			semanticGraphs.add(graph);
 		}
 		return semanticGraphs;

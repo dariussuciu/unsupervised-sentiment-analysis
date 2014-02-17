@@ -1,4 +1,4 @@
-package com.unsupervisedsentiment.analysis.test.constants.relations;
+package com.unsupervisedsentiment.analysis.core.constants.relations;
 
 public abstract class GenericRelation {
 	public abstract boolean contains(String word);

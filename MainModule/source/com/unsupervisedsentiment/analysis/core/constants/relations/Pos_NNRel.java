@@ -1,4 +1,4 @@
-package com.unsupervisedsentiment.analysis.test.constants.relations;
+package com.unsupervisedsentiment.analysis.core.constants.relations;
 
 public class Pos_NNRel extends GenericRelation {
 	public enum NN {

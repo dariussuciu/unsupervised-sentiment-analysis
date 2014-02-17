@@ -1,4 +1,4 @@
-package com.unsupervisedsentiment.analysis.test.constants.relations;
+package com.unsupervisedsentiment.analysis.core.constants.relations;
 
 public class Pos_JJRel extends GenericRelation {
 

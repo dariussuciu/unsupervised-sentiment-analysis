@@ -1,4 +1,4 @@
-package com.unsupervisedsentiment.analysis.test.constants;
+package com.unsupervisedsentiment.analysis.core.constants;
 
 public class StanfordNLPTestConstants {
 

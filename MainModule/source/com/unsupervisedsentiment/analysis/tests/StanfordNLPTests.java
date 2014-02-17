@@ -1,24 +1,21 @@
 package com.unsupervisedsentiment.analysis.tests;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import junit.framework.TestCase;
+
 import org.junit.Ignore;
 
+import com.unsupervisedsentiment.analysis.core.constants.StanfordNLPTestConstants;
 import com.unsupervisedsentiment.analysis.model.Dependency;
 import com.unsupervisedsentiment.analysis.model.Pair;
-import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.Word;
-import com.unsupervisedsentiment.analysis.test.constants.StanfordNLPTestConstants;
 
-import junit.framework.TestCase;
 import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
@@ -26,13 +23,11 @@ import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
-import edu.stanford.nlp.trees.EnglishGrammaticalRelations;
 import edu.stanford.nlp.util.CoreMap;
 
 public class StanfordNLPTests extends TestCase {
@@ -116,7 +111,7 @@ public class StanfordNLPTests extends TestCase {
 		tokens = document.get(TokensAnnotation.class);
 		assertEquals(tokens.size(), 10 * n);
 
-		coreNlp.clearAnnotatorPool();
+		StanfordCoreNLP.clearAnnotatorPool();
 	}
 
 	/**
@@ -133,7 +128,7 @@ public class StanfordNLPTests extends TestCase {
 		List<CoreMap> sentences = doc.get(SentencesAnnotation.class);
 		printSentences(sentences);
 
-		coreNlp.clearAnnotatorPool();
+		StanfordCoreNLP.clearAnnotatorPool();
 	}
 
 	public void testPreProcessing() {
@@ -148,7 +143,7 @@ public class StanfordNLPTests extends TestCase {
 			System.out.println(map.toString());
 		}
 
-		coreNlp.clearAnnotatorPool();
+		StanfordCoreNLP.clearAnnotatorPool();
 	}
 
 	public void testLiuSentencePreProcessing() {
@@ -163,7 +158,7 @@ public class StanfordNLPTests extends TestCase {
 			System.out.println(map.toString());
 		}
 
-		coreNlp.clearAnnotatorPool();
+		StanfordCoreNLP.clearAnnotatorPool();
 	}
 
 	/*

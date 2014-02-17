@@ -1,4 +1,4 @@
-package com.unsupervisedsentiment.analysis.test.constants.relations;
+package com.unsupervisedsentiment.analysis.core.constants.relations;
 
 public class Dep_MRRel extends GenericRelation{
 	public enum mod {
