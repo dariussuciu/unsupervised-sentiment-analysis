@@ -28,10 +28,15 @@ public class Main {
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST4);
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST5);
 		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST6);
+		// inputData.setInput(StanfordNLPTestConstants.SMALL_TEST);
+		inputData.setInput(StanfordNLPTestConstants.HUGE_REVIEW);
 
-		inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " " + StanfordNLPTestConstants.SENTENCE_TEST2
-				+ " " + StanfordNLPTestConstants.SENTENCE_TEST3 + " " + StanfordNLPTestConstants.SENTENCE_TEST4 + " "
-				+ StanfordNLPTestConstants.SENTENCE_TEST5 + " " + StanfordNLPTestConstants.SENTENCE_TEST6);
+		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " " +
+		// StanfordNLPTestConstants.SENTENCE_TEST2
+		// + " " + StanfordNLPTestConstants.SENTENCE_TEST3 + " " +
+		// StanfordNLPTestConstants.SENTENCE_TEST4 + " "
+		// + StanfordNLPTestConstants.SENTENCE_TEST5 + " " +
+		// StanfordNLPTestConstants.SENTENCE_TEST6);
 		DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
 
 		HashSet<Tuple> seed = new HashSet<Tuple>();
@@ -58,19 +63,35 @@ public class Main {
 
 		Tuple test4 = new Tuple();
 
-		test4.setSource(new Word("JJ", "amazing", ElementType.OPINION_WORD));
+		test4.setSource(new Word("JJ", "amazed", ElementType.OPINION_WORD));
 		test4.setTupleType(TupleType.Seed);
 
 		seed.add(test4);
 
 		Tuple test5 = new Tuple();
 
-		test5.setSource(new Word("JJ", "sexy", ElementType.OPINION_WORD));
+		test5.setSource(new Word("JJ", "dramatic", ElementType.OPINION_WORD));
 		test5.setTupleType(TupleType.Seed);
 
 		seed.add(test5);
 
+		Tuple test6 = new Tuple();
+
+		test6.setSource(new Word("JJ", "powerful", ElementType.OPINION_WORD));
+		test6.setTupleType(TupleType.Seed);
+
+		seed.add(test6);
+
+		Tuple test7 = new Tuple();
+
+		test7.setSource(new Word("JJ", "slow", ElementType.OPINION_WORD));
+		test7.setTupleType(TupleType.Seed);
+
+		seed.add(test7);
+
+		long currentTime = System.currentTimeMillis();
 		algorithm.execute(seed);
+		System.out.println("Elapsed time: " + (System.currentTimeMillis() - currentTime) + " ms");
 
 		System.out.println("-----------------------------------------");
 		System.out.println("Features");

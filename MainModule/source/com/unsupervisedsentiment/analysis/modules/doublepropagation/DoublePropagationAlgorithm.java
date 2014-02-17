@@ -53,7 +53,7 @@ public class DoublePropagationAlgorithm {
 
 	private void executeStep() {
 		resetIterationFeaturesAndOpinionWords();
-
+		
 		for (SemanticGraph semanticGraph : data.getSentancesSemanticGraphs()) {
 			featuresIteration1.addAll(targetExtractorService.extractTargetsUsingR1(semanticGraph,
 					data.getExpandedOpinionWords(), data.getFeatureTuples()));

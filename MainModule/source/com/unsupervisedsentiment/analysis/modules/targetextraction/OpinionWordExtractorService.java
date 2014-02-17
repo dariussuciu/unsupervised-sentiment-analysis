@@ -51,18 +51,18 @@ public class OpinionWordExtractorService implements IOpinionWordExtractorService
 		// Dep_MRRel.getInstance(), Pos_JJRel.getInstance());
 	}
 
-	public Set<Tuple> extractOpinionWordsUsingR22(SemanticGraph semanticGraph, Set<Word> opinionWords,
+	public Set<Tuple> extractOpinionWordsUsingR22(SemanticGraph semanticGraph, Set<Word> features,
 			Set<Tuple> existingOpinionWords, ElementType targetType) {
 		Set<Tuple> targets = new HashSet<Tuple>();
 
-		for (Word opinionWord : opinionWords) {
-			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(opinionWord.getValue());
+		for (Word feature : features) {
+			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(feature.getValue());
 			for (IndexedWord vertex : vertexes) {
 				// for outgoing edges
 				List<SemanticGraphEdge> outgoingEdgesWithH = Helpers.getTargetEdgesOnRel(
 						semanticGraph.outgoingEdgeIterable(vertex), Dep_MRRel.getInstance());
 				for (SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
-					Set<Tuple> foundTargets = Helpers.getTriplesRelativeToH(semanticGraph, opinionWord, edgeWithH,
+					Set<Tuple> foundTargets = Helpers.getTriplesRelativeToH(semanticGraph, feature, edgeWithH,
 							edgeWithH.getTarget(), true, Pos_JJRel.getInstance(), Dep_MRRel.getInstance(), targetType);
 					targets.addAll(Helpers.getNewTuples(foundTargets, existingOpinionWords));
 				}
@@ -71,7 +71,7 @@ public class OpinionWordExtractorService implements IOpinionWordExtractorService
 				List<SemanticGraphEdge> incomingEdgesWithH = Helpers.getTargetEdgesOnRel(
 						semanticGraph.incomingEdgeIterable(vertex), Dep_MRRel.getInstance());
 				for (SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
-					Set<Tuple> foundTargets = Helpers.getTriplesRelativeToH(semanticGraph, opinionWord, edgeWithH,
+					Set<Tuple> foundTargets = Helpers.getTriplesRelativeToH(semanticGraph, feature, edgeWithH,
 							edgeWithH.getSource(), false, Pos_JJRel.getInstance(), Dep_MRRel.getInstance(), targetType);
 					targets.addAll(Helpers.getNewTuples(foundTargets, existingOpinionWords));
 				}
