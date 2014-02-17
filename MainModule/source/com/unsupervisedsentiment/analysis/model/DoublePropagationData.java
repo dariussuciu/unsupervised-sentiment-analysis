@@ -78,7 +78,7 @@ public class DoublePropagationData {
 	private Word getWord(Tuple tuple, ElementType type)
 	{
 		// seed words tuples don`t have targets 
-		if(tuple.getTupleType().equals(TupleType.Seed))
+		if(tuple.getTupleType().equals(TupleType.Seed) && tuple.getSource().getType().equals(type))
 		{
 			return tuple.getSource();
 		}
