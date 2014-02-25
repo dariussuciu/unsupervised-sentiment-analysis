@@ -28,7 +28,7 @@ public class Main {
 		
 		inputService.getTextFromFile();
 		
-//		DoublePropagationData inputData = new DoublePropagationData();
+		DoublePropagationData inputData = new DoublePropagationData();
 //		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_LIU);
 //		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1);
 //		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST2);
@@ -39,16 +39,16 @@ public class Main {
 //		// inputData.setInput(StanfordNLPTestConstants.SMALL_TEST);
 //		inputData.setInput(StanfordNLPTestConstants.HUGE_REVIEW);
 //
-////		 inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " " +
-////		 StanfordNLPTestConstants.SENTENCE_TEST2
-////		 + " " + StanfordNLPTestConstants.SENTENCE_TEST3 + " " +
-////		 StanfordNLPTestConstants.SENTENCE_TEST4 + " "
-////		 + StanfordNLPTestConstants.SENTENCE_TEST5 + " " +
-////		 StanfordNLPTestConstants.SENTENCE_TEST6);
-//		 
-//		DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
-//
-//		HashSet<Tuple> seedWords = new HashSet<Tuple>();
+		 inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " " +
+		 StanfordNLPTestConstants.SENTENCE_TEST2
+		 + " " + StanfordNLPTestConstants.SENTENCE_TEST3 + " " +
+		 StanfordNLPTestConstants.SENTENCE_TEST4 + " "
+		 + StanfordNLPTestConstants.SENTENCE_TEST5 + " " +
+		 StanfordNLPTestConstants.SENTENCE_TEST6);
+		 
+		DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
+
+		HashSet<Tuple> seedWords = new HashSet<Tuple>();
 //
 ////		Tuple test = new Tuple();
 ////
@@ -98,25 +98,25 @@ public class Main {
 ////
 ////		seed.add(test7);
 //		
-//		for(String seedString : config.getSeedWords())
-//		{
-//			Tuple seed = new Tuple();
-//			Word word = new Word("JJ", seedString.trim(), ElementType.OPINION_WORD);
-//			seed.setSource(word);
-//			seed.setTupleType(TupleType.Seed);
-//			seedWords.add(seed);
-//		}
-//
-//		long currentTime = System.currentTimeMillis();
-//		algorithm.execute(seedWords);
-//		System.out.println("Elapsed time: " + (System.currentTimeMillis() - currentTime) + " ms");
-//
-//		System.out.println("-----------------------------------------");
-//		System.out.println("Features");
-//		PreetyPrintTuples(algorithm.getData().getFeatureTuples());
-//		System.out.println("-----------------------------------------");
-//		System.out.println("OpinionWords");
-//		PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
+		for(String seedString : config.getSeedWords())
+		{
+			Tuple seed = new Tuple();
+			Word word = new Word("JJ", seedString.trim(), ElementType.OPINION_WORD);
+			seed.setSource(word);
+			seed.setTupleType(TupleType.Seed);
+			seedWords.add(seed);
+		}
+
+		long currentTime = System.currentTimeMillis();
+		algorithm.execute(seedWords);
+		System.out.println("Elapsed time: " + (System.currentTimeMillis() - currentTime) + " ms");
+
+		System.out.println("-----------------------------------------");
+		System.out.println("Features");
+		PreetyPrintTuples(algorithm.getData().getFeatureTuples());
+		System.out.println("-----------------------------------------");
+		System.out.println("OpinionWords");
+		PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
 	}
 
 	private static void PreetyPrintTuples(Set<Tuple> tuples) {

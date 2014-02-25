@@ -25,16 +25,18 @@ public class InputService {
 	}
 
 	public List<InputWrapper> getTextFromFile() {
-		// File folder = new File(config.getInputDirectory());
-		File folder = new File(
-				"C:\\Users\\Alex\\Desktop\\Research\\Project\\Input");
+		 File folder = new File(config.getInputDirectory());
+//		File folder = new File(
+//				"C:\\Users\\Alex\\Desktop\\Research\\Project\\Input");
 
 		File[] listOfFiles = folder.listFiles();
 		List<InputWrapper> input = new ArrayList<InputWrapper>();
-
-		for (File file : listOfFiles) {
-			if (file.isFile()) {
-				input.add(getInputFromFile(file));
+		if(listOfFiles != null)
+		{
+			for (File file : listOfFiles) {
+				if (file.isFile()) {
+					input.add(getInputFromFile(file));
+				}
 			}
 		}
 		return input;
