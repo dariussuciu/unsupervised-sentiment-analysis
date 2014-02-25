@@ -1,11 +1,8 @@
 package com.unsupervisedsentiment.analysis.core.constants.relations;
 
-import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel.JJ;
-
 public class Pos_NNRel extends GenericRelation {
 	/*
-	 * Added:
-	 * - PRP - she / he
+	 * Added: - PRP - she / he
 	 */
 	public enum NN {
 		NN, NNP, NNPS, NNS, PRP
