@@ -11,8 +11,7 @@ import com.unsupervisedsentiment.analysis.model.Triple;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
-import com.unsupervisedsentiment.analysis.modules.IO.Input.InputService;
-import com.unsupervisedsentiment.analysis.modules.IO.Input.Models.Config;
+import com.unsupervisedsentiment.analysis.modules.IO.InputService;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.DoublePropagationAlgorithm;
 
 public class Main {

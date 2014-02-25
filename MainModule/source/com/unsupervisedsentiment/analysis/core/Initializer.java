@@ -1,10 +1,10 @@
 package com.unsupervisedsentiment.analysis.core;
 
 import java.io.File;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import com.unsupervisedsentiment.analysis.modules.IO.Input.Models.Config;
 
 public class Initializer {
 

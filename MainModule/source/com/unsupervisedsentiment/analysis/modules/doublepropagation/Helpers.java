@@ -1,4 +1,4 @@
-package com.unsupervisedsentiment.analysis.modules.doublepropagation.services;
+package com.unsupervisedsentiment.analysis.modules.doublepropagation;
 
 import java.util.ArrayList;
 import java.util.HashSet;

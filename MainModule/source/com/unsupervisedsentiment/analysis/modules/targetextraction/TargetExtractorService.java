@@ -10,7 +10,7 @@ import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_NNRel;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.Word;
-import com.unsupervisedsentiment.analysis.modules.doublepropagation.services.Helpers;
+import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;

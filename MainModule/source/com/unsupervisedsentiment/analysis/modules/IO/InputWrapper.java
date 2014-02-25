@@ -1,4 +1,4 @@
-package com.unsupervisedsentiment.analysis.modules.IO.Input;
+package com.unsupervisedsentiment.analysis.modules.IO;
 
 public class InputWrapper {
 	private String author;
