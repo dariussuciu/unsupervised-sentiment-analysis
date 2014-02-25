@@ -105,4 +105,8 @@ public class Tuple {
 		this.source = source;
 	}
 
+	public Word getOpinionWord(){
+		Word word = getSource().getType().equals(ElementType.OPINION_WORD) ? getSource() : getTarget();
+		return word;
+	}
 }

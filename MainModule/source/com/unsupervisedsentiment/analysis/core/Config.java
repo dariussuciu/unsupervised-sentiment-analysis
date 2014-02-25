@@ -11,6 +11,8 @@ public class Config {
 	private String inputDirectory;
 
 	private String outputDirectory;
+	
+	private String SWNPath;
 
 	private ArrayList<String> seedWords;
 
@@ -46,5 +48,14 @@ public class Config {
 	public String toString() {
 		return "Input Directory: " + inputDirectory + "\n"
 				+ "Output Directory: " + inputDirectory + "\n";
+	}
+	
+	@XmlElement(name = "SWNDirectory")
+	public String getSWNPath() {
+		return SWNPath.trim();
+	}
+
+	public void setSWNPath(String sWNPath) {
+		SWNPath = sWNPath;
 	}
 }

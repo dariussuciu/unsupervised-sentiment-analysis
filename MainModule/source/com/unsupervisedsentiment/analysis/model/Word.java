@@ -6,6 +6,7 @@ public class Word {
 	private String posTag;
 	private String value;
 	private ElementType type;
+	private double score;
 
 	public String getPosTag() {
 		return posTag;
@@ -85,5 +86,13 @@ public class Word {
 
 	public void setType(ElementType type) {
 		this.type = type;
+	}
+
+	public double getScore() {
+		return score;
+	}
+
+	public void setScore(double score) {
+		this.score = score;
 	}
 }

@@ -1,8 +1,11 @@
 package com.unsupervisedsentiment.analysis.core;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import com.unsupervisedsentiment.analysis.classification.Classification;
 import com.unsupervisedsentiment.analysis.core.constants.StanfordNLPTestConstants;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.ElementType;
@@ -21,23 +24,13 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		Config config = Initializer.getConfig();
-		//System.out.println(Config.getInputDirectory());
 		
 		InputService inputService = InputService.getInstance(config);
 		
 		inputService.getTextFromFile();
 		
 		DoublePropagationData inputData = new DoublePropagationData();
-//		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_LIU);
-//		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1);
-//		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST2);
-//		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST3);
-//		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST4);
-//		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST5);
-//		// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST6);
-//		// inputData.setInput(StanfordNLPTestConstants.SMALL_TEST);
-//		inputData.setInput(StanfordNLPTestConstants.HUGE_REVIEW);
-//
+		
 		 inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " " +
 		 StanfordNLPTestConstants.SENTENCE_TEST2
 		 + " " + StanfordNLPTestConstants.SENTENCE_TEST3 + " " +
@@ -48,55 +41,7 @@ public class Main {
 		DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
 
 		HashSet<Tuple> seedWords = new HashSet<Tuple>();
-//
-////		Tuple test = new Tuple();
-////
-////		test.setSource(new Word("JJ", "good", ElementType.OPINION_WORD));
-////		test.setTupleType(TupleType.Seed);
-////		seedWords.add(test);
-//
-////		Tuple test2 = new Tuple();
-////
-////		test2.setSource(new Word("JJ", "best", ElementType.OPINION_WORD));
-////		test2.setTupleType(TupleType.Seed);
-////
-////		seed.add(test2);
-////
-////		Tuple test3 = new Tuple();
-////
-////		test3.setSource(new Word("JJ", "great", ElementType.OPINION_WORD));
-////		test3.setTupleType(TupleType.Seed);
-////
-////		seed.add(test3);
-////
-////		Tuple test4 = new Tuple();
-////
-////		test4.setSource(new Word("JJ", "amazed", ElementType.OPINION_WORD));
-////		test4.setTupleType(TupleType.Seed);
-////
-////		seed.add(test4);
-////
-////		Tuple test5 = new Tuple();
-////
-////		test5.setSource(new Word("JJ", "dramatic", ElementType.OPINION_WORD));
-////		test5.setTupleType(TupleType.Seed);
-////
-////		seed.add(test5);
-////
-////		Tuple test6 = new Tuple();
-////
-////		test6.setSource(new Word("JJ", "powerful", ElementType.OPINION_WORD));
-////		test6.setTupleType(TupleType.Seed);
-////
-////		seed.add(test6);
-////
-////		Tuple test7 = new Tuple();
-////
-////		test7.setSource(new Word("JJ", "slow", ElementType.OPINION_WORD));
-////		test7.setTupleType(TupleType.Seed);
-////
-////		seed.add(test7);
-//		
+		
 		for(String seedString : config.getSeedWords())
 		{
 			Tuple seed = new Tuple();
@@ -116,6 +61,11 @@ public class Main {
 		System.out.println("-----------------------------------------");
 		System.out.println("OpinionWords");
 		PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
+		
+		HashSet<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
+		
+		Classification classification = new Classification();
+		classification.assignScores(featureTuples);
 	}
 
 	private static void PreetyPrintTuples(Set<Tuple> tuples) {
