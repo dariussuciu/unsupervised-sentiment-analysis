@@ -1,0 +1,34 @@
+<Config>
+	<inputDirectory> 
+		D://GitHub//unsupervised-sentiment-analysis////Input
+	</inputDirectory>
+	<outputDirectory>
+		D://GitHub//unsupervised-sentiment-analysis//Output
+	</outputDirectory>
+	<SWNDirectory> 
+		D://GitHub//unsupervised-sentiment-analysis//SWN//SentiWordNet.txt
+	</SWNDirectory>
+	<seedWords>
+		<seedWord>
+			good
+		</seedWord>
+		<seedWord>
+			best
+		</seedWord>
+		<seedWord>
+			great
+		</seedWord>
+		<seedWord>
+			amazed
+		</seedWord>	
+		<seedWord>
+			dramatic
+		</seedWord>
+		<seedWord>
+			powerful
+		</seedWord>	
+		<seedWord>
+			slow
+		</seedWord>
+	</seedWords>
+</Config>

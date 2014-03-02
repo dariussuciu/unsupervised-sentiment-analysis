@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import com.unsupervisedsentiment.analysis.core.Config;
 import com.unsupervisedsentiment.analysis.core.Initializer;
+import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 
 public class SentiWordNetService implements ISentimentScoreSource{
 
@@ -59,12 +60,18 @@ public class SentiWordNetService implements ISentimentScoreSource{
 
 	}
 
-	public HashMap<String, Double> getSeedWordsWithScores(){
-		HashMap<String, Double> hash = new HashMap<String, Double>();
-		ArrayList<String> seeds = config.getSeedWords();
+	public ArrayList<SeedScoreModel> getSeedWordsWithScores(){
+		ArrayList<SeedScoreModel> hash = new ArrayList<SeedScoreModel>();
+		ArrayList<String> seedsTemp = config.getSeedWords();
+		ArrayList<String> seeds = new ArrayList<String>();
+		
+		for (String seed : seedsTemp){
+			seeds.add(seed.trim());
+		}
+		
 		for (String seedName : seeds ){
-			double score = extract (seedName);
-			hash.put(seedName, score);
+			double score = extract(seedName);
+			hash.add(new SeedScoreModel(seedName, score));
 		}
 		return hash;
 	}

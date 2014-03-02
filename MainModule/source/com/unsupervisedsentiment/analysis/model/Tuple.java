@@ -109,4 +109,9 @@ public class Tuple {
 		Word word = getSource().getType().equals(ElementType.OPINION_WORD) ? getSource() : getTarget();
 		return word;
 	}
+	
+	public Word getFeatureWord(){
+		Word word = getSource().getType().equals(ElementType.FEATURE) ? getSource() : getTarget();
+		return word;
+	}
 }

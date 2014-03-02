@@ -62,10 +62,11 @@ public class Main {
 		System.out.println("OpinionWords");
 		PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
 		
-		HashSet<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
+		Set<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
 		
 		Classification classification = new Classification();
-		classification.assignScores(featureTuples);
+		classification.assignScoresBasedOnSeeds(featureTuples);
+		//classification.assignScores(featureTuples);
 	}
 
 	private static void PreetyPrintTuples(Set<Tuple> tuples) {
