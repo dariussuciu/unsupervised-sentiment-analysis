@@ -76,9 +76,14 @@ public class InputService {
 	}
 
 	private String getFormattedHeaderInfo(String header) {
-		header = header.split("//")[1];
-		if (header.charAt(0) == ' ')
-			header = header.substring(1, header.length());
-		return header;
+		String[] splittedHeader = header.split("//");
+		if(splittedHeader.length > 1)
+		{
+			header = header.split("//")[1];
+			if (header.charAt(0) == ' ')
+				header = header.substring(1, header.length());
+			return header;
+		}
+		return null;
 	}
 }

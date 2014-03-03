@@ -52,6 +52,7 @@ public class DoublePropagationAlgorithm {
 	}
 
 	private void executeStep() {
+		System.out.println("-------------Iteration Started-----------");
 		resetIterationFeaturesAndOpinionWords();
 		
 		for (SemanticGraph semanticGraph : data.getSentancesSemanticGraphs()) {

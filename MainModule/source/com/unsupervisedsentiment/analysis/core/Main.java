@@ -15,6 +15,7 @@ import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.modules.IO.InputService;
+import com.unsupervisedsentiment.analysis.modules.IO.InputWrapper;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.DoublePropagationAlgorithm;
 
 public class Main {
@@ -27,45 +28,53 @@ public class Main {
 		
 		InputService inputService = InputService.getInstance(config);
 		
-		inputService.getTextFromFile();
+		List<InputWrapper> inputFiles = inputService.getTextFromFile();
 		
-		DoublePropagationData inputData = new DoublePropagationData();
-		
-		 inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " " +
-		 StanfordNLPTestConstants.SENTENCE_TEST2
-		 + " " + StanfordNLPTestConstants.SENTENCE_TEST3 + " " +
-		 StanfordNLPTestConstants.SENTENCE_TEST4 + " "
-		 + StanfordNLPTestConstants.SENTENCE_TEST5 + " " +
-		 StanfordNLPTestConstants.SENTENCE_TEST6);
-		 
-		DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
-
-		HashSet<Tuple> seedWords = new HashSet<Tuple>();
-		
-		for(String seedString : config.getSeedWords())
+		for(InputWrapper input : inputFiles)
 		{
-			Tuple seed = new Tuple();
-			Word word = new Word("JJ", seedString.trim(), ElementType.OPINION_WORD);
-			seed.setSource(word);
-			seed.setTupleType(TupleType.Seed);
-			seedWords.add(seed);
+			System.out.println("-----------------------------------------");
+			System.out.println("-------------NEW FILE-----------");
+			System.out.println("-----------------------------------------");
+			long currentTime = System.currentTimeMillis();
+			DoublePropagationData inputData = new DoublePropagationData();
+			
+//			 inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " " +
+//			 StanfordNLPTestConstants.SENTENCE_TEST2
+//			 + " " + StanfordNLPTestConstants.SENTENCE_TEST3 + " " +
+//			 StanfordNLPTestConstants.SENTENCE_TEST4 + " "
+//			 + StanfordNLPTestConstants.SENTENCE_TEST5 + " " +
+//			 StanfordNLPTestConstants.SENTENCE_TEST6);
+			 
+			 inputData.setInput(input.getContent());
+			 
+			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
+	
+			HashSet<Tuple> seedWords = new HashSet<Tuple>();
+			
+			for(String seedString : config.getSeedWords())
+			{
+				Tuple seed = new Tuple();
+				Word word = new Word("JJ", seedString.trim(), ElementType.OPINION_WORD);
+				seed.setSource(word);
+				seed.setTupleType(TupleType.Seed);
+				seedWords.add(seed);
+			}
+
+			algorithm.execute(seedWords);
+			System.out.println("Elapsed time: " + (System.currentTimeMillis() - currentTime) + " ms");
+	
+			//System.out.println("-----------------------------------------");
+			//System.out.println("Features");
+			//PreetyPrintTuples(algorithm.getData().getFeatureTuples());
+			//System.out.println("-----------------------------------------");
+			//System.out.println("OpinionWords");
+			//PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
+			
+			HashSet<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
+			
+			Classification classification = new Classification();
+			classification.assignScores(featureTuples);
 		}
-
-		long currentTime = System.currentTimeMillis();
-		algorithm.execute(seedWords);
-		System.out.println("Elapsed time: " + (System.currentTimeMillis() - currentTime) + " ms");
-
-		System.out.println("-----------------------------------------");
-		System.out.println("Features");
-		PreetyPrintTuples(algorithm.getData().getFeatureTuples());
-		System.out.println("-----------------------------------------");
-		System.out.println("OpinionWords");
-		PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
-		
-		HashSet<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
-		
-		Classification classification = new Classification();
-		classification.assignScores(featureTuples);
 	}
 
 	private static void PreetyPrintTuples(Set<Tuple> tuples) {
