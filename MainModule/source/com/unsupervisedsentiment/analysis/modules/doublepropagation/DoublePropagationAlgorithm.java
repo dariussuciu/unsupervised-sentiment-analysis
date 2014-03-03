@@ -1,6 +1,7 @@
 package com.unsupervisedsentiment.analysis.modules.doublepropagation;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
@@ -38,7 +39,16 @@ public class DoublePropagationAlgorithm {
 
 	private void initialize(HashSet<Tuple> seedWords) {
 		data.setExpandedOpinionWords(new HashSet<Tuple>());
-		data.setSentancesSemanticGraphs(nlpService.createSemanticGraphsListForSentances(data.getInput()));
+		if (Helpers.existsStoredSemanticGraphsForFile(data.getFilename())) {
+			data.setSentancesSemanticGraphs(Helpers
+					.getSemanticGraphsFromFile(data.getFilename()));
+		} else {
+			List<SemanticGraph> semanticGraphsListForSentances = nlpService
+					.createSemanticGraphsListForSentances(data.getInput());
+			Helpers.saveSemanticGraphsToFile(semanticGraphsListForSentances,
+					data.getFilename());
+			data.setSentancesSemanticGraphs(semanticGraphsListForSentances);
+		}
 		data.setExpandedOpinionWords(seedWords);
 	}
 
@@ -46,7 +56,8 @@ public class DoublePropagationAlgorithm {
 		initialize(seedWords);
 		do {
 			executeStep();
-		} while (featuresIteration1.size() > 0 && opinionWordsIteration1.size() > 0);
+		} while (featuresIteration1.size() > 0
+				&& opinionWordsIteration1.size() > 0);
 
 		return data;
 	}
@@ -54,22 +65,29 @@ public class DoublePropagationAlgorithm {
 	private void executeStep() {
 		System.out.println("-------------Iteration Started-----------");
 		resetIterationFeaturesAndOpinionWords();
-		
+
 		for (SemanticGraph semanticGraph : data.getSentancesSemanticGraphs()) {
-			featuresIteration1.addAll(targetExtractorService.extractTargetsUsingR1(semanticGraph,
-					data.getExpandedOpinionWords(), data.getFeatureTuples()));
-			opinionWordsIteration1.addAll(opinionWordExtractorService.extractOpinionWordsUsingR4(semanticGraph,
-					data.getExpandedOpinionWords(), data.getExpandedOpinionWordsTuples()));
+			featuresIteration1.addAll(targetExtractorService
+					.extractTargetsUsingR1(semanticGraph,
+							data.getExpandedOpinionWords(),
+							data.getFeatureTuples()));
+			opinionWordsIteration1.addAll(opinionWordExtractorService
+					.extractOpinionWordsUsingR4(semanticGraph,
+							data.getExpandedOpinionWords(),
+							data.getExpandedOpinionWordsTuples()));
 		}
 
 		data.getFeatureTuples().addAll(featuresIteration1);
 		data.getExpandedOpinionWordsTuples().addAll(opinionWordsIteration1);
 
 		for (SemanticGraph semanticGraph : data.getSentancesSemanticGraphs()) {
-			featuresIteration2.addAll(targetExtractorService.extractTargetsUsingR3(semanticGraph, data.getFeatures(),
-					data.getFeatureTuples()));
-			opinionWordsIteration2.addAll(opinionWordExtractorService.extractOpinionWordsUsingR2(semanticGraph,
-					data.getFeatures(), data.getExpandedOpinionWordsTuples()));
+			featuresIteration2.addAll(targetExtractorService
+					.extractTargetsUsingR3(semanticGraph, data.getFeatures(),
+							data.getFeatureTuples()));
+			opinionWordsIteration2.addAll(opinionWordExtractorService
+					.extractOpinionWordsUsingR2(semanticGraph,
+							data.getFeatures(),
+							data.getExpandedOpinionWordsTuples()));
 		}
 
 		featuresIteration1.addAll(featuresIteration2);

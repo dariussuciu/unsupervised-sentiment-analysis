@@ -9,7 +9,7 @@ import com.unsupervisedsentiment.analysis.core.Config;
 import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 
-public class SentiWordNetService implements ISentimentScoreSource{
+public class SentiWordNetService implements ISentimentScoreSource {
 
 	private HashMap<String, Double> _dict;
 	Config config;
@@ -17,7 +17,7 @@ public class SentiWordNetService implements ISentimentScoreSource{
 	public SentiWordNetService() {
 		init();
 	}
-	
+
 	public void init() {
 		config = Initializer.getConfig();
 		String pathToSWN = config.getSWNPath();
@@ -26,6 +26,9 @@ public class SentiWordNetService implements ISentimentScoreSource{
 		try {
 			BufferedReader csv = new BufferedReader(new FileReader(pathToSWN));
 			String line = "";
+
+			// headers...
+			csv.readLine();
 			while ((line = csv.readLine()) != null) {
 				String[] data = line.split("\t");
 				Double score = Double.parseDouble(data[2])
@@ -41,6 +44,7 @@ public class SentiWordNetService implements ISentimentScoreSource{
 					}
 				}
 			}
+			csv.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -60,20 +64,20 @@ public class SentiWordNetService implements ISentimentScoreSource{
 
 	}
 
-	public ArrayList<SeedScoreModel> getSeedWordsWithScores(){
+	public ArrayList<SeedScoreModel> getSeedWordsWithScores() {
 		ArrayList<SeedScoreModel> hash = new ArrayList<SeedScoreModel>();
 		ArrayList<String> seedsTemp = config.getSeedWords();
 		ArrayList<String> seeds = new ArrayList<String>();
-		
-		for (String seed : seedsTemp){
+
+		for (String seed : seedsTemp) {
 			seeds.add(seed.trim());
 		}
-		
-		for (String seedName : seeds ){
+
+		for (String seedName : seeds) {
 			double score = extract(seedName);
 			hash.add(new SeedScoreModel(seedName, score));
 		}
 		return hash;
 	}
-	
+
 }

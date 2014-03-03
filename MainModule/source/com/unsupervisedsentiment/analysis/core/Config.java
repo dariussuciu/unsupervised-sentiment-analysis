@@ -11,8 +11,10 @@ public class Config {
 	private String inputDirectory;
 
 	private String outputDirectory;
-	
+
 	private String SWNPath;
+
+	private String storedSemanticGraphsDirectory;
 
 	private ArrayList<String> seedWords;
 
@@ -49,7 +51,7 @@ public class Config {
 		return "Input Directory: " + inputDirectory + "\n"
 				+ "Output Directory: " + inputDirectory + "\n";
 	}
-	
+
 	@XmlElement(name = "SWNDirectory")
 	public String getSWNPath() {
 		return SWNPath.trim();
@@ -57,5 +59,15 @@ public class Config {
 
 	public void setSWNPath(String sWNPath) {
 		SWNPath = sWNPath;
+	}
+
+	@XmlElement(name = "storedSemanticGraphsDirectory")
+	public String getStoredSemanticGraphsDirectory() {
+		return storedSemanticGraphsDirectory.trim();
+	}
+
+	public void setStoredSemanticGraphsDirectory(
+			String storedSemanticGraphsDirectory) {
+		this.storedSemanticGraphsDirectory = storedSemanticGraphsDirectory;
 	}
 }

@@ -25,88 +25,98 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		Config config = Initializer.getConfig();
-		
+
 		InputService inputService = InputService.getInstance(config);
-		
+
 		List<InputWrapper> inputFiles = inputService.getTextFromFile();
-		
-		for(InputWrapper input : inputFiles)
-		{
+
+		for (InputWrapper input : inputFiles) {
 			System.out.println("-----------------------------------------");
 			System.out.println("-------------NEW FILE-----------");
 			System.out.println("-----------------------------------------");
 			long currentTime = System.currentTimeMillis();
 			DoublePropagationData inputData = new DoublePropagationData();
-			
-//			 inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " " +
-//			 StanfordNLPTestConstants.SENTENCE_TEST2
-//			 + " " + StanfordNLPTestConstants.SENTENCE_TEST3 + " " +
-//			 StanfordNLPTestConstants.SENTENCE_TEST4 + " "
-//			 + StanfordNLPTestConstants.SENTENCE_TEST5 + " " +
-//			 StanfordNLPTestConstants.SENTENCE_TEST6);
-			 
-			 inputData.setInput(input.getContent());
-			 
-			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
-	
+
+			// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " "
+			// +
+			// StanfordNLPTestConstants.SENTENCE_TEST2
+			// + " " + StanfordNLPTestConstants.SENTENCE_TEST3 + " " +
+			// StanfordNLPTestConstants.SENTENCE_TEST4 + " "
+			// + StanfordNLPTestConstants.SENTENCE_TEST5 + " " +
+			// StanfordNLPTestConstants.SENTENCE_TEST6);
+
+			inputData.setInput(input.getContent());
+			inputData.setFilename(input.getFilename());
+			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(
+					inputData);
+
 			HashSet<Tuple> seedWords = new HashSet<Tuple>();
-			
-			for(String seedString : config.getSeedWords())
-			{
+
+			for (String seedString : config.getSeedWords()) {
 				Tuple seed = new Tuple();
-				Word word = new Word("JJ", seedString.trim(), ElementType.OPINION_WORD);
+				Word word = new Word("JJ", seedString.trim(),
+						ElementType.OPINION_WORD);
 				seed.setSource(word);
 				seed.setTupleType(TupleType.Seed);
 				seedWords.add(seed);
 			}
 
 			algorithm.execute(seedWords);
-			System.out.println("Elapsed time: " + (System.currentTimeMillis() - currentTime) + " ms");
-	
-			//System.out.println("-----------------------------------------");
-			//System.out.println("Features");
-			//PreetyPrintTuples(algorithm.getData().getFeatureTuples());
-			//System.out.println("-----------------------------------------");
-			//System.out.println("OpinionWords");
-			//PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
-			
-			HashSet<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
-			
+			System.out.println("Elapsed time: "
+					+ (System.currentTimeMillis() - currentTime) + " ms");
+
+			// System.out.println("-----------------------------------------");
+			// System.out.println("Features");
+			// PreetyPrintTuples(algorithm.getData().getFeatureTuples());
+			// System.out.println("-----------------------------------------");
+			// System.out.println("OpinionWords");
+			// PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
+
+			HashSet<Tuple> featureTuples = algorithm.getData()
+					.getFeatureTuples();
+
 			Classification classification = new Classification();
 			classification.assignScores(featureTuples);
 		}
 
-//		long currentTime = System.currentTimeMillis();
-//		algorithm.execute(seedWords);
-//		System.out.println("Elapsed time: " + (System.currentTimeMillis() - currentTime) + " ms");
-//
-//		System.out.println("-----------------------------------------");
-//		System.out.println("Features");
-//		PreetyPrintTuples(algorithm.getData().getFeatureTuples());
-//		System.out.println("-----------------------------------------");
-//		System.out.println("OpinionWords");
-//		PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
-//		
-//		Set<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
-//		
-//		Classification classification = new Classification();
-//		classification.assignScoresBasedOnSeeds(featureTuples);
-		//classification.assignScores(featureTuples);
+		// long currentTime = System.currentTimeMillis();
+		// algorithm.execute(seedWords);
+		// System.out.println("Elapsed time: " + (System.currentTimeMillis() -
+		// currentTime) + " ms");
+		//
+		// System.out.println("-----------------------------------------");
+		// System.out.println("Features");
+		// PreetyPrintTuples(algorithm.getData().getFeatureTuples());
+		// System.out.println("-----------------------------------------");
+		// System.out.println("OpinionWords");
+		// PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
+		//
+		// Set<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
+		//
+		// Classification classification = new Classification();
+		// classification.assignScoresBasedOnSeeds(featureTuples);
+		// classification.assignScores(featureTuples);
 	}
 
 	private static void PreetyPrintTuples(Set<Tuple> tuples) {
 		for (Tuple tuple : tuples) {
 			if (tuple.getTupleType().equals(TupleType.Pair)) {
 				Pair pair = (Pair) tuple;
-				System.out.println("Pair:  " + tuple.getSource().getValue() + "(" + tuple.getSource().getPosTag() + ")"
-						+ " --(" + pair.getRelation() + ")--> " + tuple.getTarget().getValue() + "("
+				System.out.println("Pair:  " + tuple.getSource().getValue()
+						+ "(" + tuple.getSource().getPosTag() + ")" + " --("
+						+ pair.getRelation() + ")--> "
+						+ tuple.getTarget().getValue() + "("
 						+ tuple.getTarget().getPosTag() + ")");
 			} else if (tuple.getTupleType().equals(TupleType.Triple)) {
 				Triple triple = (Triple) tuple;
-				System.out.println("Triple:  " + tuple.getSource().getValue() + "(" + tuple.getSource().getPosTag()
-						+ ")" + " --(" + triple.getRelationHOpinion() + ")--> " + triple.getH().getValue() + "("
-						+ triple.getH().getPosTag() + ")" + " --(" + triple.getRelationHTarget() + ")--> "
-						+ tuple.getTarget().getValue() + "(" + tuple.getTarget().getPosTag() + ")");
+				System.out.println("Triple:  " + tuple.getSource().getValue()
+						+ "(" + tuple.getSource().getPosTag() + ")" + " --("
+						+ triple.getRelationHOpinion() + ")--> "
+						+ triple.getH().getValue() + "("
+						+ triple.getH().getPosTag() + ")" + " --("
+						+ triple.getRelationHTarget() + ")--> "
+						+ tuple.getTarget().getValue() + "("
+						+ tuple.getTarget().getPosTag() + ")");
 			}
 		}
 	}

@@ -47,6 +47,7 @@ public class InputService {
 			InputWrapper iWrapper = new InputWrapper();
 			getHeaders(in, iWrapper);
 			getContent(in, iWrapper);
+			iWrapper.setFilename(file.getName());
 			return iWrapper;
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -77,8 +78,7 @@ public class InputService {
 
 	private String getFormattedHeaderInfo(String header) {
 		String[] splittedHeader = header.split("//");
-		if(splittedHeader.length > 1)
-		{
+		if (splittedHeader.length > 1) {
 			header = header.split("//")[1];
 			if (header.charAt(0) == ' ')
 				header = header.substring(1, header.length());

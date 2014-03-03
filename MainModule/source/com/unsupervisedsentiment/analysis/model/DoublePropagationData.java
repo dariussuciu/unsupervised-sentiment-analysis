@@ -8,6 +8,7 @@ import edu.stanford.nlp.semgraph.SemanticGraph;
 public class DoublePropagationData {
 	// input
 	private HashSet<Word> seedWords;
+	private String filename;
 	private String input;
 
 	// processed sentences, an HashSet for each sentence
@@ -35,7 +36,8 @@ public class DoublePropagationData {
 		return sentancesSemanticGraphs;
 	}
 
-	public void setSentancesSemanticGraphs(List<SemanticGraph> sentancesSemanticGraph) {
+	public void setSentancesSemanticGraphs(
+			List<SemanticGraph> sentancesSemanticGraph) {
 		this.sentancesSemanticGraphs = sentancesSemanticGraph;
 	}
 
@@ -59,7 +61,7 @@ public class DoublePropagationData {
 		HashSet<Word> opinionWords = new HashSet<Word>();
 		for (Tuple tuple : expandedOpinionWords) {
 			Word foundOpinionWord = getWord(tuple, ElementType.OPINION_WORD);
-			if(foundOpinionWord != null)
+			if (foundOpinionWord != null)
 				opinionWords.add(foundOpinionWord);
 		}
 		return opinionWords;
@@ -69,25 +71,24 @@ public class DoublePropagationData {
 		HashSet<Word> featureWords = new HashSet<Word>();
 		for (Tuple tuple : features) {
 			Word foundFeature = getWord(tuple, ElementType.FEATURE);
-			if(foundFeature != null)
+			if (foundFeature != null)
 				featureWords.add(foundFeature);
 		}
 		return featureWords;
 	}
-	
-	private Word getWord(Tuple tuple, ElementType type)
-	{
-		// seed words tuples don`t have targets 
-		if(tuple.getTupleType().equals(TupleType.Seed) && tuple.getSource().getType().equals(type))
-		{
+
+	private Word getWord(Tuple tuple, ElementType type) {
+		// seed words tuples don`t have targets
+		if (tuple.getTupleType().equals(TupleType.Seed)
+				&& tuple.getSource().getType().equals(type)) {
 			return tuple.getSource();
 		}
-		
+
 		ElementType sourceType = tuple.getSource().getType();
 		ElementType targetType = tuple.getTarget().getType();
-		if(sourceType.equals(type))
+		if (sourceType.equals(type))
 			return tuple.getSource();
-		if(targetType.equals(type))
+		if (targetType.equals(type))
 			return tuple.getTarget();
 		return null;
 	}
@@ -98,6 +99,14 @@ public class DoublePropagationData {
 
 	public void setSeedWords(HashSet<Word> seedWords) {
 		this.seedWords = seedWords;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 
 }

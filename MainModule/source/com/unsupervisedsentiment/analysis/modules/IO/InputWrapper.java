@@ -4,6 +4,7 @@ public class InputWrapper {
 	private String author;
 	private String source;
 	private String content;
+	private String filename;
 
 	public String getAuthor() {
 		return author;
@@ -27,5 +28,13 @@ public class InputWrapper {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 }
