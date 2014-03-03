@@ -75,6 +75,23 @@ public class Main {
 			Classification classification = new Classification();
 			classification.assignScores(featureTuples);
 		}
+
+//		long currentTime = System.currentTimeMillis();
+//		algorithm.execute(seedWords);
+//		System.out.println("Elapsed time: " + (System.currentTimeMillis() - currentTime) + " ms");
+//
+//		System.out.println("-----------------------------------------");
+//		System.out.println("Features");
+//		PreetyPrintTuples(algorithm.getData().getFeatureTuples());
+//		System.out.println("-----------------------------------------");
+//		System.out.println("OpinionWords");
+//		PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
+//		
+//		Set<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
+//		
+//		Classification classification = new Classification();
+//		classification.assignScoresBasedOnSeeds(featureTuples);
+		//classification.assignScores(featureTuples);
 	}
 
 	private static void PreetyPrintTuples(Set<Tuple> tuples) {
