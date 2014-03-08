@@ -22,12 +22,14 @@ public class Dep_MRRel extends GenericRelation {
 	 * - tmod: Last night, I swam in the pool. tmod(swam, night) <br>
 	 * - vmod: I don't have anything to say to you. vmod(anything, say)
 	 * - rcmod: ? <br>
+	 * - advcl: ? <br>
+	 * - neg: ? <br>
 	 * <br>
 	 * Added: <br>
 	 * - acomp: She looks very beautiful<br>
 	 */
 	public enum mod {
-		acomp, amod, appos, advcl, neg
+		acomp, amod
 	};
 
 	public enum pmod {
@@ -38,10 +40,11 @@ public class Dep_MRRel extends GenericRelation {
 	 * Removed: <br>
 	 * - csubj: What she said makes sense. csubj(makes, said) <br>
 	 * - csubjpass: That she lied was suspected by everyone. csubjpass(suspected, lied) <br>
+	 * - nsubjpass <br>
 	 * 
 	 */
 	public enum subj {
-		nsubj, nsubjpass
+		nsubj
 	};
 
 	public enum s {

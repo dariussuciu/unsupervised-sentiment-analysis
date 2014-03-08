@@ -16,6 +16,8 @@ import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.modules.IO.InputService;
 import com.unsupervisedsentiment.analysis.modules.IO.InputWrapper;
+import com.unsupervisedsentiment.analysis.modules.IO.OutputService;
+import com.unsupervisedsentiment.analysis.modules.IO.OutputWrapper;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.DoublePropagationAlgorithm;
 
 public class Main {
@@ -27,9 +29,9 @@ public class Main {
 		Config config = Initializer.getConfig();
 
 		InputService inputService = InputService.getInstance(config);
-
+		OutputService outputService = OutputService.getInstance(config);
 		List<InputWrapper> inputFiles = inputService.getTextFromFile();
-
+        List<OutputWrapper> outputFiles = new ArrayList<OutputWrapper>();
 		for (InputWrapper input : inputFiles) {
 			System.out.println("-----------------------------------------");
 			System.out.println("-------------NEW FILE-----------");
@@ -74,10 +76,27 @@ public class Main {
 
 			HashSet<Tuple> featureTuples = algorithm.getData()
 					.getFeatureTuples();
+			
+			HashSet<Tuple> opinionWordTuples = algorithm.getData()
+					.getExpandedOpinionWordsTuples();
 
 			Classification classification = new Classification();
 			classification.assignScores(featureTuples);
+			OutputWrapper outputFile = new OutputWrapper();
+			
+			outputFile.setAuthor(input.getAuthor());
+			outputFile.setFilename(input.getFilename());
+			outputFile.setSource(input.getSource());
+			outputFile.setTuples(featureTuples);
+			outputFiles.add(outputFile);
+			
+			classification = new Classification();
+			classification.assignScores(opinionWordTuples);
+			outputFile.setTuples(opinionWordTuples);
+			outputFiles.add(outputFile);
 		}
+		
+		outputService.writeOutput(outputFiles);
 
 		// long currentTime = System.currentTimeMillis();
 		// algorithm.execute(seedWords);
