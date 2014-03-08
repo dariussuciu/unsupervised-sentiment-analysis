@@ -41,6 +41,7 @@ public class Main {
 
 
 			inputData.setFilename(input.getFilename());
+			inputData.setInput(input.getContent());
 			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(
 					inputData);
 
