@@ -59,13 +59,6 @@ public class Main {
 			System.out.println("Elapsed time: "
 					+ (System.currentTimeMillis() - currentTime) + " ms");
 
-			// System.out.println("-----------------------------------------");
-			// System.out.println("Features");
-			// PreetyPrintTuples(algorithm.getData().getFeatureTuples());
-			// System.out.println("-----------------------------------------");
-			// System.out.println("OpinionWords");
-			// PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
-
 			HashSet<Tuple> featureTuples = algorithm.getData()
 					.getFeatureTuples();
 			
@@ -83,30 +76,13 @@ public class Main {
 			outputFiles.add(outputFile);
 			
 			classification = new Classification();
-			classification.assignScores(opinionWordTuples);
+			classification.assignScoresBasedOnSeeds(opinionWordTuples);
 			outputFile.setTuples(opinionWordTuples);
 			outputFiles.add(outputFile);
 		}
 		
 		outputService.writeOutput(outputFiles);
-
-		// long currentTime = System.currentTimeMillis();
-		// algorithm.execute(seedWords);
-		// System.out.println("Elapsed time: " + (System.currentTimeMillis() -
-		// currentTime) + " ms");
-		//
-		// System.out.println("-----------------------------------------");
-		// System.out.println("Features");
-		// PreetyPrintTuples(algorithm.getData().getFeatureTuples());
-		// System.out.println("-----------------------------------------");
-		// System.out.println("OpinionWords");
-		// PreetyPrintTuples(algorithm.getData().getExpandedOpinionWordsTuples());
-		//
-		// Set<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
-		//
-		// Classification classification = new Classification();
-		// classification.assignScoresBasedOnSeeds(featureTuples);
-		// classification.assignScores(featureTuples);
+		
 	}
 
 	private static void PreetyPrintTuples(Set<Tuple> tuples) {
