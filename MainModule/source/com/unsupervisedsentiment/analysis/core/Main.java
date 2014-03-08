@@ -39,15 +39,7 @@ public class Main {
 			long currentTime = System.currentTimeMillis();
 			DoublePropagationData inputData = new DoublePropagationData();
 
-			// inputData.setInput(StanfordNLPTestConstants.SENTENCE_TEST1 + " "
-			// +
-			// StanfordNLPTestConstants.SENTENCE_TEST2
-			// + " " + StanfordNLPTestConstants.SENTENCE_TEST3 + " " +
-			// StanfordNLPTestConstants.SENTENCE_TEST4 + " "
-			// + StanfordNLPTestConstants.SENTENCE_TEST5 + " " +
-			// StanfordNLPTestConstants.SENTENCE_TEST6);
 
-			inputData.setInput(input.getContent());
 			inputData.setFilename(input.getFilename());
 			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(
 					inputData);
@@ -81,7 +73,7 @@ public class Main {
 					.getExpandedOpinionWordsTuples();
 
 			Classification classification = new Classification();
-			classification.assignScores(featureTuples);
+			classification.assignScoresBasedOnSeeds(featureTuples);
 			OutputWrapper outputFile = new OutputWrapper();
 			
 			outputFile.setAuthor(input.getAuthor());
