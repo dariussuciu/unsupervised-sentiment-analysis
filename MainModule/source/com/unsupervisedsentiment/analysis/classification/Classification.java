@@ -54,21 +54,24 @@ public class Classification {
 			for (SeedScoreModel model : seeds) {
 				String seed = model.getSeed().trim();
 				String source = tuple.getSource().getValue();
-				String target = tuple.getTarget().getValue();
 
-				if (seed.equals(source.trim()) || seed.equals(target.trim())) {
-					double score = model.getScore();
-					tuple.getSource().setScore(score);
-					tuple.getTarget().setScore(score);
+				if (tuple.getTarget() != null) {
+					String target = tuple.getTarget().getValue();
 
+					if (seed.equals(source.trim())
+							|| seed.equals(target.trim())) {
+						double score = model.getScore();
+						tuple.getSource().setScore(score);
+						tuple.getTarget().setScore(score);
+
+					}
+					if (set.contains(tuple)
+							&& (tuple.getSource().getScore() == DEFAULT_SCORE || tuple
+									.getTarget().getScore() == DEFAULT_SCORE)) {
+						set.add(tuple);
+					} else if (!set.contains(tuple))
+						set.add(tuple);
 				}
-				if (set.contains(tuple)
-						&& (tuple.getSource().getScore() == DEFAULT_SCORE || tuple
-								.getTarget().getScore() == DEFAULT_SCORE)) {
-					set.add(tuple);
-				} else if (!set.contains(tuple))
-					set.add(tuple);
-
 			}
 
 		}
@@ -88,9 +91,13 @@ public class Classification {
 	private ArrayList<Tuple> initTupleArrayList(Set<Tuple> data) {
 		ArrayList<Tuple> tuples = new ArrayList<Tuple>();
 		for (Tuple tuple : data) {
-			tuple.getSource().setScore(DEFAULT_SCORE);
-			tuple.getTarget().setScore(DEFAULT_SCORE);
-			tuples.add(tuple);
+			if (tuple != null) {
+				if (tuple.getSource() != null)
+					tuple.getSource().setScore(DEFAULT_SCORE);
+				if (tuple.getTarget() != null)
+					tuple.getTarget().setScore(DEFAULT_SCORE);
+				tuples.add(tuple);
+			}
 		}
 		return tuples;
 	}
