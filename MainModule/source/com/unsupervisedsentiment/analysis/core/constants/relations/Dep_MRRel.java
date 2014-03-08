@@ -27,7 +27,7 @@ public class Dep_MRRel extends GenericRelation {
 	 * - acomp: She looks very beautiful<br>
 	 */
 	public enum mod {
-		acomp, amod, appos, advcl, neg
+		acomp, amod, appos, advcl
 	};
 
 	public enum pmod {

@@ -125,12 +125,8 @@ public class Classification {
 		System.out.println("Score assignment:");
 
 		for (Tuple tuple : tuples) {
-			System.out.println("Opinion word/score :"
-					+ tuple.getOpinionWord().getValue() + "/"
-					+ tuple.getOpinionWord().getScore());
-			System.out.println("Feature word/score :"
-					+ tuple.getFeatureWord().getValue() + "/"
-					+ tuple.getFeatureWord().getScore());
+			System.out.println(tuple.getOpinionWord().getValue() + "->"
+					+ tuple.getFeatureWord().getValue() + " : " + tuple.getOpinionWord().getScore());
 		}
 	}
 

@@ -5,3 +5,7 @@
 *.war
 *.ear
 /MainModule/config.xml
+SWN/SentiWordNet.txt
+*.txt
+*.txt
+SWN/SentiWordNet.txt
