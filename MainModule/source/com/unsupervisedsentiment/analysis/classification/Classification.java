@@ -63,14 +63,15 @@ public class Classification {
 						double score = model.getScore();
 						tuple.getSource().setScore(score);
 						tuple.getTarget().setScore(score);
-
+						set.add(tuple);
 					}
-					if (set.contains(tuple)
-							&& (tuple.getSource().getScore() == DEFAULT_SCORE || tuple
-									.getTarget().getScore() == DEFAULT_SCORE)) {
-						set.add(tuple);
-					} else if (!set.contains(tuple))
-						set.add(tuple);
+//					if (set.contains(tuple)
+//							&& (tuple.getSource().getScore() == DEFAULT_SCORE || tuple
+//									.getTarget().getScore() == DEFAULT_SCORE)) {
+//					//	set.add(tuple);
+//					} else if (!set.contains(tuple)) {
+//						set.add(tuple);
+//					}
 				}
 			}
 
@@ -104,21 +105,30 @@ public class Classification {
 
 	private ArrayList<Tuple> assignScoresByPropagation(ArrayList<Tuple> tuples) {
 		for (int i = 0; i < tuples.size() - 1; i++) {
-			for (int j = 0; j < tuples.size(); j++) {
-				Word firstWord = tuples.get(i).getFeatureWord();
-				Word secondWord = tuples.get(j).getFeatureWord();
-				Word thirdWord = tuples.get(j).getOpinionWord();
+			for (int j = 1; j < tuples.size(); j++) {
+				Word firstWordFeature = tuples.get(i).getFeatureWord();
+				Word firstWordOpinion = tuples.get(i).getOpinionWord();
+				Word secondWordFeature = tuples.get(j).getFeatureWord();
+				Word secondWordOpinion = tuples.get(j).getOpinionWord();
 
-				if (firstWord.getValue().equals(secondWord.getValue())) {
-					double score1 = firstWord.getScore();
-					double score2 = secondWord.getScore();
-					double score3 = thirdWord.getScore();
-
-					if (score1 != DEFAULT_SCORE && (score2 == DEFAULT_SCORE)) {
-						secondWord.setScore(score1);
+				if (firstWordFeature.getValue().equals(secondWordFeature.getValue())) {
+					double score1 = firstWordFeature.getScore();
+					double score2 = secondWordFeature.getScore();
+					double score3 = secondWordOpinion.getScore();
+					
+					if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE && score3 == DEFAULT_SCORE) {
+						secondWordFeature.setScore(score1);
+						secondWordOpinion.setScore(score1);
 					}
-					if (score1 > DEFAULT_SCORE && (score3 == DEFAULT_SCORE)) {
-						thirdWord.setScore(score1);
+				}
+				if (firstWordOpinion.getValue().equals(secondWordOpinion)){
+					double score1 = firstWordOpinion.getScore();
+					double score2 = secondWordOpinion.getScore();
+					double score3 = secondWordOpinion.getScore();
+					
+					if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE && score3 == DEFAULT_SCORE) {
+						secondWordFeature.setScore(score1);
+						secondWordOpinion.setScore(score1);
 					}
 				}
 			}
