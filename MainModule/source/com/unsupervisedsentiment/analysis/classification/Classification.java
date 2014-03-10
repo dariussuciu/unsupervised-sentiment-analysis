@@ -31,7 +31,7 @@ public class Classification {
 			tuple.getOpinionWord().setScore(score);
 		}
 	}
-	
+
 	public void assignSentiWordScores(Set<Tuple> tuples) {
 		HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
 
@@ -52,7 +52,7 @@ public class Classification {
 
 		ArrayList<Tuple> initialTuples = initTupleArrayList(data);
 
-		ArrayList<Tuple> partiallyAssignedTuples = assignScoresBasedOnSeeds(
+		ArrayList<Tuple> partiallyAssignedTuples = assignScoresToSeeds(
 				initialTuples, seeds);
 
 		ArrayList<Tuple> fullyAssignedTuples = assignScoresByPropagation(partiallyAssignedTuples);
@@ -60,7 +60,7 @@ public class Classification {
 		printResults(fullyAssignedTuples);
 	}
 
-	private ArrayList<Tuple> assignScoresBasedOnSeeds(ArrayList<Tuple> tuples,
+	private ArrayList<Tuple> assignScoresToSeeds(ArrayList<Tuple> tuples,
 			ArrayList<SeedScoreModel> seeds) {
 		HashSet<Tuple> set = new HashSet<Tuple>();
 		for (Tuple tuple : tuples) {
@@ -76,15 +76,15 @@ public class Classification {
 						double score = model.getScore();
 						tuple.getSource().setScore(score);
 						tuple.getTarget().setScore(score);
+						// set.add(tuple);
+					}
+					if (set.contains(tuple)
+							&& (tuple.getSource().getScore() == DEFAULT_SCORE || tuple
+									.getTarget().getScore() == DEFAULT_SCORE)) {
+						 set.add(tuple);
+					} else if (!set.contains(tuple)) {
 						set.add(tuple);
 					}
-//					if (set.contains(tuple)
-//							&& (tuple.getSource().getScore() == DEFAULT_SCORE || tuple
-//									.getTarget().getScore() == DEFAULT_SCORE)) {
-//					//	set.add(tuple);
-//					} else if (!set.contains(tuple)) {
-//						set.add(tuple);
-//					}
 				}
 			}
 
@@ -124,22 +124,25 @@ public class Classification {
 				Word secondWordFeature = tuples.get(j).getFeatureWord();
 				Word secondWordOpinion = tuples.get(j).getOpinionWord();
 
-				if (firstWordFeature.getValue().equals(secondWordFeature.getValue())) {
+				if (firstWordFeature.getValue().equals(
+						secondWordFeature.getValue())) {
 					double score1 = firstWordFeature.getScore();
 					double score2 = secondWordFeature.getScore();
 					double score3 = secondWordOpinion.getScore();
-					
-					if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE && score3 == DEFAULT_SCORE) {
+
+					if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE
+							&& score3 == DEFAULT_SCORE) {
 						secondWordFeature.setScore(score1);
 						secondWordOpinion.setScore(score1);
 					}
 				}
-				if (firstWordOpinion.getValue().equals(secondWordOpinion)){
+				if (firstWordOpinion.getValue().equals(secondWordOpinion)) {
 					double score1 = firstWordOpinion.getScore();
 					double score2 = secondWordOpinion.getScore();
 					double score3 = secondWordOpinion.getScore();
-					
-					if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE && score3 == DEFAULT_SCORE) {
+
+					if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE
+							&& score3 == DEFAULT_SCORE) {
 						secondWordFeature.setScore(score1);
 						secondWordOpinion.setScore(score1);
 					}
@@ -157,11 +160,14 @@ public class Classification {
 		for (Tuple tuple : tuples) {
 			System.out.println("Opinion word/score :"
 					+ tuple.getOpinionWord().getValue() + "/"
-					+ tuple.getOpinionWord().getScore());
+					+ tuple.getOpinionWord().getScore() + " "
+					+ tuple.getOpinionWord().getSentiWordScore());
 			System.out.println("Feature word/score :"
 					+ tuple.getFeatureWord().getValue() + "/"
-					+ tuple.getFeatureWord().getScore());
+					+ tuple.getFeatureWord().getScore() + " "
+					+ tuple.getFeatureWord().getSentiWordScore());
 		}
+		System.out.println(tuples.size());
 	}
 
 	private double getScore(String word) {
