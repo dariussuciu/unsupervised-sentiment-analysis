@@ -66,7 +66,7 @@ public class SentiWordNetService implements ISentimentScoreSource {
 
 	public ArrayList<SeedScoreModel> getSeedWordsWithScores() {
 		ArrayList<SeedScoreModel> hash = new ArrayList<SeedScoreModel>();
-		ArrayList<String> seedsTemp = config.getSeedWords();
+		ArrayList<String> seedsTemp = (ArrayList<String>) config.getSeedWords();
 		ArrayList<String> seeds = new ArrayList<String>();
 
 		for (String seed : seedsTemp) {

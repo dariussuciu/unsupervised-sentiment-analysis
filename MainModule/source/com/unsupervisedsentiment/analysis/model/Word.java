@@ -7,6 +7,7 @@ public class Word {
 	private String value;
 	private ElementType type;
 	private double score;
+	private double sentiWordScore;
 
 	public String getPosTag() {
 		return posTag;
@@ -18,6 +19,14 @@ public class Word {
 
 	public String getValue() {
 		return value;
+	}
+	
+	public String getPattern() {
+		String pattern;
+		if(value.contains("*"))
+			pattern = value.replace("*", "\\*");
+		else pattern = value;
+		return pattern;
 	}
 
 	public void setValue(String value) {
@@ -94,5 +103,13 @@ public class Word {
 
 	public void setScore(double score) {
 		this.score = score;
+	}
+
+	public double getSentiWordScore() {
+		return sentiWordScore;
+	}
+
+	public void setSentiWordScore(double sentiWordScore) {
+		this.sentiWordScore = sentiWordScore;
 	}
 }

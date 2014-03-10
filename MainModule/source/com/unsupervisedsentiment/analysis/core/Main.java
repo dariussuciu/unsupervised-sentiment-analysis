@@ -47,6 +47,8 @@ public class Main {
 
 			HashSet<Tuple> seedWords = new HashSet<Tuple>();
 
+			config.setSeedWords(inputService.getSeedWordsFromFile());
+			
 			for (String seedString : config.getSeedWords()) {
 				Tuple seed = new Tuple();
 				Word word = new Word("JJ", seedString.trim(),
@@ -66,19 +68,25 @@ public class Main {
 			HashSet<Tuple> opinionWordTuples = algorithm.getData()
 					.getExpandedOpinionWordsTuples();
 
+			HashSet<Tuple> combinedTuples = new HashSet<Tuple>();
+			
 			Classification classification = new Classification();
 			classification.assignScoresBasedOnSeeds(featureTuples);
+			classification.assignSentiWordScores(featureTuples);
+			
+			classification = new Classification();
+			classification.assignScoresBasedOnSeeds(opinionWordTuples);
+			classification.assignSentiWordScores(opinionWordTuples);
+			
+			combinedTuples.addAll(featureTuples);
+			combinedTuples.addAll(opinionWordTuples);
+			
 			OutputWrapper outputFile = new OutputWrapper();
 			
 			outputFile.setAuthor(input.getAuthor());
 			outputFile.setFilename(input.getFilename());
 			outputFile.setSource(input.getSource());
-			outputFile.setTuples(featureTuples);
-			outputFiles.add(outputFile);
-			
-			classification = new Classification();
-			classification.assignScoresBasedOnSeeds(opinionWordTuples);
-			outputFile.setTuples(opinionWordTuples);
+			outputFile.setTuples(combinedTuples);
 			outputFiles.add(outputFile);
 		}
 		

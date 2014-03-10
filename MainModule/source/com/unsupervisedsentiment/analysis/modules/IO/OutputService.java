@@ -75,10 +75,12 @@ public class OutputService {
 
 					writer.write("Pair:  " + tuple.getSource().getValue()
 							+ "[" + tuple.getSource().getScore() + "]" 
+							+ "{" + tuple.getSource().getSentiWordScore() + "}" 
 							+ "(" + tuple.getSource().getPosTag() + ")" + " --("
 							+ pair.getRelation() + ")--> "
 							+ tuple.getTarget().getValue() 
 							+ "[" + tuple.getTarget().getScore() + "]" 
+							+ "{" + tuple.getTarget().getSentiWordScore() + "}" 
 							+ "(" + tuple.getTarget().getPosTag() + ")");
 			    writer.newLine();
 			} 
@@ -87,6 +89,7 @@ public class OutputService {
 				Triple triple = (Triple) tuple;
 				writer.write("Triple:  " + tuple.getSource().getValue()
 						+ "[" + tuple.getSource().getScore() + "]" 
+						+ "{" + tuple.getSource().getSentiWordScore() + "}" 
 						+ "(" + tuple.getSource().getPosTag() + ")" + " --("
 						+ triple.getRelationHOpinion() + ")--> "
 						+ triple.getH().getValue() + "("
@@ -94,6 +97,7 @@ public class OutputService {
 						+ triple.getRelationHTarget() + ")--> "
 						+ tuple.getTarget().getValue() + "("
 						+ "[" + tuple.getTarget().getScore() + "]" 
+						+ "{" + tuple.getTarget().getSentiWordScore() + "}" 
 						+ tuple.getTarget().getPosTag() + ")");
 			    writer.newLine();
 			}

@@ -31,6 +31,19 @@ public class Classification {
 			tuple.getOpinionWord().setScore(score);
 		}
 	}
+	
+	public void assignSentiWordScores(Set<Tuple> tuples) {
+		HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
+
+		for (Tuple tuple : tuples) {
+			Word opinionWord = tuple.getOpinionWord();
+			String opinionWordValue = opinionWord.getValue();
+			double score = getScore(opinionWordValue);
+			// either one
+			opinionScores.put(opinionWord, score);
+			tuple.getOpinionWord().setSentiWordScore(score);
+		}
+	}
 
 	public void assignScoresBasedOnSeeds(Set<Tuple> data) {
 

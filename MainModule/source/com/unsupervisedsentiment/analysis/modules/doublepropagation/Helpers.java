@@ -181,7 +181,7 @@ public class Helpers {
 
 		for (Word word : words) {
 			final List<IndexedWord> vertexes = semanticGraph
-					.getAllNodesByWordPattern(word.getValue());
+					.getAllNodesByWordPattern(word.getPattern());
 			for (IndexedWord vertex : vertexes) {
 				// for outgoing edges
 				List<SemanticGraphEdge> outgoingTargetEdges = Helpers

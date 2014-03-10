@@ -56,7 +56,7 @@ public class OpinionWordExtractorService implements IOpinionWordExtractorService
 		Set<Tuple> targets = new HashSet<Tuple>();
 
 		for (Word feature : features) {
-			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(feature.getValue());
+			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(feature.getPattern());
 			for (IndexedWord vertex : vertexes) {
 				// for outgoing edges
 				List<SemanticGraphEdge> outgoingEdgesWithH = Helpers.getTargetEdgesOnRel(
@@ -94,7 +94,7 @@ public class OpinionWordExtractorService implements IOpinionWordExtractorService
 		Set<Tuple> targets = new HashSet<Tuple>();
 
 		for (Word feature : opinionWords) {
-			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(feature.getValue());
+			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(feature.getPattern());
 			for (IndexedWord vertex : vertexes) {
 				// for outgoing edges
 				Iterable<SemanticGraphEdge> outgoingEdgesWithH = semanticGraph.outgoingEdgeIterable(vertex);

@@ -1,6 +1,7 @@
 package com.unsupervisedsentiment.analysis.core;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
@@ -16,7 +17,11 @@ public class Config {
 
 	private String storedSemanticGraphsDirectory;
 
-	private ArrayList<String> seedWords;
+	private List<String> seedWords;
+	
+	private String positiveSeedWordsFile;
+	
+	private String negativeSeedWordsFile;
 
 	@XmlElement(name = "inputDirectory")
 	public String getInputDirectory() {
@@ -38,12 +43,12 @@ public class Config {
 
 	@XmlElement(name = "seedWord")
 	@XmlElementWrapper(name = "seedWords")
-	public ArrayList<String> getSeedWords() {
+	public List<String> getSeedWords() {
 		return seedWords;
 	}
 
-	public void setSeedWords(ArrayList<String> seedWords) {
-		this.seedWords = seedWords;
+	public void setSeedWords(List<String> list) {
+		this.seedWords = list;
 	}
 
 	@Override
@@ -69,5 +74,23 @@ public class Config {
 	public void setStoredSemanticGraphsDirectory(
 			String storedSemanticGraphsDirectory) {
 		this.storedSemanticGraphsDirectory = storedSemanticGraphsDirectory;
+	}
+	
+	@XmlElement(name = "positiveSeedWordsFile")
+	public String getPositiveSeedWordsFile() {
+		return positiveSeedWordsFile.trim();
+	}
+
+	public void setPositiveSeedWordsFile(String positiveSeedWordsFile) {
+		this.positiveSeedWordsFile = positiveSeedWordsFile;
+	}
+
+	@XmlElement(name = "negativeSeedWordsFile")
+	public String getNegativeSeedWordsFile() {
+		return negativeSeedWordsFile.trim();
+	}
+
+	public void setNegativeSeedWordsFile(String negativeSeedWordsFile) {
+		this.negativeSeedWordsFile = negativeSeedWordsFile;
 	}
 }
