@@ -5,9 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.unsupervisedsentiment.analysis.model.Dependency;
 import com.unsupervisedsentiment.analysis.model.ElementType;
+import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.Word;
@@ -73,6 +76,28 @@ public class NLPService {
 		coreNlp.annotate(document);
 		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
 		return sentences;
+	}
+	
+	public List<EvaluationModel> getEvaluationModels(String text) {
+		Annotation document = new Annotation(text);
+		coreNlp.annotate(document);
+		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+		List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
+		
+		for(int i=0; i<sentences.size(); i++)
+		{
+			String sentence = sentences.get(i).toString();
+			
+			Pattern MY_PATTERN = Pattern.compile("###(\\w*\\b)");
+			Matcher m = MY_PATTERN.matcher(sentence);
+				while (m.find()) {
+				    String opinionWord = m.group(1);
+					EvaluationModel model = new EvaluationModel(opinionWord, sentence, i);
+					evaluationModels.add(model);
+				}
+		}
+		
+		return evaluationModels;
 	}
 
 	private String doLemmatization(String documentText) {

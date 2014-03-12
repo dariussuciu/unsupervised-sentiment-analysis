@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.core.Config;
+import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Triple;
 import com.unsupervisedsentiment.analysis.model.Tuple;
@@ -101,6 +102,31 @@ public class OutputService {
 						+ tuple.getTarget().getPosTag() + ")");
 			    writer.newLine();
 			}
+		}
+	}
+	
+	public void WriteEvaluationModels(String fileName, List<EvaluationModel> evaluationModels)
+	{
+		try
+		{
+			File folder = new File(config.getEvaluationModelsDirectory());
+			
+		    File file = new File(folder, fileName);
+		    file.createNewFile();
+
+		    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			
+			for(EvaluationModel evaluationModel : evaluationModels)
+			{
+				writer.write(evaluationModel.getOpinionWord()+"[" + evaluationModel.getSentenceIndex() + "]" + " - " + evaluationModel.getSentence());
+			    writer.newLine();
+			}
+			
+		    writer.flush();
+		    writer.close();
+		    
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

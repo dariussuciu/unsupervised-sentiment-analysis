@@ -1,16 +1,16 @@
 package com.unsupervisedsentiment.analysis.model;
 
-import java.util.List;
-
 public class EvaluationModel {
 	
 	private String opinionWord;
-	private List<String> sentence;
+	private String sentence;
+	private int sentenceIndex;
 	
-	public EvaluationModel(String opinionWord, List<String> sentence) {
+	public EvaluationModel(String opinionWord, String sentence, int index) {
 		super();
 		this.opinionWord = opinionWord;
-		this.sentence = sentence;
+		this.setSentence(sentence);
+		this.setSentenceIndex(index);
 	}
 	
 	public String getOpinionWord() {
@@ -19,10 +19,20 @@ public class EvaluationModel {
 	public void setOpinionWord(String opinionWord) {
 		this.opinionWord = opinionWord;
 	}
-	public List<String> getSentence() {
+
+	public int getSentenceIndex() {
+		return sentenceIndex;
+	}
+
+	public void setSentenceIndex(int sentenceIndex) {
+		this.sentenceIndex = sentenceIndex;
+	}
+
+	public String getSentence() {
 		return sentence;
 	}
-	public void setSentence(List<String> sentence) {
+
+	public void setSentence(String sentence) {
 		this.sentence = sentence;
 	}
 

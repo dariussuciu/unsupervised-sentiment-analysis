@@ -22,6 +22,8 @@ public class Config {
 	private String positiveSeedWordsFile;
 	
 	private String negativeSeedWordsFile;
+	
+	private String evaluationModelsDirectory;
 
 	@XmlElement(name = "inputDirectory")
 	public String getInputDirectory() {
@@ -92,5 +94,14 @@ public class Config {
 
 	public void setNegativeSeedWordsFile(String negativeSeedWordsFile) {
 		this.negativeSeedWordsFile = negativeSeedWordsFile;
+	}
+
+	@XmlElement(name = "evaluationModelsDirectory")
+	public String getEvaluationModelsDirectory() {
+		return evaluationModelsDirectory.trim();
+	}
+
+	public void setEvaluationModelsDirectory(String evaluationModelsDirectory) {
+		this.evaluationModelsDirectory = evaluationModelsDirectory;
 	}
 }

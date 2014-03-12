@@ -9,6 +9,7 @@ import com.unsupervisedsentiment.analysis.classification.Classification;
 import com.unsupervisedsentiment.analysis.core.constants.StanfordNLPTestConstants;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.ElementType;
+import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Triple;
 import com.unsupervisedsentiment.analysis.model.Tuple;
@@ -19,6 +20,7 @@ import com.unsupervisedsentiment.analysis.modules.IO.InputWrapper;
 import com.unsupervisedsentiment.analysis.modules.IO.OutputService;
 import com.unsupervisedsentiment.analysis.modules.IO.OutputWrapper;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.DoublePropagationAlgorithm;
+import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 public class Main {
 
@@ -41,6 +43,11 @@ public class Main {
 
 
 			inputData.setFilename(input.getFilename());
+			
+			//!!!!!!!! FOR EVALUTAION ONLY !!!!!!!
+			List<EvaluationModel> evaluationModels = NLPService.getInstance().getEvaluationModels(input.getContent());
+			outputService.WriteEvaluationModels(input.getFilename(), evaluationModels);
+			
 			inputData.setInput(input.getContent());
 			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(
 					inputData);
