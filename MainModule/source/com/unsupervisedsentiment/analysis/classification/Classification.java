@@ -11,6 +11,10 @@ import com.unsupervisedsentiment.analysis.model.Word;
 
 public class Classification {
 
+	/**
+	 * Should make cases for modifiers like : very, especially, noticeably, clearly, undisputed
+	 * negatia
+	 */
 	private final double DEFAULT_SCORE = -100;
 
 	private ISentimentScoreSource sentimentScoreSource;
