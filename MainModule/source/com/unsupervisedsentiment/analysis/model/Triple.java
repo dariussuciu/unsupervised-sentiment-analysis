@@ -30,8 +30,8 @@ public class Triple extends Tuple {
 	}
 
 	public Triple(Word opinion, Word target, Word h, Dependency dependency, TupleType tupleType,
-			String relationHOpinion, String relationHTarget) {
-		super(opinion, target, dependency, tupleType);
+			String relationHOpinion, String relationHTarget, int sentenceIndex, String sentence) {
+		super(opinion, target, dependency, tupleType, sentenceIndex, sentence);
 		H = h;
 		this.relationHOpinion = relationHOpinion;
 		this.relationHTarget = relationHTarget;
@@ -74,7 +74,7 @@ public class Triple extends Tuple {
 				return false;
 		} else if (!relationHTarget.equals(other.relationHTarget))
 			return false;
-		return true;
+		return super.equals(obj);
 	}
 
 	public Triple() {

@@ -79,20 +79,18 @@ public class NLPService {
 	}
 	
 	public List<EvaluationModel> getEvaluationModels(String text) {
-		Annotation document = new Annotation(text);
-		coreNlp.annotate(document);
-		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+		List<SemanticGraph> semanticGraphs = createSemanticGraphsListForSentances(text);
 		List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
 		
-		for(int i=0; i<sentences.size(); i++)
+		for(int i=0; i<semanticGraphs.size(); i++)
 		{
-			String sentence = sentences.get(i).toString();
-			
-			Pattern MY_PATTERN = Pattern.compile("###(\\w*\\b)");
+			String sentence = semanticGraphs.get(i).toRecoveredSentenceString();
+			String cleanSentence = sentence.replaceAll("(### )|(% % % )|(\\$ \\$ \\$ )", "");
+			Pattern MY_PATTERN = Pattern.compile("### (\\w*\\b)");
 			Matcher m = MY_PATTERN.matcher(sentence);
 				while (m.find()) {
 				    String opinionWord = m.group(1);
-					EvaluationModel model = new EvaluationModel(opinionWord, sentence, i);
+					EvaluationModel model = new EvaluationModel(opinionWord, cleanSentence, i);
 					evaluationModels.add(model);
 				}
 		}

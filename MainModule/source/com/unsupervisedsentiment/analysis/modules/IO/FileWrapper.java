@@ -39,6 +39,11 @@ public class FileWrapper {
 	public String getContent() {
 		return content;
 	}
+	
+	public String getOriginalContent() {
+		String cleanContent = content.replaceAll("(###)|(%%%)|(\\$\\$\\$)", "");
+		return cleanContent;
+	}
 
 	public void setContent(String content) {
 		this.content = content;

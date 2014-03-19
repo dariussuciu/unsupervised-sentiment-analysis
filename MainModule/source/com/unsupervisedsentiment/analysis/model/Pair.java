@@ -19,8 +19,8 @@ public class Pair extends Tuple {
 		this.relation = relation;
 	}
 
-	public Pair(Word opinion, Word target, Dependency dependency, TupleType tupleType, String relation) {
-		super(opinion, target, dependency, tupleType);
+	public Pair(Word opinion, Word target, Dependency dependency, TupleType tupleType, String relation, int sentenceIndex, String sentence) {
+		super(opinion, target, dependency, tupleType, sentenceIndex, sentence);
 		this.relation = relation;
 	}
 
@@ -51,6 +51,6 @@ public class Pair extends Tuple {
 				return false;
 		} else if (!relation.equals(other.relation))
 			return false;
-		return true;
+		return super.equals(obj);
 	}
 }

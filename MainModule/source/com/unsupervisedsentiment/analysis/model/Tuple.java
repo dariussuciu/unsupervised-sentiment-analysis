@@ -1,5 +1,8 @@
 package com.unsupervisedsentiment.analysis.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 
  * Tuple contains a source word and a target. The source is the starting
@@ -14,6 +17,8 @@ public class Tuple {
 	private Dependency dependency;
 
 	private TupleType tupleType;
+	private int sentenceIndex;
+	private String sentence;
 
 	public Tuple() {
 
@@ -40,30 +45,83 @@ public class Tuple {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
+
 		Tuple other = (Tuple) obj;
-		if (dependency != other.dependency)
-			return false;
-		if (source == null) {
-			if (other.source != null)
+		
+		if(this.getTupleType().equals(TupleType.Seed) && other.getTupleType().equals(TupleType.Seed))
+		{
+			if (this.source.equals(other.source))
+				return true;
+		}
+		else 
+		{
+			if(!this.sentence.equals(other.sentence))
 				return false;
-		} else if (!source.equals(other.source))
-			return false;
-		if (target == null) {
-			if (other.target != null)
-				return false;
-		} else if (!target.equals(other.target))
-			return false;
-		if (tupleType != other.tupleType)
-			return false;
+			
+			if(this.source == null && this.target == null) {
+				if(other.source != null || other.target != null)
+					return false;
+			}
+			else {
+				if(this.source == null)
+				{
+					if(other.source == null && !other.target.equals(this.target))
+						return false;
+					if(other.target == null && !other.source.equals(this.target))
+						return false;
+				}
+				
+				if(this.target == null)
+				{
+					if(other.source == null && !other.target.equals(this.source))
+						return false;
+					if(other.target == null && !other.source.equals(this.source))
+						return false;
+				}
+				
+				if(!(this.source.equals(other.source) || this.source.equals(other.target)))
+					return false;
+				
+				if(!(this.target.equals(other.source) || this.target.equals(other.target)))
+					return false;
+				
+				if(this.source.equals(other.source))
+				{
+					if(!this.target.equals(other.target))
+						return false;
+				}
+				
+				if(this.target.equals(other.target))
+				{
+					if(!this.source.equals(other.source))
+						return false;
+				}
+				
+				if(this.source.equals(other.target))
+				{
+					if(!this.target.equals(other.source))
+						return false;
+				}
+				
+				if(this.target.equals(other.source))
+				{
+					if(!this.source.equals(other.target))
+						return false;
+					
+				}			
+			}
+		}
 		return true;
 	}
 
-	public Tuple(Word source, Word target, Dependency dependency, TupleType tupleType) {
+	public Tuple(Word source, Word target, Dependency dependency, TupleType tupleType, int sentenceIndex, String sentence) {
 		super();
 		this.source = source;
 		this.target = target;
 		this.dependency = dependency;
 		this.tupleType = tupleType;
+		this.sentenceIndex = sentenceIndex;
+		this.sentence = sentence;
 	}
 
 	/**
@@ -105,13 +163,37 @@ public class Tuple {
 		this.source = source;
 	}
 
-	public Word getOpinionWord(){
-		Word word = getSource().getType().equals(ElementType.OPINION_WORD) ? getSource() : getTarget();
-		return word;
+	public List<Word> getOpinionWords(){
+		List<Word> opinionWords = new ArrayList<Word>();
+		if(getSource().getType().equals(ElementType.OPINION_WORD))
+			opinionWords.add(getSource());
+		if(getTarget().getType().equals(ElementType.OPINION_WORD))
+			opinionWords.add(getTarget());
+		return opinionWords;
 	}
 	
-	public Word getFeatureWord(){
-		Word word = getSource().getType().equals(ElementType.FEATURE) ? getSource() : getTarget();
-		return word;
+	public List<Word> getFeatureWords(){
+		List<Word> targets = new ArrayList<Word>();
+		if(getSource().getType().equals(ElementType.FEATURE))
+			targets.add(getSource());
+		if(getTarget().getType().equals(ElementType.FEATURE))
+			targets.add(getTarget());
+		return targets;
+	}
+
+	public int getSentenceIndex() {
+		return sentenceIndex;
+	}
+
+	public void setSentenceIndex(int sentenceIndex) {
+		this.sentenceIndex = sentenceIndex;
+	}
+
+	public String getSentence() {
+		return sentence;
+	}
+
+	public void setSentence(String sentence) {
+		this.sentence = sentence;
 	}
 }

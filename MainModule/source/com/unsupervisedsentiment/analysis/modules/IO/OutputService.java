@@ -82,7 +82,8 @@ public class OutputService {
 							+ tuple.getTarget().getValue() 
 							+ "[" + tuple.getTarget().getScore() + "]" 
 							+ "{" + tuple.getTarget().getSentiWordScore() + "}" 
-							+ "(" + tuple.getTarget().getPosTag() + ")");
+							+ "(" + tuple.getTarget().getPosTag() + ")"
+							+ "   - sentence: " + tuple.getSentence() + "(" + tuple.getSentenceIndex() + ")");
 			    writer.newLine();
 			} 
 			else if (tuple.getTupleType().equals(TupleType.Triple)) 
@@ -99,7 +100,8 @@ public class OutputService {
 						+ tuple.getTarget().getValue() + "("
 						+ "[" + tuple.getTarget().getScore() + "]" 
 						+ "{" + tuple.getTarget().getSentiWordScore() + "}" 
-						+ tuple.getTarget().getPosTag() + ")");
+						+ "(" + tuple.getTarget().getPosTag() + ")"
+						+ "   - sentence: " + tuple.getSentence() + "(" + tuple.getSentenceIndex() + ")");
 			    writer.newLine();
 			}
 		}

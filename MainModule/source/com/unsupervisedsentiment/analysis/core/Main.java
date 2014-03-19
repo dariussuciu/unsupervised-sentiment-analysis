@@ -20,7 +20,12 @@ import com.unsupervisedsentiment.analysis.modules.IO.InputWrapper;
 import com.unsupervisedsentiment.analysis.modules.IO.OutputService;
 import com.unsupervisedsentiment.analysis.modules.IO.OutputWrapper;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.DoublePropagationAlgorithm;
+import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
+import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationResult;
+import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationService;
 import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
+
+import edu.stanford.nlp.semgraph.SemanticGraph;
 
 public class Main {
 
@@ -43,12 +48,24 @@ public class Main {
 
 
 			inputData.setFilename(input.getFilename());
-			
+			System.out.println(input.getOriginalContent());
 			//!!!!!!!! FOR EVALUTAION ONLY !!!!!!!
+			//List<EvaluationModel> evaluationModels = null;
 			List<EvaluationModel> evaluationModels = NLPService.getInstance().getEvaluationModels(input.getContent());
 			outputService.WriteEvaluationModels(input.getFilename(), evaluationModels);
 			
-			inputData.setInput(input.getContent());
+			String storedEvaluationModelsDirectory = Initializer.getConfig()
+					.getEvaluationModelsDirectory();
+			if (Helpers.existsObjectsForFile(storedEvaluationModelsDirectory, input.getFilename(), "EvaluationModel")) {
+				evaluationModels = Helpers
+						.<EvaluationModel>getObjectsFromFile(storedEvaluationModelsDirectory, input.getFilename(), "EvaluationModel");
+			} else {
+				evaluationModels = NLPService.getInstance().getEvaluationModels(input.getContent());
+				Helpers.saveObjectsToFile(evaluationModels, storedEvaluationModelsDirectory,
+						input.getFilename(), "EvaluationModel");
+			}
+			
+			inputData.setInput(input.getOriginalContent());
 			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(
 					inputData);
 
@@ -62,6 +79,8 @@ public class Main {
 						ElementType.OPINION_WORD);
 				seed.setSource(word);
 				seed.setTupleType(TupleType.Seed);
+				seed.setSentenceIndex(-1);
+				seed.setSentence(null);
 				seedWords.add(seed);
 			}
 
@@ -95,6 +114,12 @@ public class Main {
 			outputFile.setSource(input.getSource());
 			outputFile.setTuples(combinedTuples);
 			outputFiles.add(outputFile);
+			
+			EvaluationService evaluationService = new EvaluationService(evaluationModels, combinedTuples);
+			EvaluationResult evaluationResult = evaluationService.getResults(); 
+			System.out.println("Precision : " + evaluationResult.getPrecision());
+			System.out.println("Recall : "+ evaluationResult.getRecall());
+			System.out.println("-----------------------------------------");
 		}
 		
 		outputService.writeOutput(outputFiles);

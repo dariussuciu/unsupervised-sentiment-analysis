@@ -20,39 +20,39 @@ public class OpinionWordExtractorService implements IOpinionWordExtractorService
 
 	@Override
 	public Set<Tuple> extractOpinionWordsUsingR2(SemanticGraph semanticGraph, Set<Word> targets,
-			Set<Tuple> existingOpinionWords) {
+			Set<Tuple> existingOpinionWords, int semanticGraphIndex) {
 		Set<Tuple> foundTargets = new HashSet<Tuple>();
 
 		foundTargets.addAll(extractOpinionWordsUsingR21(semanticGraph, targets, existingOpinionWords,
-				ElementType.OPINION_WORD));
+				ElementType.OPINION_WORD, semanticGraphIndex));
 		foundTargets.addAll(extractOpinionWordsUsingR22(semanticGraph, targets, existingOpinionWords,
-				ElementType.OPINION_WORD));
+				ElementType.OPINION_WORD, semanticGraphIndex));
 		return foundTargets;
 	}
 
 	@Override
 	public Set<Tuple> extractOpinionWordsUsingR4(SemanticGraph semanticGraph, Set<Word> opinionWords,
-			Set<Tuple> existingOpinionWords) {
+			Set<Tuple> existingOpinionWords, int semanticGraphIndex) {
 		Set<Tuple> foundTargets = new HashSet<Tuple>();
 
 		foundTargets.addAll(extractOpinionWordsUsingR41(semanticGraph, opinionWords, existingOpinionWords,
-				ElementType.OPINION_WORD));
+				ElementType.OPINION_WORD, semanticGraphIndex));
 		foundTargets.addAll(extractOpinionWordsUsingR42(semanticGraph, opinionWords, existingOpinionWords,
-				ElementType.OPINION_WORD));
+				ElementType.OPINION_WORD, semanticGraphIndex));
 		return foundTargets;
 	}
 
 	public Set<Tuple> extractOpinionWordsUsingR21(SemanticGraph semanticGraph, Set<Word> opinionWords,
-			Set<Tuple> existingOpinionWords, ElementType targetType) {
+			Set<Tuple> existingOpinionWords, ElementType targetType, int semanticGraphIndex) {
 		Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph, opinionWords, Dep_MRRel.getInstance(),
-				Pos_JJRel.getInstance(), targetType);
+				Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
 		return Helpers.getNewTuples(foundTargets, existingOpinionWords);
 		// return Helpers.extractTargets(semanticGraph, opinionWords,
 		// Dep_MRRel.getInstance(), Pos_JJRel.getInstance());
 	}
 
 	public Set<Tuple> extractOpinionWordsUsingR22(SemanticGraph semanticGraph, Set<Word> features,
-			Set<Tuple> existingOpinionWords, ElementType targetType) {
+			Set<Tuple> existingOpinionWords, ElementType targetType, int semanticGraphIndex) {
 		Set<Tuple> targets = new HashSet<Tuple>();
 
 		for (Word feature : features) {
@@ -63,7 +63,7 @@ public class OpinionWordExtractorService implements IOpinionWordExtractorService
 						semanticGraph.outgoingEdgeIterable(vertex), Dep_MRRel.getInstance());
 				for (SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
 					Set<Tuple> foundTargets = Helpers.getTriplesRelativeToH(semanticGraph, feature, edgeWithH,
-							edgeWithH.getTarget(), true, Pos_JJRel.getInstance(), Dep_MRRel.getInstance(), targetType);
+							edgeWithH.getTarget(), true, Pos_JJRel.getInstance(), Dep_MRRel.getInstance(), targetType, semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets, existingOpinionWords));
 				}
 
@@ -72,7 +72,7 @@ public class OpinionWordExtractorService implements IOpinionWordExtractorService
 						semanticGraph.incomingEdgeIterable(vertex), Dep_MRRel.getInstance());
 				for (SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
 					Set<Tuple> foundTargets = Helpers.getTriplesRelativeToH(semanticGraph, feature, edgeWithH,
-							edgeWithH.getSource(), false, Pos_JJRel.getInstance(), Dep_MRRel.getInstance(), targetType);
+							edgeWithH.getSource(), false, Pos_JJRel.getInstance(), Dep_MRRel.getInstance(), targetType, semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets, existingOpinionWords));
 				}
 			}
@@ -82,15 +82,15 @@ public class OpinionWordExtractorService implements IOpinionWordExtractorService
 	}
 
 	public Set<Tuple> extractOpinionWordsUsingR41(SemanticGraph semanticGraph, Set<Word> opinionWords,
-			Set<Tuple> existingOpinionWords, ElementType targetType) {
+			Set<Tuple> existingOpinionWords, ElementType targetType, int semanticGraphIndex) {
 
 		Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph, opinionWords, Dep_ConjRel.getInstance(),
-				Pos_JJRel.getInstance(), targetType);
+				Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
 		return Helpers.getNewTuples(foundTargets, existingOpinionWords);
 	}
 
 	public Set<Tuple> extractOpinionWordsUsingR42(SemanticGraph semanticGraph, Set<Word> opinionWords,
-			Set<Tuple> existingOpinionWords, ElementType targetType) {
+			Set<Tuple> existingOpinionWords, ElementType targetType, int semanticGraphIndex) {
 		Set<Tuple> targets = new HashSet<Tuple>();
 
 		for (Word feature : opinionWords) {
@@ -100,7 +100,7 @@ public class OpinionWordExtractorService implements IOpinionWordExtractorService
 				Iterable<SemanticGraphEdge> outgoingEdgesWithH = semanticGraph.outgoingEdgeIterable(vertex);
 				for (SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
 					Set<Tuple> foundTargets = Helpers.getTriplesRelativeToHOnEquivalency(semanticGraph, feature,
-							edgeWithH, edgeWithH.getTarget(), true, Pos_JJRel.getInstance(), targetType);
+							edgeWithH, edgeWithH.getTarget(), true, Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets, existingOpinionWords));
 					// targets.addAll(Helpers.getTriplesRelativeToHOnEquivalency(semanticGraph,
 					// feature,
@@ -112,7 +112,7 @@ public class OpinionWordExtractorService implements IOpinionWordExtractorService
 				Iterable<SemanticGraphEdge> incomingEdgesWithH = semanticGraph.incomingEdgeIterable(vertex);
 				for (SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
 					Set<Tuple> foundTargets = Helpers.getTriplesRelativeToHOnEquivalency(semanticGraph, feature,
-							edgeWithH, edgeWithH.getSource(), false, Pos_JJRel.getInstance(), targetType);
+							edgeWithH, edgeWithH.getSource(), false, Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets, existingOpinionWords));
 
 					// targets.addAll(Helpers.getTriplesRelativeToHOnEquivalency(semanticGraph,

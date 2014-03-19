@@ -1,7 +1,13 @@
 package com.unsupervisedsentiment.analysis.model;
 
-public class EvaluationModel {
+import java.io.Serializable;
+
+public class EvaluationModel implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1928906304054077977L;
 	private String opinionWord;
 	private String sentence;
 	private int sentenceIndex;
@@ -31,9 +37,20 @@ public class EvaluationModel {
 	public String getSentence() {
 		return sentence;
 	}
+	
+	public String getCleanSentence() {
+		String cleanSentence = sentence.replaceAll("(###)|(%%%)|(\\$\\$\\$)", "");
+		return cleanSentence;
+	}
 
 	public void setSentence(String sentence) {
 		this.sentence = sentence;
+	}
+
+	@Override
+	public String toString() {
+		return "EvaluationModel [opinionWord=" + opinionWord + ", sentence="
+				+ sentence + ", sentenceIndex=" + sentenceIndex + "]";
 	}
 
 }
