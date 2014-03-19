@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.unsupervisedsentiment.analysis.classification.ISentimentScoreSource;
+import com.unsupervisedsentiment.analysis.classification.SentiWordNetService;
 import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.core.constants.RelationEquivalency;
 import com.unsupervisedsentiment.analysis.core.constants.relations.GenericRelation;
@@ -34,6 +36,14 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.trees.GrammaticalRelation;
 
 public class Helpers {
+	
+	
+	private ISentimentScoreSource sentimentScoreSource;
+
+	
+	public Helpers() {
+		sentimentScoreSource = new SentiWordNetService();
+	}
 
 	/**
 	 * Gets the target edges based on the relation pos tag and the target pos
@@ -327,7 +337,7 @@ public class Helpers {
 		return targets;
 	}
 
-	public static Set<Tuple> getNewTuples(Set<? extends Tuple> sourceTuples,
+	public Set<Tuple> getNewTuples(Set<? extends Tuple> sourceTuples,
 			Set<? extends Tuple> existingTuples) {
 		Set<Tuple> newTuples = new HashSet<Tuple>();
 		for (Tuple tuple : sourceTuples) {
@@ -395,13 +405,17 @@ public class Helpers {
 		return filePath;
 	}
 	
-	private static boolean isInvalidTuple(Tuple tuple)
+	private boolean isInvalidTuple(Tuple tuple)
 	{
 		if(tuple.getSource().getValue().equals("-lrb-") || tuple.getSource().getValue().equals("-rrb-"))
 			return true;
 		
 		if(tuple.getTarget().getValue().equals("-lrb-") || tuple.getTarget().getValue().equals("-rrb-"))
 			return true;
+		
+		if(tuple.getTarget().getType().equals(ElementType.OPINION_WORD))
+			if(sentimentScoreSource.extract(tuple.getTarget().getValue()) == 0)
+				return true;
 		
 		return false;
 	}

@@ -50,9 +50,9 @@ public class Main {
 			inputData.setFilename(input.getFilename());
 			System.out.println(input.getOriginalContent());
 			//!!!!!!!! FOR EVALUTAION ONLY !!!!!!!
-			//List<EvaluationModel> evaluationModels = null;
-			List<EvaluationModel> evaluationModels = NLPService.getInstance().getEvaluationModels(input.getContent());
-			outputService.WriteEvaluationModels(input.getFilename(), evaluationModels);
+			List<EvaluationModel> evaluationModels = null;
+			//List<EvaluationModel> evaluationModels = NLPService.getInstance().getEvaluationModels(input.getContent());
+			//outputService.WriteEvaluationModels(input.getFilename(), evaluationModels);
 			
 			String storedEvaluationModelsDirectory = Initializer.getConfig()
 					.getEvaluationModelsDirectory();

@@ -52,22 +52,26 @@ public class EvaluationService {
 		{
 			if(tuple.getTupleType().equals(TupleType.Seed) || tuple.getOpinionWords().size() <= 0)
 				continue;
-			
-			boolean found = false;
-			for(EvaluationModel model : evaluationModels)
+
+			for(Word opinionWord : tuple.getOpinionWords())
 			{
-				if(model.getSentenceIndex() == tuple.getSentenceIndex())
-				{
-					if(tuple.getOpinionWords().contains(model.getOpinionWord()))
+				boolean found = false;
+				for(EvaluationModel model : evaluationModels)
+				{	
+					if(model.getSentenceIndex() == tuple.getSentenceIndex())
 					{
-							truePositive++;
-							found = true;
-							break;
+						if(opinionWord.getValue().equals(model.getOpinionWord()))
+						{
+								truePositive++;
+								found = true;
+								break;
+						}
 					}
 				}
+				
+				if(!found)
+					falsePositive++;
 			}
-			if(!found)
-				falsePositive++;
 		}
 		
 		for(EvaluationModel model : evaluationModels)
@@ -79,10 +83,13 @@ public class EvaluationService {
 					continue;
 				if(model.getSentenceIndex() == tuple.getSentenceIndex())
 				{
-					if(tuple.getOpinionWords().contains(model.getOpinionWord()))
+					for(Word opinionWord : tuple.getOpinionWords())
 					{
-						found = true;
-						break;
+						if(opinionWord.getValue().equals(model.getOpinionWord()))
+						{
+							found = true;
+							break;
+						}
 					}
 				}
 			}
