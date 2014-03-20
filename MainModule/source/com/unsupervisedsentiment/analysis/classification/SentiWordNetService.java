@@ -13,9 +13,18 @@ import com.unsupervisedsentiment.analysis.modules.IO.InputService;
 public class SentiWordNetService implements ISentimentScoreSource {
 
 	private HashMap<String, Double> _dict;
-	Config config;
+	private Config config;
 
-	public SentiWordNetService() {
+	private static ISentimentScoreSource instance;
+
+	public static ISentimentScoreSource getInstance() {
+		if (instance == null)
+			instance = new SentiWordNetService();
+
+		return instance;
+	}
+
+	private SentiWordNetService() {
 		init();
 	}
 

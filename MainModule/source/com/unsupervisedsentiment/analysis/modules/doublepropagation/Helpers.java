@@ -17,9 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.unsupervisedsentiment.analysis.classification.ISentimentScoreSource;
 import com.unsupervisedsentiment.analysis.classification.SentiWordNetService;
-import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.core.constants.RelationEquivalency;
 import com.unsupervisedsentiment.analysis.core.constants.relations.GenericRelation;
 import com.unsupervisedsentiment.analysis.model.Dependency;
@@ -36,14 +34,6 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.trees.GrammaticalRelation;
 
 public class Helpers {
-	
-	
-	private ISentimentScoreSource sentimentScoreSource;
-
-	
-	public Helpers() {
-		sentimentScoreSource = new SentiWordNetService();
-	}
 
 	/**
 	 * Gets the target edges based on the relation pos tag and the target pos
@@ -123,11 +113,13 @@ public class Helpers {
 
 	public static Pair getPair(String valueOpinion, String posOpinion,
 			ElementType typeSource, String valueTarget, String posTarget,
-			ElementType typeTarget, String relation, Dependency dependency, int sentenceIndex, String sentence) {
+			ElementType typeTarget, String relation, Dependency dependency,
+			int sentenceIndex, String sentence) {
 		Word opinion = new Word(posOpinion, valueOpinion, typeSource);
 		Word target = new Word(posTarget, valueTarget, typeTarget);
 
-		return new Pair(opinion, target, dependency, TupleType.Pair, relation, sentenceIndex, sentence);
+		return new Pair(opinion, target, dependency, TupleType.Pair, relation,
+				sentenceIndex, sentence);
 	}
 
 	public static Triple getTriple(String valueSource, String posSource,
@@ -186,7 +178,8 @@ public class Helpers {
 
 	public static Set<Tuple> extractTargets(SemanticGraph semanticGraph,
 			Set<Word> words, GenericRelation relationType,
-			GenericRelation targetPos, ElementType targetType, int semanticGraphIndex) {
+			GenericRelation targetPos, ElementType targetType,
+			int semanticGraphIndex) {
 		Set<Tuple> targets = new HashSet<Tuple>();
 
 		for (Word word : words) {
@@ -203,7 +196,8 @@ public class Helpers {
 							.getPosTag(), word.getType(), edge.getTarget()
 							.word(), edge.getTarget().tag(), targetType, edge
 							.getRelation().toString(),
-							Dependency.DIRECT_DEPENDENCY, semanticGraphIndex, semanticGraph.toRecoveredSentenceString()));
+							Dependency.DIRECT_DEPENDENCY, semanticGraphIndex,
+							semanticGraph.toRecoveredSentenceString()));
 				}
 
 				// for incoming edges
@@ -217,7 +211,8 @@ public class Helpers {
 							.getPosTag(), word.getType(), edge.getSource()
 							.word(), edge.getSource().tag(), targetType, edge
 							.getRelation().toString(),
-							Dependency.DIRECT_DEPENDENCY, semanticGraphIndex, semanticGraph.toRecoveredSentenceString()));
+							Dependency.DIRECT_DEPENDENCY, semanticGraphIndex,
+							semanticGraph.toRecoveredSentenceString()));
 				}
 			}
 		}
@@ -228,7 +223,8 @@ public class Helpers {
 	public static Set<Tuple> getTriplesRelativeToH(SemanticGraph semanticGraph,
 			Word source, SemanticGraphEdge edgeWithH, IndexedWord H,
 			boolean isSource, GenericRelation targetPos,
-			GenericRelation relationPos, ElementType targetType, int semanticGraphIndex) {
+			GenericRelation relationPos, ElementType targetType,
+			int semanticGraphIndex) {
 		Set<Tuple> targets = new HashSet<Tuple>();
 		// for incoming target edges
 		List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers
@@ -242,7 +238,8 @@ public class Helpers {
 			IndexedWord target = edgeWithTarget.getSource();
 			if (validateTriple(source, target, H))
 				targets.add(createTriple(source, target, H, relationHSource,
-						relationHTarget, targetType, semanticGraphIndex, semanticGraph.toRecoveredSentenceString()));
+						relationHTarget, targetType, semanticGraphIndex,
+						semanticGraph.toRecoveredSentenceString()));
 		}
 
 		// for outgoing target edges
@@ -257,7 +254,8 @@ public class Helpers {
 			IndexedWord target = edgeWithTarget.getTarget();
 			if (validateTriple(source, target, H))
 				targets.add(createTriple(source, target, H, relationHSource,
-						relationHTarget, targetType, semanticGraphIndex, semanticGraph.toRecoveredSentenceString()));
+						relationHTarget, targetType, semanticGraphIndex,
+						semanticGraph.toRecoveredSentenceString()));
 		}
 		return targets;
 	}
@@ -275,7 +273,8 @@ public class Helpers {
 
 	public static Triple createTriple(Word source, IndexedWord target,
 			IndexedWord H, GrammaticalRelation relationHSource,
-			GrammaticalRelation relationHTarget, ElementType targetType, int sentenceIndex, String sentence) {
+			GrammaticalRelation relationHTarget, ElementType targetType,
+			int sentenceIndex, String sentence) {
 
 		String relationHSourceString = relationHSource.toString();
 		String relationHTargetString = relationHTarget.toString();
@@ -297,7 +296,8 @@ public class Helpers {
 	public static Set<Tuple> getTriplesRelativeToHOnEquivalency(
 			SemanticGraph semanticGraph, Word source,
 			SemanticGraphEdge edgeWithH, IndexedWord H, boolean isSource,
-			GenericRelation targetPos, ElementType targetType, int semanticGraphIndex) {
+			GenericRelation targetPos, ElementType targetType,
+			int semanticGraphIndex) {
 		Set<Tuple> targets = new HashSet<Tuple>();
 		// for incoming target edges
 		List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers
@@ -313,7 +313,9 @@ public class Helpers {
 				IndexedWord target = edgeWithTarget.getSource();
 				if (validateTriple(source, target, H))
 					targets.add(createTriple(source, target, H,
-							relationHSource, relationHTarget, targetType, semanticGraphIndex, semanticGraph.toRecoveredSentenceString()));
+							relationHSource, relationHTarget, targetType,
+							semanticGraphIndex,
+							semanticGraph.toRecoveredSentenceString()));
 			}
 		}
 
@@ -331,13 +333,15 @@ public class Helpers {
 				IndexedWord target = edgeWithTarget.getTarget();
 				if (validateTriple(source, target, H))
 					targets.add(createTriple(source, target, H,
-							relationHSource, relationHTarget, targetType, semanticGraphIndex, semanticGraph.toRecoveredSentenceString()));
+							relationHSource, relationHTarget, targetType,
+							semanticGraphIndex,
+							semanticGraph.toRecoveredSentenceString()));
 			}
 		}
 		return targets;
 	}
 
-	public Set<Tuple> getNewTuples(Set<? extends Tuple> sourceTuples,
+	public static Set<Tuple> getNewTuples(Set<? extends Tuple> sourceTuples,
 			Set<? extends Tuple> existingTuples) {
 		Set<Tuple> newTuples = new HashSet<Tuple>();
 		for (Tuple tuple : sourceTuples) {
@@ -355,15 +359,15 @@ public class Helpers {
 		return newTuples;
 	}
 
-	public static boolean existsObjectsForFile(String directory, String filename, String type) {
-		String filePath = directory + "/" + filename
-				+ "-" + type;
+	public static boolean existsObjectsForFile(String directory,
+			String filename, String type) {
+		String filePath = directory + "/" + filename + "-" + type;
 		File f = new File(filePath);
 		return f.exists();
 	}
 
-	public static <T> void saveObjectsToFile(
-			List<T> objects, String directory, String filename, String type) {
+	public static <T> void saveObjectsToFile(List<T> objects, String directory,
+			String filename, String type) {
 		String filePath = getStoredObjectFilename(directory, filename, type);
 		try {
 			// File f = new File(filename);
@@ -379,7 +383,8 @@ public class Helpers {
 		}
 	}
 
-	public static <T> List<T> getObjectsFromFile(String directory, String filename, String type) {
+	public static <T> List<T> getObjectsFromFile(String directory,
+			String filename, String type) {
 		String filePath = getStoredObjectFilename(directory, filename, type);
 		try {
 			InputStream file = new FileInputStream(filePath);
@@ -388,8 +393,7 @@ public class Helpers {
 
 			// deserialize the List
 			@SuppressWarnings("unchecked")
-			List<T> objects = (List<T>) input
-					.readObject();
+			List<T> objects = (List<T>) input.readObject();
 			input.close();
 			// display its data
 			return objects;
@@ -400,23 +404,26 @@ public class Helpers {
 		}
 	}
 
-	private static String getStoredObjectFilename(String directory, String filename, String type) {
+	private static String getStoredObjectFilename(String directory,
+			String filename, String type) {
 		String filePath = directory + "/" + filename + "-" + type;
 		return filePath;
 	}
-	
-	private boolean isInvalidTuple(Tuple tuple)
-	{
-		if(tuple.getSource().getValue().equals("-lrb-") || tuple.getSource().getValue().equals("-rrb-"))
+
+	public static boolean isInvalidTuple(Tuple tuple) {
+		if (tuple.getSource().getValue().equals("-lrb-")
+				|| tuple.getSource().getValue().equals("-rrb-"))
 			return true;
-		
-		if(tuple.getTarget().getValue().equals("-lrb-") || tuple.getTarget().getValue().equals("-rrb-"))
+
+		if (tuple.getTarget().getValue().equals("-lrb-")
+				|| tuple.getTarget().getValue().equals("-rrb-"))
 			return true;
-		
-		if(tuple.getTarget().getType().equals(ElementType.OPINION_WORD))
-			if(sentimentScoreSource.extract(tuple.getTarget().getValue()) == 0)
+
+		if (tuple.getTarget().getType().equals(ElementType.OPINION_WORD))
+			if (SentiWordNetService.getInstance().extract(
+					tuple.getTarget().getValue()) == 0)
 				return true;
-		
+
 		return false;
 	}
 }

@@ -1,6 +1,5 @@
 package com.unsupervisedsentiment.analysis.core;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -18,11 +17,11 @@ public class Config {
 	private String storedSemanticGraphsDirectory;
 
 	private List<String> seedWords;
-	
+
 	private String positiveSeedWordsFile;
-	
+
 	private String negativeSeedWordsFile;
-	
+
 	private String evaluationModelsDirectory;
 
 	@XmlElement(name = "inputDirectory")
@@ -77,7 +76,7 @@ public class Config {
 			String storedSemanticGraphsDirectory) {
 		this.storedSemanticGraphsDirectory = storedSemanticGraphsDirectory;
 	}
-	
+
 	@XmlElement(name = "positiveSeedWordsFile")
 	public String getPositiveSeedWordsFile() {
 		return positiveSeedWordsFile.trim();

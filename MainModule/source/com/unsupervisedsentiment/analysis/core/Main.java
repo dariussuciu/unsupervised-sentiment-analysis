@@ -3,15 +3,11 @@ package com.unsupervisedsentiment.analysis.core;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.classification.Classification;
-import com.unsupervisedsentiment.analysis.core.constants.StanfordNLPTestConstants;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
-import com.unsupervisedsentiment.analysis.model.Pair;
-import com.unsupervisedsentiment.analysis.model.Triple;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
@@ -25,20 +21,19 @@ import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationResult;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationService;
 import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
-import edu.stanford.nlp.semgraph.SemanticGraph;
-
 public class Main {
+
+	private static InputService inputService;
+	private static Config config;
+	private static OutputService outputService;
+	private static List<InputWrapper> inputFiles;
+	private static List<OutputWrapper> outputFiles;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Config config = Initializer.getConfig();
-
-		InputService inputService = InputService.getInstance(config);
-		OutputService outputService = OutputService.getInstance(config);
-		List<InputWrapper> inputFiles = inputService.getTextFromFile();
-        List<OutputWrapper> outputFiles = new ArrayList<OutputWrapper>();
+		initialize();
 		for (InputWrapper input : inputFiles) {
 			System.out.println("-----------------------------------------");
 			System.out.println("-------------NEW FILE-----------");
@@ -126,26 +121,35 @@ public class Main {
 		
 	}
 
-	private static void PreetyPrintTuples(Set<Tuple> tuples) {
-		for (Tuple tuple : tuples) {
-			if (tuple.getTupleType().equals(TupleType.Pair)) {
-				Pair pair = (Pair) tuple;
-				System.out.println("Pair:  " + tuple.getSource().getValue()
-						+ "(" + tuple.getSource().getPosTag() + ")" + " --("
-						+ pair.getRelation() + ")--> "
-						+ tuple.getTarget().getValue() + "("
-						+ tuple.getTarget().getPosTag() + ")");
-			} else if (tuple.getTupleType().equals(TupleType.Triple)) {
-				Triple triple = (Triple) tuple;
-				System.out.println("Triple:  " + tuple.getSource().getValue()
-						+ "(" + tuple.getSource().getPosTag() + ")" + " --("
-						+ triple.getRelationHOpinion() + ")--> "
-						+ triple.getH().getValue() + "("
-						+ triple.getH().getPosTag() + ")" + " --("
-						+ triple.getRelationHTarget() + ")--> "
-						+ tuple.getTarget().getValue() + "("
-						+ tuple.getTarget().getPosTag() + ")");
-			}
-		}
+	private static void initialize() {
+		config = Initializer.getConfig();
+
+		inputService = InputService.getInstance(config);
+		outputService = OutputService.getInstance(config);
+		inputFiles = inputService.getTextFromFile();
+        outputFiles = new ArrayList<OutputWrapper>();
 	}
+
+//	private static void PreetyPrintTuples(Set<Tuple> tuples) {
+//		for (Tuple tuple : tuples) {
+//			if (tuple.getTupleType().equals(TupleType.Pair)) {
+//				Pair pair = (Pair) tuple;
+//				System.out.println("Pair:  " + tuple.getSource().getValue()
+//						+ "(" + tuple.getSource().getPosTag() + ")" + " --("
+//						+ pair.getRelation() + ")--> "
+//						+ tuple.getTarget().getValue() + "("
+//						+ tuple.getTarget().getPosTag() + ")");
+//			} else if (tuple.getTupleType().equals(TupleType.Triple)) {
+//				Triple triple = (Triple) tuple;
+//				System.out.println("Triple:  " + tuple.getSource().getValue()
+//						+ "(" + tuple.getSource().getPosTag() + ")" + " --("
+//						+ triple.getRelationHOpinion() + ")--> "
+//						+ triple.getH().getValue() + "("
+//						+ triple.getH().getPosTag() + ")" + " --("
+//						+ triple.getRelationHTarget() + ")--> "
+//						+ tuple.getTarget().getValue() + "("
+//						+ tuple.getTarget().getPosTag() + ")");
+//			}
+//		}
+//	}
 }

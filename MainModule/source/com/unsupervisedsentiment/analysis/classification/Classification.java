@@ -12,8 +12,8 @@ import com.unsupervisedsentiment.analysis.model.Word;
 public class Classification {
 
 	/**
-	 * Should make cases for modifiers like : very, especially, noticeably, clearly, undisputed
-	 * negatia
+	 * Should make cases for modifiers like : very, especially, noticeably,
+	 * clearly, undisputed negatia
 	 */
 	private final double DEFAULT_SCORE = -100;
 
@@ -27,12 +27,12 @@ public class Classification {
 		HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
 
 		for (Tuple tuple : tuples) {
-			//Word opinionWord = tuple.getOpinionWord();
-			//String opinionWordValue = opinionWord.getValue();
-			//double score = getScore(opinionWordValue);
+			// Word opinionWord = tuple.getOpinionWord();
+			// String opinionWordValue = opinionWord.getValue();
+			// double score = getScore(opinionWordValue);
 			// either one
-			//opinionScores.put(opinionWord, score);
-			//tuple.getOpinionWord().setScore(score);
+			// opinionScores.put(opinionWord, score);
+			// tuple.getOpinionWord().setScore(score);
 		}
 	}
 
@@ -40,12 +40,12 @@ public class Classification {
 		HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
 
 		for (Tuple tuple : tuples) {
-			//Word opinionWord = tuple.getOpinionWord();
-			//String opinionWordValue = opinionWord.getValue();
-			//double score = getScore(opinionWordValue);
+			// Word opinionWord = tuple.getOpinionWord();
+			// String opinionWordValue = opinionWord.getValue();
+			// double score = getScore(opinionWordValue);
 			// either one
-			//opinionScores.put(opinionWord, score);
-			//tuple.getOpinionWord().setSentiWordScore(score);
+			// opinionScores.put(opinionWord, score);
+			// tuple.getOpinionWord().setSentiWordScore(score);
 		}
 	}
 
@@ -61,7 +61,7 @@ public class Classification {
 
 		ArrayList<Tuple> fullyAssignedTuples = assignScoresByPropagation(partiallyAssignedTuples);
 
-		//printResults(fullyAssignedTuples);
+		// printResults(fullyAssignedTuples);
 	}
 
 	private ArrayList<Tuple> assignScoresToSeeds(ArrayList<Tuple> tuples,
@@ -85,7 +85,7 @@ public class Classification {
 					if (set.contains(tuple)
 							&& (tuple.getSource().getScore() == DEFAULT_SCORE || tuple
 									.getTarget().getScore() == DEFAULT_SCORE)) {
-						 set.add(tuple);
+						set.add(tuple);
 					} else if (!set.contains(tuple)) {
 						set.add(tuple);
 					}
@@ -121,57 +121,57 @@ public class Classification {
 	}
 
 	private ArrayList<Tuple> assignScoresByPropagation(ArrayList<Tuple> tuples) {
-//		for (int i = 0; i < tuples.size() - 1; i++) {
-//			for (int j = 1; j < tuples.size(); j++) {
-//				Word firstWordFeature = tuples.get(i).getFeatureWord();
-//				Word firstWordOpinion = tuples.get(i).getOpinionWord();
-//				Word secondWordFeature = tuples.get(j).getFeatureWord();
-//				Word secondWordOpinion = tuples.get(j).getOpinionWord();
-//
-//				if (firstWordFeature.getValue().equals(
-//						secondWordFeature.getValue())) {
-//					double score1 = firstWordFeature.getScore();
-//					double score2 = secondWordFeature.getScore();
-//					double score3 = secondWordOpinion.getScore();
-//
-//					if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE
-//							&& score3 == DEFAULT_SCORE) {
-//						secondWordFeature.setScore(score1);
-//						secondWordOpinion.setScore(score1);
-//					}
-//				}
-//				if (firstWordOpinion.getValue().equals(secondWordOpinion)) {
-//					double score1 = firstWordOpinion.getScore();
-//					double score2 = secondWordOpinion.getScore();
-//					double score3 = secondWordOpinion.getScore();
-//
-//					if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE
-//							&& score3 == DEFAULT_SCORE) {
-//						secondWordFeature.setScore(score1);
-//						secondWordOpinion.setScore(score1);
-//					}
-//				}
-//			}
-//		}
+		// for (int i = 0; i < tuples.size() - 1; i++) {
+		// for (int j = 1; j < tuples.size(); j++) {
+		// Word firstWordFeature = tuples.get(i).getFeatureWord();
+		// Word firstWordOpinion = tuples.get(i).getOpinionWord();
+		// Word secondWordFeature = tuples.get(j).getFeatureWord();
+		// Word secondWordOpinion = tuples.get(j).getOpinionWord();
+		//
+		// if (firstWordFeature.getValue().equals(
+		// secondWordFeature.getValue())) {
+		// double score1 = firstWordFeature.getScore();
+		// double score2 = secondWordFeature.getScore();
+		// double score3 = secondWordOpinion.getScore();
+		//
+		// if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE
+		// && score3 == DEFAULT_SCORE) {
+		// secondWordFeature.setScore(score1);
+		// secondWordOpinion.setScore(score1);
+		// }
+		// }
+		// if (firstWordOpinion.getValue().equals(secondWordOpinion)) {
+		// double score1 = firstWordOpinion.getScore();
+		// double score2 = secondWordOpinion.getScore();
+		// double score3 = secondWordOpinion.getScore();
+		//
+		// if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE
+		// && score3 == DEFAULT_SCORE) {
+		// secondWordFeature.setScore(score1);
+		// secondWordOpinion.setScore(score1);
+		// }
+		// }
+		// }
+		// }
 		return tuples;
 	}
 
 	private void printResults(ArrayList<Tuple> tuples) {
-//		System.out
-//				.println("-------------------------------------------------------------------------------------------------------");
-//		System.out.println("Score assignment:");
-//
-//		for (Tuple tuple : tuples) {
-//			System.out.println("Opinion word/score :"
-//					+ tuple.getOpinionWord().getValue() + "/"
-//					+ tuple.getOpinionWord().getScore() + " "
-//					+ tuple.getOpinionWord().getSentiWordScore());
-//			System.out.println("Feature word/score :"
-//					+ tuple.getFeatureWord().getValue() + "/"
-//					+ tuple.getFeatureWord().getScore() + " "
-//					+ tuple.getFeatureWord().getSentiWordScore());
-//		}
-//		System.out.println(tuples.size());
+		// System.out
+		// .println("-------------------------------------------------------------------------------------------------------");
+		// System.out.println("Score assignment:");
+		//
+		// for (Tuple tuple : tuples) {
+		// System.out.println("Opinion word/score :"
+		// + tuple.getOpinionWord().getValue() + "/"
+		// + tuple.getOpinionWord().getScore() + " "
+		// + tuple.getOpinionWord().getSentiWordScore());
+		// System.out.println("Feature word/score :"
+		// + tuple.getFeatureWord().getValue() + "/"
+		// + tuple.getFeatureWord().getScore() + " "
+		// + tuple.getFeatureWord().getSentiWordScore());
+		// }
+		// System.out.println(tuples.size());
 	}
 
 	private double getScore(String word) {
@@ -180,7 +180,7 @@ public class Classification {
 	}
 
 	private void initReader() {
-		sentimentScoreSource = new SentiWordNetService();
+		sentimentScoreSource = SentiWordNetService.getInstance();
 	}
 
 }
