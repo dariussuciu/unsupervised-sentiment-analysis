@@ -23,7 +23,7 @@ public class Classification {
 		initReader();
 	}
 
-	public void assignScores(Set<Tuple> tuples) {
+	public void assignScores(final Set<Tuple> tuples) {
 		HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
 
 		for (Tuple tuple : tuples) {
@@ -36,7 +36,7 @@ public class Classification {
 		}
 	}
 
-	public void assignSentiWordScores(Set<Tuple> tuples) {
+	public void assignSentiWordScores(final Set<Tuple> tuples) {
 		HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
 
 		for (Tuple tuple : tuples) {
@@ -49,7 +49,7 @@ public class Classification {
 		}
 	}
 
-	public void assignScoresBasedOnSeeds(Set<Tuple> data) {
+	public void assignScoresBasedOnSeeds(final Set<Tuple> data) {
 
 		ArrayList<SeedScoreModel> seeds = sentimentScoreSource
 				.getSeedWordsWithScores();
@@ -65,7 +65,7 @@ public class Classification {
 	}
 
 	private ArrayList<Tuple> assignScoresToSeeds(ArrayList<Tuple> tuples,
-			ArrayList<SeedScoreModel> seeds) {
+			final ArrayList<SeedScoreModel> seeds) {
 		HashSet<Tuple> set = new HashSet<Tuple>();
 		for (Tuple tuple : tuples) {
 			for (SeedScoreModel model : seeds) {
@@ -106,7 +106,7 @@ public class Classification {
 	 * @param data
 	 * @return
 	 */
-	private ArrayList<Tuple> initTupleArrayList(Set<Tuple> data) {
+	private ArrayList<Tuple> initTupleArrayList(final Set<Tuple> data) {
 		ArrayList<Tuple> tuples = new ArrayList<Tuple>();
 		for (Tuple tuple : data) {
 			if (tuple != null) {
@@ -174,7 +174,7 @@ public class Classification {
 		// System.out.println(tuples.size());
 	}
 
-	private double getScore(String word) {
+	private double getScore(final String word) {
 		double score = sentimentScoreSource.extract(word);
 		return score;
 	}

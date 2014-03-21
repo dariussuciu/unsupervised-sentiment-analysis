@@ -14,37 +14,38 @@ public class InputService {
 	private Config config;
 	private static InputService inputService;
 
-	public static InputService getInstance(Config config) {
+	public static InputService getInstance(final Config config) {
 		if (inputService == null)
 			inputService = new InputService(config);
 		return inputService;
 	}
 
-	private InputService(Config config) {
+	private InputService(final Config config) {
 		this.config = config;
 	}
-	
+
 	public List<String> getSeedWordsFromFile() {
-		List<String> seedWords = new ArrayList<String>();
-		
-		try 
-		{
+		final List<String> seedWords = new ArrayList<String>();
+
+		try {
 			File file = new File(config.getPositiveSeedWordsFile());
-			Scanner positiveScanner = new Scanner(new FileReader(file.getPath()));
+			Scanner positiveScanner = new Scanner(
+					new FileReader(file.getPath()));
 			List<String> positiveSeedWords = getSeedWords(positiveScanner);
-			
+
 			file = new File(config.getNegativeSeedWordsFile());
-			Scanner negativeScanner = new Scanner(new FileReader(file.getPath()));
-			List<String> negativeSeedWords = getSeedWords(negativeScanner);
-			
+			Scanner negativeScanner = new Scanner(
+					new FileReader(file.getPath()));
+			final List<String> negativeSeedWords = getSeedWords(negativeScanner);
+
 			seedWords.addAll(positiveSeedWords);
 			seedWords.addAll(negativeSeedWords);
-			
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return seedWords;
 	}
 
@@ -53,8 +54,8 @@ public class InputService {
 		// File folder = new File(
 		// "C:\\Users\\Alex\\Desktop\\Research\\Project\\Input");
 
-		File[] listOfFiles = folder.listFiles();
-		List<InputWrapper> input = new ArrayList<InputWrapper>();
+		final File[] listOfFiles = folder.listFiles();
+		final List<InputWrapper> input = new ArrayList<InputWrapper>();
 		if (listOfFiles != null) {
 			for (File file : listOfFiles) {
 				if (file.isFile()) {
@@ -80,36 +81,36 @@ public class InputService {
 		return null;
 	}
 
-	private void getContent(Scanner in, InputWrapper iWrapper) {
-		StringBuilder content = new StringBuilder("");
+	private void getContent(final Scanner in, final InputWrapper iWrapper) {
+		final StringBuilder content = new StringBuilder("");
 		while (in.hasNextLine()) {
 			content.append(in.nextLine());
 			content.append(" ");
 		}
 		iWrapper.setContent(content.toString());
 	}
-	
-	private List<String> getSeedWords(Scanner in) {
-		List<String> seedWords = new ArrayList<String>();
+
+	private List<String> getSeedWords(final Scanner in) {
+		final List<String> seedWords = new ArrayList<String>();
 		while (in.hasNextLine()) {
 			seedWords.add(in.nextLine());
 		}
 		return seedWords;
 	}
 
-	private void getHeaders(Scanner in, InputWrapper iWrapper) {
+	private void getHeaders(final Scanner in, final InputWrapper iWrapper) {
 		if (in.hasNextLine()) {
-			String author = in.nextLine();
+			final String author = in.nextLine();
 			iWrapper.setAuthor(getFormattedHeaderInfo(author));
 		}
 		if (in.hasNextLine()) {
-			String source = in.nextLine();
+			final String source = in.nextLine();
 			iWrapper.setSource(getFormattedHeaderInfo(source));
 		}
 	}
 
 	private String getFormattedHeaderInfo(String header) {
-		String[] splittedHeader = header.split("//");
+		final String[] splittedHeader = header.split("//");
 		if (splittedHeader.length > 1) {
 			header = header.split("//")[1];
 			if (header.charAt(0) == ' ')

@@ -82,7 +82,7 @@ public class Dep_MRRel extends GenericRelation {
 	}
 
 	@Override
-	public Class<? extends Enum<?>> getContainingEnum(String word) {
+	public Class<? extends Enum<?>> getContainingEnum(final String word) {
 		if (super.isInEnum(word, mod.class)) {
 			return mod.class;
 		} else if (super.isInEnum(word, pmod.class)) {
@@ -102,7 +102,7 @@ public class Dep_MRRel extends GenericRelation {
 	}
 
 	@Override
-	public boolean contains(String word) {
+	public boolean contains(final String word) {
 		return super.isInEnum(word, mod.class) || super.isInEnum(word, pmod.class) || super.isInEnum(word, subj.class)
 				|| super.isInEnum(word, s.class) || super.isInEnum(word, obj.class) || super.isInEnum(word, obj2.class)
 				|| super.isInEnum(word, desc.class);

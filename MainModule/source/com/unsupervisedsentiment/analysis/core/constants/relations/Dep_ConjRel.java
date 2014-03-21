@@ -19,7 +19,7 @@ public class Dep_ConjRel extends GenericRelation {
 	}
 
 	@Override
-	public Class<? extends Enum<?>> getContainingEnum(String word) {
+	public Class<? extends Enum<?>> getContainingEnum(final String word) {
 		if (super.isInEnum(word, CONJ.class)) {
 			return CONJ.class;
 		}
@@ -27,7 +27,7 @@ public class Dep_ConjRel extends GenericRelation {
 	}
 
 	@Override
-	public boolean contains(String word) {
+	public boolean contains(final String word) {
 		return super.isInEnum(word, CONJ.class);
 	}
 

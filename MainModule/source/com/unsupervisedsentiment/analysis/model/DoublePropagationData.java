@@ -7,7 +7,6 @@ import edu.stanford.nlp.semgraph.SemanticGraph;
 
 public class DoublePropagationData {
 	// input
-	private HashSet<Word> seedWords;
 	private String filename;
 	private String input;
 
@@ -19,7 +18,6 @@ public class DoublePropagationData {
 	private HashSet<Tuple> expandedOpinionWords;
 
 	public DoublePropagationData() {
-		setSeedWords(new HashSet<Word>());
 		setFeatures(new HashSet<Tuple>());
 		setExpandedOpinionWords(new HashSet<Tuple>());
 	}
@@ -28,7 +26,7 @@ public class DoublePropagationData {
 		return input;
 	}
 
-	public void setInput(String input) {
+	public void setInput(final String input) {
 		this.input = input;
 	}
 
@@ -37,7 +35,7 @@ public class DoublePropagationData {
 	}
 
 	public void setSentancesSemanticGraphs(
-			List<SemanticGraph> sentancesSemanticGraph) {
+			final List<SemanticGraph> sentancesSemanticGraph) {
 		this.sentancesSemanticGraphs = sentancesSemanticGraph;
 	}
 
@@ -45,7 +43,7 @@ public class DoublePropagationData {
 		return features;
 	}
 
-	public void setFeatures(HashSet<Tuple> features) {
+	public void setFeatures(final HashSet<Tuple> features) {
 		this.features = features;
 	}
 
@@ -53,12 +51,13 @@ public class DoublePropagationData {
 		return expandedOpinionWords;
 	}
 
-	public void setExpandedOpinionWords(HashSet<Tuple> expandedOpinionWords) {
+	public void setExpandedOpinionWords(
+			final HashSet<Tuple> expandedOpinionWords) {
 		this.expandedOpinionWords = expandedOpinionWords;
 	}
 
 	public HashSet<Word> getExpandedOpinionWords() {
-		HashSet<Word> opinionWords = new HashSet<Word>();
+		final HashSet<Word> opinionWords = new HashSet<Word>();
 		for (Tuple tuple : expandedOpinionWords) {
 			Word foundOpinionWord = getWord(tuple, ElementType.OPINION_WORD);
 			if (foundOpinionWord != null)
@@ -68,7 +67,7 @@ public class DoublePropagationData {
 	}
 
 	public HashSet<Word> getFeatures() {
-		HashSet<Word> featureWords = new HashSet<Word>();
+		final HashSet<Word> featureWords = new HashSet<Word>();
 		for (Tuple tuple : features) {
 			Word foundFeature = getWord(tuple, ElementType.FEATURE);
 			if (foundFeature != null)
@@ -77,7 +76,7 @@ public class DoublePropagationData {
 		return featureWords;
 	}
 
-	private Word getWord(Tuple tuple, ElementType type) {
+	private Word getWord(final Tuple tuple, final ElementType type) {
 		// seed words tuples don`t have targets
 		if (tuple.getTupleType().equals(TupleType.Seed)
 				&& tuple.getSource().getType().equals(type)) {
@@ -93,19 +92,11 @@ public class DoublePropagationData {
 		return null;
 	}
 
-	public HashSet<Word> getSeedWords() {
-		return seedWords;
-	}
-
-	public void setSeedWords(HashSet<Word> seedWords) {
-		this.seedWords = seedWords;
-	}
-
 	public String getFilename() {
 		return filename;
 	}
 
-	public void setFilename(String filename) {
+	public void setFilename(final String filename) {
 		this.filename = filename;
 	}
 

@@ -30,11 +30,11 @@ public class SentiWordNetService implements ISentimentScoreSource {
 
 	public void init() {
 		config = Initializer.getConfig();
-		String pathToSWN = config.getSWNPath();
+		final String pathToSWN = config.getSWNPath();
 
 		_dict = new HashMap<String, Double>();
 		try {
-			BufferedReader csv = new BufferedReader(new FileReader(pathToSWN));
+			final BufferedReader csv = new BufferedReader(new FileReader(pathToSWN));
 			String line = "";
 
 			// headers...
@@ -60,7 +60,7 @@ public class SentiWordNetService implements ISentimentScoreSource {
 		}
 	}
 
-	public Double extract(String word) {
+	public Double extract(final String word) {
 		Double total = new Double(0);
 		if (_dict.get(word + "#n") != null)
 			total = _dict.get(word + "#n") + total;
@@ -75,7 +75,7 @@ public class SentiWordNetService implements ISentimentScoreSource {
 	}
 
 	public ArrayList<SeedScoreModel> getSeedWordsWithScores() {
-		InputService inputService = InputService.getInstance(config);
+		final InputService inputService = InputService.getInstance(config);
 		config.setSeedWords(inputService.getSeedWordsFromFile());
 		ArrayList<SeedScoreModel> hash = new ArrayList<SeedScoreModel>();
 		ArrayList<String> seedsTemp = (ArrayList<String>) config.getSeedWords();

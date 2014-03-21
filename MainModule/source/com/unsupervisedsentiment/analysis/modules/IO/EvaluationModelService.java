@@ -20,26 +20,27 @@ import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 
 public class EvaluationModelService {
-	public static boolean existsEvaluationModelForFile(String filename) {
-		String storedSemanticGraphsDirectory = Initializer.getConfig()
+	public static boolean existsEvaluationModelForFile(final String filename) {
+		final String storedSemanticGraphsDirectory = Initializer.getConfig()
 				.getStoredSemanticGraphsDirectory();
 
-		String filePath = storedSemanticGraphsDirectory + "/" + filename
+		final String filePath = storedSemanticGraphsDirectory + "/" + filename
 				+ "-SemanticGraph";
-		File f = new File(filePath);
+		final File f = new File(filePath);
 		return f.exists();
 	}
 
 	public static void saveEvaluationModelToFile(
-			List<SemanticGraph> semanticGraphsListForSentances, String filename) {
-		String filePath = getEvaluationModelFilename(filename);
+			final List<SemanticGraph> semanticGraphsListForSentances,
+			final String filename) {
+		final String filePath = getEvaluationModelFilename(filename);
 		try {
 			// File f = new File(filename);
 			// if (!f.exists())
 			// f.createNewFile();
-			OutputStream file = new FileOutputStream(filePath);
-			OutputStream buffer = new BufferedOutputStream(file);
-			ObjectOutput output = new ObjectOutputStream(buffer);
+			final OutputStream file = new FileOutputStream(filePath);
+			final OutputStream buffer = new BufferedOutputStream(file);
+			final ObjectOutput output = new ObjectOutputStream(buffer);
 			output.writeObject(semanticGraphsListForSentances);
 			output.close();
 		} catch (IOException ex) {
@@ -47,16 +48,17 @@ public class EvaluationModelService {
 		}
 	}
 
-	public static List<EvaluationModel> getEvaluationModelFromFile(String filename) {
-		String filePath = getEvaluationModelFilename(filename);
+	public static List<EvaluationModel> getEvaluationModelFromFile(
+			final String filename) {
+		final String filePath = getEvaluationModelFilename(filename);
 		try {
-			InputStream file = new FileInputStream(filePath);
-			InputStream buffer = new BufferedInputStream(file);
-			ObjectInput input = new ObjectInputStream(buffer);
+			final InputStream file = new FileInputStream(filePath);
+			final InputStream buffer = new BufferedInputStream(file);
+			final ObjectInput input = new ObjectInputStream(buffer);
 
 			// deserialize the List
 			@SuppressWarnings("unchecked")
-			List<EvaluationModel> evaluationModels = (List<EvaluationModel>) input
+			final List<EvaluationModel> evaluationModels = (List<EvaluationModel>) input
 					.readObject();
 			input.close();
 			// display its data
@@ -68,10 +70,10 @@ public class EvaluationModelService {
 		}
 	}
 
-	private static String getEvaluationModelFilename(String filename) {
-		String storedSemanticGraphsDirectory = Initializer.getConfig()
+	private static String getEvaluationModelFilename(final String filename) {
+		final String storedSemanticGraphsDirectory = Initializer.getConfig()
 				.getStoredSemanticGraphsDirectory();
-		String filePath = storedSemanticGraphsDirectory + "/" + filename
+		final String filePath = storedSemanticGraphsDirectory + "/" + filename
 				+ "-SemanticGraph";
 		return filePath;
 	}

@@ -1,15 +1,18 @@
 package com.unsupervisedsentiment.analysis.core.constants.relations;
 
 public abstract class GenericRelation {
-	public abstract boolean contains(String word);
 
 	protected GenericRelation() {
 		isInstantiated = false;
 	}
 
-	public abstract Class<? extends Enum<?>> getContainingEnum(String word);
+	public abstract boolean contains(final String word);
 
-	public static <E extends Enum<E>> boolean isInEnum(String value, Class<E> enumClass) {
+	protected abstract Class<? extends Enum<?>> getContainingEnum(
+			final String word);
+
+	protected <E extends Enum<E>> boolean isInEnum(final String value,
+			final Class<E> enumClass) {
 		for (E e : enumClass.getEnumConstants()) {
 			if (e.name().equals(value)) {
 				return true;

@@ -29,104 +29,101 @@ public class OutputService {
 		this.config = config;
 	}
 
-	public void writeOutput(List<OutputWrapper> outputWrappers) {
-		try
-		{
-			File folder = new File(config.getOutputDirectory());
-			// File folder = new File(
-			// "C:\\Users\\Alex\\Desktop\\Research\\Project\\Input");
-			for(OutputWrapper outputWrapper : outputWrappers)
-			{
-			    File file = new File(folder, outputWrapper.getFilename());
-			    file.createNewFile();
-	
-			    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-			    
-			    writer.write("----------------------" );
-			    writer.newLine();
-			    writer.write("------HEADER------" );
-			    writer.newLine();
-			    writer.write("----------------------" );
-			    writer.newLine();
-			    writer.write("Author : " + outputWrapper.getAuthor());
-			    writer.newLine();
-			    writer.write("Source : " + outputWrapper.getSource());
-			    writer.newLine();
-			    writer.write("----------------------" );
-			    writer.newLine();
-			    writer.write("------CONTENT------" );
-			    writer.newLine();
-			    writer.write("----------------------" );
-			    writer.newLine();
-			    
-			    WriteTuples(writer, outputWrapper.getTuples());
-			    writer.flush();
-			    writer.close();
+	public void writeOutput(final List<OutputWrapper> outputWrappers) {
+		try {
+			final File folder = new File(config.getOutputDirectory());
+			for (final OutputWrapper outputWrapper : outputWrappers) {
+				final File file = new File(folder, outputWrapper.getFilename());
+				file.createNewFile();
+
+				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+
+				writer.write("----------------------");
+				writer.newLine();
+				writer.write("------HEADER------");
+				writer.newLine();
+				writer.write("----------------------");
+				writer.newLine();
+				writer.write("Author : " + outputWrapper.getAuthor());
+				writer.newLine();
+				writer.write("Source : " + outputWrapper.getSource());
+				writer.newLine();
+				writer.write("----------------------");
+				writer.newLine();
+				writer.write("------CONTENT------");
+				writer.newLine();
+				writer.write("----------------------");
+				writer.newLine();
+
+				WriteTuples(writer, outputWrapper.getTuples());
+				writer.flush();
+				writer.close();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private static void WriteTuples(BufferedWriter writer, Set<Tuple> tuples) throws IOException{
-		for (Tuple tuple : tuples) 
-		{
-			if (tuple.getTupleType().equals(TupleType.Pair)) {
-				Pair pair = (Pair) tuple;
 
-					writer.write("Pair:  " + tuple.getSource().getValue()
-							+ "[" + tuple.getSource().getScore() + "]" 
-							+ "{" + tuple.getSource().getSentiWordScore() + "}" 
-							+ "(" + tuple.getSource().getPosTag() + ")" + " --("
-							+ pair.getRelation() + ")--> "
-							+ tuple.getTarget().getValue() 
-							+ "[" + tuple.getTarget().getScore() + "]" 
-							+ "{" + tuple.getTarget().getSentiWordScore() + "}" 
-							+ "(" + tuple.getTarget().getPosTag() + ")"
-							+ "   - sentence: " + tuple.getSentence() + "(" + tuple.getSentenceIndex() + ")");
-			    writer.newLine();
-			} 
-			else if (tuple.getTupleType().equals(TupleType.Triple)) 
-			{
-				Triple triple = (Triple) tuple;
-				writer.write("Triple:  " + tuple.getSource().getValue()
-						+ "[" + tuple.getSource().getScore() + "]" 
-						+ "{" + tuple.getSource().getSentiWordScore() + "}" 
-						+ "(" + tuple.getSource().getPosTag() + ")" + " --("
+	private static void WriteTuples(final BufferedWriter writer,
+			final Set<Tuple> tuples) throws IOException {
+		for (final Tuple tuple : tuples) {
+			if (tuple.getTupleType().equals(TupleType.Pair)) {
+				final Pair pair = (Pair) tuple;
+
+				writer.write("Pair:  " + tuple.getSource().getValue() + "["
+						+ tuple.getSource().getScore() + "]" + "{"
+						+ tuple.getSource().getSentiWordScore() + "}" + "("
+						+ tuple.getSource().getPosTag() + ")" + " --("
+						+ pair.getRelation() + ")--> "
+						+ tuple.getTarget().getValue() + "["
+						+ tuple.getTarget().getScore() + "]" + "{"
+						+ tuple.getTarget().getSentiWordScore() + "}" + "("
+						+ tuple.getTarget().getPosTag() + ")"
+						+ "   - sentence: " + tuple.getSentence() + "("
+						+ tuple.getSentenceIndex() + ")");
+				writer.newLine();
+			} else if (tuple.getTupleType().equals(TupleType.Triple)) {
+				final Triple triple = (Triple) tuple;
+				writer.write("Triple:  " + tuple.getSource().getValue() + "["
+						+ tuple.getSource().getScore() + "]" + "{"
+						+ tuple.getSource().getSentiWordScore() + "}" + "("
+						+ tuple.getSource().getPosTag() + ")" + " --("
 						+ triple.getRelationHOpinion() + ")--> "
 						+ triple.getH().getValue() + "("
 						+ triple.getH().getPosTag() + ")" + " --("
 						+ triple.getRelationHTarget() + ")--> "
-						+ tuple.getTarget().getValue() + "("
-						+ "[" + tuple.getTarget().getScore() + "]" 
-						+ "{" + tuple.getTarget().getSentiWordScore() + "}" 
-						+ "(" + tuple.getTarget().getPosTag() + ")"
-						+ "   - sentence: " + tuple.getSentence() + "(" + tuple.getSentenceIndex() + ")");
-			    writer.newLine();
+						+ tuple.getTarget().getValue() + "(" + "["
+						+ tuple.getTarget().getScore() + "]" + "{"
+						+ tuple.getTarget().getSentiWordScore() + "}" + "("
+						+ tuple.getTarget().getPosTag() + ")"
+						+ "   - sentence: " + tuple.getSentence() + "("
+						+ tuple.getSentenceIndex() + ")");
+				writer.newLine();
 			}
 		}
 	}
-	
-	public void WriteEvaluationModels(String fileName, List<EvaluationModel> evaluationModels)
-	{
-		try
-		{
-			File folder = new File(config.getEvaluationModelsDirectory());
-			
-		    File file = new File(folder, fileName);
-		    file.createNewFile();
 
-		    BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-			
-			for(EvaluationModel evaluationModel : evaluationModels)
-			{
-				writer.write(evaluationModel.getOpinionWord()+"[" + evaluationModel.getSentenceIndex() + "]" + " - " + evaluationModel.getSentence());
-			    writer.newLine();
+	public void WriteEvaluationModels(final String fileName,
+			final List<EvaluationModel> evaluationModels) {
+		try {
+			final File folder = new File(config.getEvaluationModelsDirectory());
+
+			final File file = new File(folder, fileName);
+			file.createNewFile();
+
+			final BufferedWriter writer = new BufferedWriter(new FileWriter(
+					file));
+
+			for (EvaluationModel evaluationModel : evaluationModels) {
+				writer.write(evaluationModel.getOpinionWord() + "["
+						+ evaluationModel.getSentenceIndex() + "]" + " - "
+						+ evaluationModel.getSentence());
+				writer.newLine();
 			}
-			
-		    writer.flush();
-		    writer.close();
-		    
+
+			writer.flush();
+			writer.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -22,7 +22,7 @@ public class Pos_NNRel extends GenericRelation {
 	}
 
 	@Override
-	public Class<? extends Enum<?>> getContainingEnum(String word) {
+	public Class<? extends Enum<?>> getContainingEnum(final String word) {
 		if (super.isInEnum(word, NN.class)) {
 			return NN.class;
 		}
@@ -30,7 +30,7 @@ public class Pos_NNRel extends GenericRelation {
 	}
 
 	@Override
-	public boolean contains(String word) {
+	public boolean contains(final String word) {
 		return super.isInEnum(word, NN.class);
 	};
 }

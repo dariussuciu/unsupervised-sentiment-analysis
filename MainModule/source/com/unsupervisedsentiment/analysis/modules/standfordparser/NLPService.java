@@ -31,7 +31,7 @@ import edu.stanford.nlp.util.CoreMap;
 public class NLPService {
 
 	private static NLPService instance;
-	private StanfordCoreNLP coreNlp;
+	private final StanfordCoreNLP coreNlp;
 
 	public static NLPService getInstance() {
 		if (instance == null)
@@ -40,78 +40,85 @@ public class NLPService {
 	}
 
 	private NLPService() {
-		Properties props = new Properties();
-		props.put("annotators", StanfordCoreNLP.STANFORD_TOKENIZE + "," + StanfordCoreNLP.STANFORD_SSPLIT + ","
-				+ StanfordCoreNLP.STANFORD_POS + "," + StanfordCoreNLP.STANFORD_LEMMA + ","
+		final Properties props = new Properties();
+		props.put("annotators", StanfordCoreNLP.STANFORD_TOKENIZE + ","
+				+ StanfordCoreNLP.STANFORD_SSPLIT + ","
+				+ StanfordCoreNLP.STANFORD_POS + ","
+				+ StanfordCoreNLP.STANFORD_LEMMA + ","
 				+ StanfordCoreNLP.STANFORD_PARSE);
 		coreNlp = new StanfordCoreNLP(props);
 	}
 
-	public List<CoreMap> getAnnotatedSentencesFromText(String text) {
-		String lemmatizedText = doLemmatization(text);
+	public List<CoreMap> getAnnotatedSentencesFromText(final String text) {
+		final String lemmatizedText = doLemmatization(text);
 		return annotateSentences(lemmatizedText);
 	}
 
-	public List<Tuple> getTuplesFromSentence(CoreMap sentence) {
-		List<Tuple> tuples = new ArrayList<Tuple>();
-		SemanticGraph dependencies = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
+	public List<Tuple> getTuplesFromSentence(final CoreMap sentence) {
+		final List<Tuple> tuples = new ArrayList<Tuple>();
+		final SemanticGraph dependencies = sentence
+				.get(CollapsedCCProcessedDependenciesAnnotation.class);
 
 		final Set<SemanticGraphEdge> edgeSet = dependencies.getEdgeSet();
 
-		for (SemanticGraphEdge egi : edgeSet) {
-			Pair tuple = new Pair();
+		for (final SemanticGraphEdge egi : edgeSet) {
+			final Pair tuple = new Pair();
 			tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
-			tuple.setSource(new Word(egi.getSource().get(TextAnnotation.class), egi.getSource().get(
-					PartOfSpeechAnnotation.class), ElementType.NONE));
-			tuple.setTarget(new Word(egi.getTarget().get(TextAnnotation.class), egi.getTarget().get(
-					PartOfSpeechAnnotation.class), ElementType.NONE));
+			tuple.setSource(new Word(egi.getSource().get(TextAnnotation.class),
+					egi.getSource().get(PartOfSpeechAnnotation.class),
+					ElementType.NONE));
+			tuple.setTarget(new Word(egi.getTarget().get(TextAnnotation.class),
+					egi.getTarget().get(PartOfSpeechAnnotation.class),
+					ElementType.NONE));
 			tuple.setRelation(egi.getRelation().toString());
 			tuples.add(tuple);
 		}
 		return tuples;
 	}
 
-	private List<CoreMap> annotateSentences(String text) {
-		Annotation document = new Annotation(text);
+	private List<CoreMap> annotateSentences(final String text) {
+		final Annotation document = new Annotation(text);
 		coreNlp.annotate(document);
-		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+		final List<CoreMap> sentences = document.get(SentencesAnnotation.class);
 		return sentences;
 	}
-	
-	public List<EvaluationModel> getEvaluationModels(String text) {
-		List<SemanticGraph> semanticGraphs = createSemanticGraphsListForSentances(text);
-		List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
-		
-		for(int i=0; i<semanticGraphs.size(); i++)
-		{
-			String sentence = semanticGraphs.get(i).toRecoveredSentenceString();
-			String cleanSentence = sentence.replaceAll("(### )|(% % % )|(\\$ \\$ \\$ )", "");
-			Pattern MY_PATTERN = Pattern.compile("### (\\w*\\b)");
-			Matcher m = MY_PATTERN.matcher(sentence);
-				while (m.find()) {
-				    String opinionWord = m.group(1);
-					EvaluationModel model = new EvaluationModel(opinionWord, cleanSentence, i);
-					evaluationModels.add(model);
-				}
+
+	public List<EvaluationModel> getEvaluationModels(final String text) {
+		final List<SemanticGraph> semanticGraphs = createSemanticGraphsListForSentances(text);
+		final List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
+
+		for (int i = 0; i < semanticGraphs.size(); i++) {
+			final String sentence = semanticGraphs.get(i)
+					.toRecoveredSentenceString();
+			final String cleanSentence = sentence.replaceAll(
+					"(### )|(% % % )|(\\$ \\$ \\$ )", "");
+			final Pattern MY_PATTERN = Pattern.compile("### (\\w*\\b)");
+			final Matcher m = MY_PATTERN.matcher(sentence);
+			while (m.find()) {
+				final String opinionWord = m.group(1);
+				final EvaluationModel model = new EvaluationModel(opinionWord,
+						cleanSentence, i);
+				evaluationModels.add(model);
+			}
 		}
-		
+
 		return evaluationModels;
 	}
 
-	private String doLemmatization(String documentText) {
-		List<String> lemmas = new LinkedList<String>();
+	private String doLemmatization(final String documentText) {
+		final List<String> lemmas = new LinkedList<String>();
 		String result = "";
 		// create an empty Annotation just with the given text
-		Annotation document = new Annotation(documentText);
+		final Annotation document = new Annotation(documentText);
 
 		// run all Annotators on this text
 		coreNlp.annotate(document);
 
 		// Iterate over all of the sentences found
-		List<CoreMap> sentences = document.get(SentencesAnnotation.class);
-		for (CoreMap sentence : sentences) {
+		final List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+		for (final CoreMap sentence : sentences) {
 			// Iterate over all tokens in a sentence
-			for (CoreLabel token : sentence.get(TokensAnnotation.class)) {
+			for (final CoreLabel token : sentence.get(TokensAnnotation.class)) {
 				// Retrieve and add the lemma for each word into the
 				// list of lemmas
 				lemmas.add(token.get(LemmaAnnotation.class));
@@ -121,11 +128,13 @@ public class NLPService {
 		return result;
 	}
 
-	public List<SemanticGraph> createSemanticGraphsListForSentances(String s) {
-		List<SemanticGraph> semanticGraphs = new ArrayList<SemanticGraph>();
-		List<CoreMap> annotatedSentences = getAnnotatedSentencesFromText(s);
-		for (CoreMap sentence : annotatedSentences) {
-			SemanticGraph graph = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
+	public List<SemanticGraph> createSemanticGraphsListForSentances(
+			final String s) {
+		final List<SemanticGraph> semanticGraphs = new ArrayList<SemanticGraph>();
+		final List<CoreMap> annotatedSentences = getAnnotatedSentencesFromText(s);
+		for (final CoreMap sentence : annotatedSentences) {
+			final SemanticGraph graph = sentence
+					.get(CollapsedCCProcessedDependenciesAnnotation.class);
 			semanticGraphs.add(graph);
 		}
 		return semanticGraphs;

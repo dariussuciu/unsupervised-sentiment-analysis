@@ -42,20 +42,24 @@ public class DoublePropagationAlgorithm {
 		data.setExpandedOpinionWords(new HashSet<Tuple>());
 		String storedSemanticGraphsDirectory = Initializer.getConfig()
 				.getStoredSemanticGraphsDirectory();
-		if (Helpers.existsObjectsForFile(storedSemanticGraphsDirectory, data.getFilename(), "SemanticGraph")) {
+		if (Helpers.existsObjectsForFile(storedSemanticGraphsDirectory,
+				data.getFilename(), "SemanticGraph")) {
 			data.setSentancesSemanticGraphs(Helpers
-					.<SemanticGraph>getObjectsFromFile(storedSemanticGraphsDirectory,data.getFilename(), "SemanticGraph"));
+					.<SemanticGraph> getObjectsFromFile(
+							storedSemanticGraphsDirectory, data.getFilename(),
+							"SemanticGraph"));
 		} else {
 			List<SemanticGraph> semanticGraphsListForSentances = nlpService
 					.createSemanticGraphsListForSentances(data.getInput());
-			Helpers.saveObjectsToFile(semanticGraphsListForSentances, storedSemanticGraphsDirectory,
-					data.getFilename(), "SemanticGraph");
+			Helpers.saveObjectsToFile(semanticGraphsListForSentances,
+					storedSemanticGraphsDirectory, data.getFilename(),
+					"SemanticGraph");
 			data.setSentancesSemanticGraphs(semanticGraphsListForSentances);
 		}
 		data.setExpandedOpinionWords(seedWords);
 	}
 
-	public DoublePropagationData execute(HashSet<Tuple> seedWords) {
+	public DoublePropagationData execute(final HashSet<Tuple> seedWords) {
 		initialize(seedWords);
 		do {
 			executeStep();
@@ -70,7 +74,8 @@ public class DoublePropagationAlgorithm {
 		resetIterationFeaturesAndOpinionWords();
 
 		for (int i = 0; i < data.getSentancesSemanticGraphs().size(); i++) {
-			SemanticGraph semanticGraph = data.getSentancesSemanticGraphs().get(i);
+			SemanticGraph semanticGraph = data.getSentancesSemanticGraphs()
+					.get(i);
 			featuresIteration1.addAll(targetExtractorService
 					.extractTargetsUsingR1(semanticGraph,
 							data.getExpandedOpinionWords(),
@@ -85,7 +90,8 @@ public class DoublePropagationAlgorithm {
 		data.getExpandedOpinionWordsTuples().addAll(opinionWordsIteration1);
 
 		for (int i = 0; i < data.getSentancesSemanticGraphs().size(); i++) {
-			SemanticGraph semanticGraph = data.getSentancesSemanticGraphs().get(i);
+			SemanticGraph semanticGraph = data.getSentancesSemanticGraphs()
+					.get(i);
 			featuresIteration2.addAll(targetExtractorService
 					.extractTargetsUsingR3(semanticGraph, data.getFeatures(),
 							data.getFeatureTuples(), i));

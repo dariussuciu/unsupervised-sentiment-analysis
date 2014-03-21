@@ -46,9 +46,10 @@ public class Helpers {
 	 * @return
 	 */
 	public static List<SemanticGraphEdge> getTargetEdgesOnRelAndTarget(
-			Iterable<SemanticGraphEdge> edges, GenericRelation targetType,
-			GenericRelation relationType, boolean isSource) {
-		List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
+			final Iterable<SemanticGraphEdge> edges,
+			final GenericRelation targetType,
+			final GenericRelation relationType, final boolean isSource) {
+		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 
 		for (SemanticGraphEdge edge : edges) {
 			GrammaticalRelation relation = edge.getRelation();
@@ -74,8 +75,9 @@ public class Helpers {
 	 * @return
 	 */
 	public static List<SemanticGraphEdge> getTargetEdgesOnRel(
-			Iterable<SemanticGraphEdge> edges, GenericRelation relationType) {
-		List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
+			final Iterable<SemanticGraphEdge> edges,
+			final GenericRelation relationType) {
+		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 
 		for (SemanticGraphEdge edge : edges) {
 			GrammaticalRelation relation = edge.getRelation();
@@ -96,9 +98,9 @@ public class Helpers {
 	 * @return
 	 */
 	public static List<SemanticGraphEdge> getTargetEdgesOnTarget(
-			Iterable<SemanticGraphEdge> edges, GenericRelation targetType,
-			boolean isSource) {
-		List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
+			final Iterable<SemanticGraphEdge> edges,
+			final GenericRelation targetType, final boolean isSource) {
+		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 
 		for (SemanticGraphEdge edge : edges) {
 			if (!isSource && targetType.contains(edge.getTarget().tag())) {
@@ -111,51 +113,55 @@ public class Helpers {
 		return targetEdges;
 	}
 
-	public static Pair getPair(String valueOpinion, String posOpinion,
-			ElementType typeSource, String valueTarget, String posTarget,
-			ElementType typeTarget, String relation, Dependency dependency,
-			int sentenceIndex, String sentence) {
-		Word opinion = new Word(posOpinion, valueOpinion, typeSource);
-		Word target = new Word(posTarget, valueTarget, typeTarget);
+	public static Pair getPair(final String valueOpinion,
+			final String posOpinion, final ElementType typeSource,
+			final String valueTarget, final String posTarget,
+			final ElementType typeTarget, final String relation,
+			final Dependency dependency, final int sentenceIndex,
+			final String sentence) {
+		final Word opinion = new Word(posOpinion, valueOpinion, typeSource);
+		final Word target = new Word(posTarget, valueTarget, typeTarget);
 
 		return new Pair(opinion, target, dependency, TupleType.Pair, relation,
 				sentenceIndex, sentence);
 	}
 
-	public static Triple getTriple(String valueSource, String posSource,
-			ElementType typeSource, String valueTarget, String posTarget,
-			ElementType typeTarget, String valueH, String posH,
-			String relationHOpinion, String relationHTarget,
-			Dependency dependency, int sentenceIndex, String sentence) {
-		Word opinion = new Word(posSource, valueSource, typeSource);
-		Word target = new Word(posTarget, valueTarget, typeTarget);
-		Word H = new Word(posH, valueH, ElementType.NONE);
+	public static Triple getTriple(final String valueSource,
+			final String posSource, final ElementType typeSource,
+			final String valueTarget, final String posTarget,
+			final ElementType typeTarget, final String valueH,
+			final String posH, final String relationHOpinion,
+			final String relationHTarget, final Dependency dependency,
+			final int sentenceIndex, final String sentence) {
+		final Word opinion = new Word(posSource, valueSource, typeSource);
+		final Word target = new Word(posTarget, valueTarget, typeTarget);
+		final Word H = new Word(posH, valueH, ElementType.NONE);
 
 		return new Triple(opinion, target, H, dependency, TupleType.Triple,
 				relationHOpinion, relationHTarget, sentenceIndex, sentence);
 	}
 
 	public static boolean checkEquivalentRelations(
-			GrammaticalRelation relationSourceH,
-			GrammaticalRelation relationTargetH) {
+			final GrammaticalRelation relationSourceH,
+			final GrammaticalRelation relationTargetH) {
 		// equivalency from Stanford, keep for know, until we know more about
 		// how it decides when relations
 		// are equivalent
 		// if(relationSourceH.equals(relationTargetH))
 		// return true;
 
-		String relSourceHName = relationSourceH.toString();
-		String relTargetHName = relationTargetH.toString();
+		final String relSourceHName = relationSourceH.toString();
+		final String relTargetHName = relationTargetH.toString();
 
 		return compareRelations(relSourceHName, relTargetHName);
 	}
 
-	private static boolean compareRelations(String rel1, String rel2) {
+	private static boolean compareRelations(final String rel1, final String rel2) {
 		// if(rel1.equals(rel2))
 		// return true;
 
-		RelationEquivalency relEquivalency1 = getRelationEquivalency(rel1);
-		RelationEquivalency relEquivalency2 = getRelationEquivalency(rel2);
+		final RelationEquivalency relEquivalency1 = getRelationEquivalency(rel1);
+		final RelationEquivalency relEquivalency2 = getRelationEquivalency(rel2);
 
 		if (relEquivalency1.equals(relEquivalency2)
 				&& !relEquivalency1.equals(RelationEquivalency.None))
@@ -164,7 +170,8 @@ public class Helpers {
 		return false;
 	}
 
-	private static RelationEquivalency getRelationEquivalency(String relation) {
+	private static RelationEquivalency getRelationEquivalency(
+			final String relation) {
 		if (relation.equals("s") || relation.equals("subj")
 				|| relation.equals("obj") || relation.equals("dobj")
 				|| relation.equals("nsubj"))
@@ -176,18 +183,18 @@ public class Helpers {
 		return RelationEquivalency.None;
 	}
 
-	public static Set<Tuple> extractTargets(SemanticGraph semanticGraph,
-			Set<Word> words, GenericRelation relationType,
-			GenericRelation targetPos, ElementType targetType,
-			int semanticGraphIndex) {
-		Set<Tuple> targets = new HashSet<Tuple>();
+	public static Set<Tuple> extractTargets(final SemanticGraph semanticGraph,
+			final Set<Word> words, final GenericRelation relationType,
+			final GenericRelation targetPos, final ElementType targetType,
+			final int semanticGraphIndex) {
+		final Set<Tuple> targets = new HashSet<Tuple>();
 
 		for (Word word : words) {
 			final List<IndexedWord> vertexes = semanticGraph
 					.getAllNodesByWordPattern(word.getPattern());
 			for (IndexedWord vertex : vertexes) {
 				// for outgoing edges
-				List<SemanticGraphEdge> outgoingTargetEdges = Helpers
+				final List<SemanticGraphEdge> outgoingTargetEdges = Helpers
 						.getTargetEdgesOnRelAndTarget(
 								semanticGraph.outgoingEdgeIterable(vertex),
 								targetPos, relationType, false);
@@ -201,7 +208,7 @@ public class Helpers {
 				}
 
 				// for incoming edges
-				List<SemanticGraphEdge> incomingTargetEdges = Helpers
+				final List<SemanticGraphEdge> incomingTargetEdges = Helpers
 						.getTargetEdgesOnRelAndTarget(
 								semanticGraph.incomingEdgeIterable(vertex),
 								targetPos, relationType, true);
@@ -220,22 +227,24 @@ public class Helpers {
 		return targets;
 	}
 
-	public static Set<Tuple> getTriplesRelativeToH(SemanticGraph semanticGraph,
-			Word source, SemanticGraphEdge edgeWithH, IndexedWord H,
-			boolean isSource, GenericRelation targetPos,
-			GenericRelation relationPos, ElementType targetType,
-			int semanticGraphIndex) {
-		Set<Tuple> targets = new HashSet<Tuple>();
+	public static Set<Tuple> getTriplesRelativeToH(
+			final SemanticGraph semanticGraph, final Word source,
+			final SemanticGraphEdge edgeWithH, final IndexedWord H,
+			final boolean isSource, final GenericRelation targetPos,
+			final GenericRelation relationPos, final ElementType targetType,
+			final int semanticGraphIndex) {
+		final Set<Tuple> targets = new HashSet<Tuple>();
 		// for incoming target edges
-		List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers
+		final List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers
 				.getTargetEdgesOnRelAndTarget(
 						semanticGraph.incomingEdgeIterable(H), targetPos,
 						relationPos, !isSource);
 		for (SemanticGraphEdge edgeWithTarget : incomingEdgesWithTargets) {
 
-			GrammaticalRelation relationHSource = edgeWithH.getRelation();
-			GrammaticalRelation relationHTarget = edgeWithTarget.getRelation();
-			IndexedWord target = edgeWithTarget.getSource();
+			final GrammaticalRelation relationHSource = edgeWithH.getRelation();
+			final GrammaticalRelation relationHTarget = edgeWithTarget
+					.getRelation();
+			final IndexedWord target = edgeWithTarget.getSource();
 			if (validateTriple(source, target, H))
 				targets.add(createTriple(source, target, H, relationHSource,
 						relationHTarget, targetType, semanticGraphIndex,
@@ -243,15 +252,16 @@ public class Helpers {
 		}
 
 		// for outgoing target edges
-		List<SemanticGraphEdge> outgoingEdgesWithTargets = Helpers
+		final List<SemanticGraphEdge> outgoingEdgesWithTargets = Helpers
 				.getTargetEdgesOnRelAndTarget(
 						semanticGraph.outgoingEdgeIterable(H), targetPos,
 						relationPos, isSource);
 		for (SemanticGraphEdge edgeWithTarget : outgoingEdgesWithTargets) {
 
-			GrammaticalRelation relationHSource = edgeWithH.getRelation();
-			GrammaticalRelation relationHTarget = edgeWithTarget.getRelation();
-			IndexedWord target = edgeWithTarget.getTarget();
+			final GrammaticalRelation relationHSource = edgeWithH.getRelation();
+			final GrammaticalRelation relationHTarget = edgeWithTarget
+					.getRelation();
+			final IndexedWord target = edgeWithTarget.getTarget();
 			if (validateTriple(source, target, H))
 				targets.add(createTriple(source, target, H, relationHSource,
 						relationHTarget, targetType, semanticGraphIndex,
@@ -260,10 +270,10 @@ public class Helpers {
 		return targets;
 	}
 
-	public static boolean validateTriple(Word source, IndexedWord target,
-			IndexedWord H) {
-		String sourceWord = source.getValue();
-		String targetWord = target.value();
+	public static boolean validateTriple(final Word source,
+			final IndexedWord target, final IndexedWord H) {
+		final String sourceWord = source.getValue();
+		final String targetWord = target.value();
 
 		if (sourceWord.equals(targetWord))
 			return false;
@@ -271,21 +281,24 @@ public class Helpers {
 		return true;
 	}
 
-	public static Triple createTriple(Word source, IndexedWord target,
-			IndexedWord H, GrammaticalRelation relationHSource,
-			GrammaticalRelation relationHTarget, ElementType targetType,
-			int sentenceIndex, String sentence) {
-
-		String relationHSourceString = relationHSource.toString();
-		String relationHTargetString = relationHTarget.toString();
+	public static Triple createTriple(final Word source,
+			final IndexedWord target, final IndexedWord H,
+			final GrammaticalRelation relationHSource,
+			final GrammaticalRelation relationHTarget,
+			final ElementType targetType, final int sentenceIndex,
+			final String sentence) {
+		final String relationHSourceString = relationHSource.toString();
+		final String relationHTargetString = relationHTarget.toString();
 
 		return createTriple(source, target, H, relationHSourceString,
 				relationHTargetString, targetType, sentenceIndex, sentence);
 	}
 
-	public static Triple createTriple(Word source, IndexedWord target,
-			IndexedWord H, String relationHSource, String relationHTarget,
-			ElementType targetType, int sentenceIndex, String sentence) {
+	public static Triple createTriple(final Word source,
+			final IndexedWord target, final IndexedWord H,
+			final String relationHSource, final String relationHTarget,
+			final ElementType targetType, final int sentenceIndex,
+			final String sentence) {
 
 		return Helpers.getTriple(source.getValue(), source.getPosTag(),
 				source.getType(), target.word(), target.tag(), targetType,
@@ -294,23 +307,24 @@ public class Helpers {
 	}
 
 	public static Set<Tuple> getTriplesRelativeToHOnEquivalency(
-			SemanticGraph semanticGraph, Word source,
-			SemanticGraphEdge edgeWithH, IndexedWord H, boolean isSource,
-			GenericRelation targetPos, ElementType targetType,
-			int semanticGraphIndex) {
-		Set<Tuple> targets = new HashSet<Tuple>();
+			final SemanticGraph semanticGraph, final Word source,
+			final SemanticGraphEdge edgeWithH, final IndexedWord H,
+			final boolean isSource, final GenericRelation targetPos,
+			final ElementType targetType, final int semanticGraphIndex) {
+		final Set<Tuple> targets = new HashSet<Tuple>();
 		// for incoming target edges
-		List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers
+		final List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers
 				.getTargetEdgesOnTarget(semanticGraph.incomingEdgeIterable(H),
 						targetPos, !isSource);
 		for (SemanticGraphEdge edgeWithTarget : incomingEdgesWithTargets) {
 
-			GrammaticalRelation relationHSource = edgeWithH.getRelation();
-			GrammaticalRelation relationHTarget = edgeWithTarget.getRelation();
+			final GrammaticalRelation relationHSource = edgeWithH.getRelation();
+			final GrammaticalRelation relationHTarget = edgeWithTarget
+					.getRelation();
 
 			if (Helpers.checkEquivalentRelations(relationHSource,
 					relationHTarget)) {
-				IndexedWord target = edgeWithTarget.getSource();
+				final IndexedWord target = edgeWithTarget.getSource();
 				if (validateTriple(source, target, H))
 					targets.add(createTriple(source, target, H,
 							relationHSource, relationHTarget, targetType,
@@ -320,17 +334,18 @@ public class Helpers {
 		}
 
 		// for outgoing target edges
-		List<SemanticGraphEdge> outgoingEdgesWithTargets = Helpers
+		final List<SemanticGraphEdge> outgoingEdgesWithTargets = Helpers
 				.getTargetEdgesOnTarget(semanticGraph.outgoingEdgeIterable(H),
 						targetPos, isSource);
 		for (SemanticGraphEdge edgeWithTarget : outgoingEdgesWithTargets) {
 
-			GrammaticalRelation relationHSource = edgeWithH.getRelation();
-			GrammaticalRelation relationHTarget = edgeWithTarget.getRelation();
+			final GrammaticalRelation relationHSource = edgeWithH.getRelation();
+			final GrammaticalRelation relationHTarget = edgeWithTarget
+					.getRelation();
 
 			if (Helpers.checkEquivalentRelations(relationHSource,
 					relationHTarget)) {
-				IndexedWord target = edgeWithTarget.getTarget();
+				final IndexedWord target = edgeWithTarget.getTarget();
 				if (validateTriple(source, target, H))
 					targets.add(createTriple(source, target, H,
 							relationHSource, relationHTarget, targetType,
@@ -341,9 +356,10 @@ public class Helpers {
 		return targets;
 	}
 
-	public static Set<Tuple> getNewTuples(Set<? extends Tuple> sourceTuples,
-			Set<? extends Tuple> existingTuples) {
-		Set<Tuple> newTuples = new HashSet<Tuple>();
+	public static Set<Tuple> getNewTuples(
+			final Set<? extends Tuple> sourceTuples,
+			final Set<? extends Tuple> existingTuples) {
+		final Set<Tuple> newTuples = new HashSet<Tuple>();
 		for (Tuple tuple : sourceTuples) {
 			boolean duplicate = false;
 			for (Tuple existingTuple : existingTuples) {
@@ -359,23 +375,24 @@ public class Helpers {
 		return newTuples;
 	}
 
-	public static boolean existsObjectsForFile(String directory,
-			String filename, String type) {
-		String filePath = directory + "/" + filename + "-" + type;
-		File f = new File(filePath);
+	public static boolean existsObjectsForFile(final String directory,
+			final String filename, final String type) {
+		final String filePath = directory + "/" + filename + "-" + type;
+		final File f = new File(filePath);
 		return f.exists();
 	}
 
-	public static <T> void saveObjectsToFile(List<T> objects, String directory,
-			String filename, String type) {
-		String filePath = getStoredObjectFilename(directory, filename, type);
+	public static <T> void saveObjectsToFile(final List<T> objects,
+			final String directory, final String filename, String type) {
+		final String filePath = getStoredObjectFilename(directory, filename,
+				type);
 		try {
 			// File f = new File(filename);
 			// if (!f.exists())
 			// f.createNewFile();
-			OutputStream file = new FileOutputStream(filePath);
-			OutputStream buffer = new BufferedOutputStream(file);
-			ObjectOutput output = new ObjectOutputStream(buffer);
+			final OutputStream file = new FileOutputStream(filePath);
+			final OutputStream buffer = new BufferedOutputStream(file);
+			final ObjectOutput output = new ObjectOutputStream(buffer);
 			output.writeObject(objects);
 			output.close();
 		} catch (IOException ex) {
@@ -383,13 +400,14 @@ public class Helpers {
 		}
 	}
 
-	public static <T> List<T> getObjectsFromFile(String directory,
-			String filename, String type) {
-		String filePath = getStoredObjectFilename(directory, filename, type);
+	public static <T> List<T> getObjectsFromFile(final String directory,
+			final String filename, final String type) {
+		final String filePath = getStoredObjectFilename(directory, filename,
+				type);
 		try {
-			InputStream file = new FileInputStream(filePath);
-			InputStream buffer = new BufferedInputStream(file);
-			ObjectInput input = new ObjectInputStream(buffer);
+			final InputStream file = new FileInputStream(filePath);
+			final InputStream buffer = new BufferedInputStream(file);
+			final ObjectInput input = new ObjectInputStream(buffer);
 
 			// deserialize the List
 			@SuppressWarnings("unchecked")
@@ -404,13 +422,13 @@ public class Helpers {
 		}
 	}
 
-	private static String getStoredObjectFilename(String directory,
-			String filename, String type) {
-		String filePath = directory + "/" + filename + "-" + type;
+	private static String getStoredObjectFilename(final String directory,
+			final String filename, final String type) {
+		final String filePath = directory + "/" + filename + "-" + type;
 		return filePath;
 	}
 
-	public static boolean isInvalidTuple(Tuple tuple) {
+	public static boolean isInvalidTuple(final Tuple tuple) {
 		if (tuple.getSource().getValue().equals("-lrb-")
 				|| tuple.getSource().getValue().equals("-rrb-"))
 			return true;

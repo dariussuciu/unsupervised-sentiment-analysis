@@ -19,9 +19,9 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 public class TargetExtractorService implements ITargetExtractorService {
 
 	@Override
-	public Set<Tuple> extractTargetsUsingR1(SemanticGraph semanticGraph,
-			Set<Word> opinionWords, Set<Tuple> existingFeatures,
-			int semanticGraphIndex) {
+	public Set<Tuple> extractTargetsUsingR1(final SemanticGraph semanticGraph,
+			final Set<Word> opinionWords, final Set<Tuple> existingFeatures,
+			final int semanticGraphIndex) {
 		Set<Tuple> foundTargets = new HashSet<Tuple>();
 
 		foundTargets.addAll(extractTargetsUsingR11(semanticGraph, opinionWords,
@@ -32,10 +32,10 @@ public class TargetExtractorService implements ITargetExtractorService {
 	}
 
 	@Override
-	public Set<Tuple> extractTargetsUsingR3(SemanticGraph semanticGraph,
-			Set<Word> features, Set<Tuple> existingFeatures,
-			int semanticGraphIndex) {
-		Set<Tuple> foundTargets = new HashSet<Tuple>();
+	public Set<Tuple> extractTargetsUsingR3(final SemanticGraph semanticGraph,
+			final Set<Word> features, final Set<Tuple> existingFeatures,
+			final int semanticGraphIndex) {
+		final Set<Tuple> foundTargets = new HashSet<Tuple>();
 
 		foundTargets.addAll(extractTargetsUsingR31(semanticGraph, features,
 				existingFeatures, ElementType.FEATURE, semanticGraphIndex));
@@ -53,26 +53,27 @@ public class TargetExtractorService implements ITargetExtractorService {
 		return Helpers.getNewTuples(foundTargets, existingFeatures);
 	}
 
-	public Set<Tuple> extractTargetsUsingR12(SemanticGraph semanticGraph,
-			Set<Word> opinionWords, Set<Tuple> existingFeatures,
-			ElementType targetType, int semanticGraphIndex) {
+	public Set<Tuple> extractTargetsUsingR12(final SemanticGraph semanticGraph,
+			final Set<Word> opinionWords, final Set<Tuple> existingFeatures,
+			final ElementType targetType, final int semanticGraphIndex) {
 		Set<Tuple> targets = new HashSet<Tuple>();
 
-		for (Word opinionWord : opinionWords) {
+		for (final Word opinionWord : opinionWords) {
 			final List<IndexedWord> vertexes = semanticGraph
 					.getAllNodesByWordPattern(opinionWord.getPattern());
-			for (IndexedWord vertex : vertexes) {
+			for (final IndexedWord vertex : vertexes) {
 				// for outgoing edges
-				List<SemanticGraphEdge> outgoingEdgesWithH = Helpers
+				final List<SemanticGraphEdge> outgoingEdgesWithH = Helpers
 						.getTargetEdgesOnRel(
 								semanticGraph.outgoingEdgeIterable(vertex),
 								Dep_MRRel.getInstance());
-				for (SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
-					Set<Tuple> foundTargets = Helpers.getTriplesRelativeToH(
-							semanticGraph, opinionWord, edgeWithH,
-							edgeWithH.getTarget(), true,
-							Pos_NNRel.getInstance(), Dep_MRRel.getInstance(),
-							targetType, semanticGraphIndex);
+				for (final SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
+					final Set<Tuple> foundTargets = Helpers
+							.getTriplesRelativeToH(semanticGraph, opinionWord,
+									edgeWithH, edgeWithH.getTarget(), true,
+									Pos_NNRel.getInstance(),
+									Dep_MRRel.getInstance(), targetType,
+									semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets,
 							existingFeatures));
 					// targets.addAll(Helpers.getTriplesRelativeToH(semanticGraph,
@@ -81,16 +82,17 @@ public class TargetExtractorService implements ITargetExtractorService {
 				}
 
 				// for incoming edges
-				List<SemanticGraphEdge> incomingEdgesWithH = Helpers
+				final List<SemanticGraphEdge> incomingEdgesWithH = Helpers
 						.getTargetEdgesOnRel(
 								semanticGraph.incomingEdgeIterable(vertex),
 								Dep_MRRel.getInstance());
-				for (SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
-					Set<Tuple> foundTargets = Helpers.getTriplesRelativeToH(
-							semanticGraph, opinionWord, edgeWithH,
-							edgeWithH.getSource(), false,
-							Pos_NNRel.getInstance(), Dep_MRRel.getInstance(),
-							targetType, semanticGraphIndex);
+				for (final SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
+					final Set<Tuple> foundTargets = Helpers
+							.getTriplesRelativeToH(semanticGraph, opinionWord,
+									edgeWithH, edgeWithH.getSource(), false,
+									Pos_NNRel.getInstance(),
+									Dep_MRRel.getInstance(), targetType,
+									semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets,
 							existingFeatures));
 
@@ -105,29 +107,29 @@ public class TargetExtractorService implements ITargetExtractorService {
 		return targets;
 	}
 
-	public Set<Tuple> extractTargetsUsingR31(SemanticGraph semanticGraph,
-			Set<Word> features, Set<Tuple> existingFeatures,
-			ElementType targetType, int semanticGraphIndex) {
-		Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph,
+	public Set<Tuple> extractTargetsUsingR31(final SemanticGraph semanticGraph,
+			final Set<Word> features, final Set<Tuple> existingFeatures,
+			final ElementType targetType, final int semanticGraphIndex) {
+		final Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph,
 				features, Dep_ConjRel.getInstance(), Pos_NNRel.getInstance(),
 				targetType, semanticGraphIndex);
 		return Helpers.getNewTuples(foundTargets, existingFeatures);
 	}
 
-	public Set<Tuple> extractTargetsUsingR32(SemanticGraph semanticGraph,
-			Set<Word> features, Set<Tuple> existingFeatures,
-			ElementType targetType, int semanticGraphIndex) {
-		Set<Tuple> targets = new HashSet<Tuple>();
+	public Set<Tuple> extractTargetsUsingR32(final SemanticGraph semanticGraph,
+			final Set<Word> features, final Set<Tuple> existingFeatures,
+			final ElementType targetType, final int semanticGraphIndex) {
+		final Set<Tuple> targets = new HashSet<Tuple>();
 
-		for (Word feature : features) {
+		for (final Word feature : features) {
 			final List<IndexedWord> vertexes = semanticGraph
 					.getAllNodesByWordPattern(feature.getPattern());
-			for (IndexedWord vertex : vertexes) {
+			for (final IndexedWord vertex : vertexes) {
 				// for outgoing edges
-				Iterable<SemanticGraphEdge> outgoingEdgesWithH = semanticGraph
+				final Iterable<SemanticGraphEdge> outgoingEdgesWithH = semanticGraph
 						.outgoingEdgeIterable(vertex);
-				for (SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
-					Set<Tuple> foundTargets = Helpers
+				for (final SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
+					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToHOnEquivalency(semanticGraph,
 									feature, edgeWithH, edgeWithH.getTarget(),
 									true, Pos_NNRel.getInstance(), targetType,
@@ -142,10 +144,10 @@ public class TargetExtractorService implements ITargetExtractorService {
 				}
 
 				// for incoming edges
-				Iterable<SemanticGraphEdge> incomingEdgesWithH = semanticGraph
+				final Iterable<SemanticGraphEdge> incomingEdgesWithH = semanticGraph
 						.incomingEdgeIterable(vertex);
-				for (SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
-					Set<Tuple> foundTargets = Helpers
+				for (final SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
+					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToHOnEquivalency(semanticGraph,
 									feature, edgeWithH, edgeWithH.getSource(),
 									false, Pos_NNRel.getInstance(), targetType,

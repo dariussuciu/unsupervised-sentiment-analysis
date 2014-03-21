@@ -13,7 +13,7 @@ public class Initializer {
 		try 
 		{
 			jaxbContext = JAXBContext.newInstance(Config.class);
-			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			return (Config) jaxbUnmarshaller.unmarshal(new File("config.xml"));
 		}
 		catch (JAXBException e) {

@@ -1,11 +1,15 @@
 package com.unsupervisedsentiment.analysis.modules.IO;
 
 public class FileWrapper {
-	
+
+	private String author;
+	private String source;
+	private String content;
+	private String filename;
+
 	public FileWrapper() {
-		super();
 	}
-	
+
 	public FileWrapper(String author, String source, String content,
 			String filename) {
 		super();
@@ -14,11 +18,6 @@ public class FileWrapper {
 		this.content = content;
 		this.filename = filename;
 	}
-
-	private String author;
-	private String source;
-	private String content;
-	private String filename;
 
 	public String getAuthor() {
 		return author;
@@ -39,7 +38,7 @@ public class FileWrapper {
 	public String getContent() {
 		return content;
 	}
-	
+
 	public String getOriginalContent() {
 		String cleanContent = content.replaceAll("(###)|(%%%)|(\\$\\$\\$)", "");
 		return cleanContent;

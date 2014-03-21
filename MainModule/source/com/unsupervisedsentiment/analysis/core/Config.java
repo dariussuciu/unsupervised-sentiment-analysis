@@ -29,7 +29,7 @@ public class Config {
 		return inputDirectory.trim();
 	}
 
-	public void setInputDirectory(String inputDirectory) {
+	public void setInputDirectory(final String inputDirectory) {
 		this.inputDirectory = inputDirectory;
 	}
 
@@ -38,7 +38,7 @@ public class Config {
 		return outputDirectory.trim();
 	}
 
-	public void setOutputDirectory(String outputDirectory) {
+	public void setOutputDirectory(final String outputDirectory) {
 		this.outputDirectory = outputDirectory;
 	}
 
@@ -48,22 +48,17 @@ public class Config {
 		return seedWords;
 	}
 
-	public void setSeedWords(List<String> list) {
+	public void setSeedWords(final List<String> list) {
 		this.seedWords = list;
 	}
 
-	@Override
-	public String toString() {
-		return "Input Directory: " + inputDirectory + "\n"
-				+ "Output Directory: " + inputDirectory + "\n";
-	}
 
 	@XmlElement(name = "SWNDirectory")
 	public String getSWNPath() {
 		return SWNPath.trim();
 	}
 
-	public void setSWNPath(String sWNPath) {
+	public void setSWNPath(final String sWNPath) {
 		SWNPath = sWNPath;
 	}
 
@@ -73,7 +68,7 @@ public class Config {
 	}
 
 	public void setStoredSemanticGraphsDirectory(
-			String storedSemanticGraphsDirectory) {
+			final String storedSemanticGraphsDirectory) {
 		this.storedSemanticGraphsDirectory = storedSemanticGraphsDirectory;
 	}
 
@@ -82,7 +77,7 @@ public class Config {
 		return positiveSeedWordsFile.trim();
 	}
 
-	public void setPositiveSeedWordsFile(String positiveSeedWordsFile) {
+	public void setPositiveSeedWordsFile(final String positiveSeedWordsFile) {
 		this.positiveSeedWordsFile = positiveSeedWordsFile;
 	}
 
@@ -91,7 +86,7 @@ public class Config {
 		return negativeSeedWordsFile.trim();
 	}
 
-	public void setNegativeSeedWordsFile(String negativeSeedWordsFile) {
+	public void setNegativeSeedWordsFile(final String negativeSeedWordsFile) {
 		this.negativeSeedWordsFile = negativeSeedWordsFile;
 	}
 
@@ -100,7 +95,14 @@ public class Config {
 		return evaluationModelsDirectory.trim();
 	}
 
-	public void setEvaluationModelsDirectory(String evaluationModelsDirectory) {
+	public void setEvaluationModelsDirectory(final String evaluationModelsDirectory) {
 		this.evaluationModelsDirectory = evaluationModelsDirectory;
 	}
+	
+	@Override
+	public String toString() {
+		return "Input Directory: " + inputDirectory + "\n"
+				+ "Output Directory: " + inputDirectory + "\n";
+	}
+
 }

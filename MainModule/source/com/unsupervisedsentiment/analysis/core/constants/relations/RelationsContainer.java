@@ -7,7 +7,7 @@ public class RelationsContainer {
 	public static Pos_JJRel POS_JJ = Pos_JJRel.getInstance();
 	public static Pos_NNRel POS_NN = Pos_NNRel.getInstance();
 
-	public static boolean arePosEquivalent(String pos1, String pos2) {
+	public static boolean arePosEquivalent(final String pos1, final String pos2) {
 		final Class<? extends Enum<?>> e1 = POS_JJ.getContainingEnum(pos1);
 		final Class<? extends Enum<?>> e2 = POS_JJ.getContainingEnum(pos2);
 		final Class<? extends Enum<?>> e3 = POS_NN.getContainingEnum(pos1);
