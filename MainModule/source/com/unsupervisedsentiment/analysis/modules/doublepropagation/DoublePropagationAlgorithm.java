@@ -20,6 +20,7 @@ public class DoublePropagationAlgorithm {
 	private IOpinionWordExtractorService opinionWordExtractorService;
 	private ITargetExtractorService targetExtractorService;
 	private DoublePropagationData data;
+	private int numberOfIterations;
 
 	public DoublePropagationData getData() {
 		return data;
@@ -70,7 +71,8 @@ public class DoublePropagationAlgorithm {
 	}
 
 	private void executeStep() {
-		System.out.println("-------------Iteration Started-----------");
+		System.out.println("Iteration: " + getNumberOfIterations());
+		setNumberOfIterations(getNumberOfIterations() + 1);
 		resetIterationFeaturesAndOpinionWords();
 
 		for (int i = 0; i < data.getSentancesSemanticGraphs().size(); i++) {
@@ -112,5 +114,13 @@ public class DoublePropagationAlgorithm {
 		opinionWordsIteration1 = new HashSet<Tuple>();
 		featuresIteration2 = new HashSet<Tuple>();
 		opinionWordsIteration2 = new HashSet<Tuple>();
+	}
+
+	public int getNumberOfIterations() {
+		return numberOfIterations;
+	}
+
+	private void setNumberOfIterations(int numberOfIterations) {
+		this.numberOfIterations = numberOfIterations;
 	}
 }
