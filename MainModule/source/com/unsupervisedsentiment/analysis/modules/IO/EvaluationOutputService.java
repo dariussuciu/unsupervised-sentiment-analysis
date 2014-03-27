@@ -19,7 +19,7 @@ import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 
 import edu.stanford.nlp.semgraph.SemanticGraph;
 
-public class EvaluationModelService {
+public class EvaluationOutputService {
 	public static boolean existsEvaluationModelForFile(final String filename) {
 		final String storedSemanticGraphsDirectory = Initializer.getConfig()
 				.getStoredSemanticGraphsDirectory();

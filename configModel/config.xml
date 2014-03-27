@@ -20,6 +20,12 @@
 	<evaluationModelsDirectory> 
 		F:\Licenta\EvaluationModels
 	</evaluationModelsDirectory>
+	<numberOfSeeds>
+		MAX
+	</numberOfSeeds>
+	<seedType>
+		OW
+	</seedType>
 	<seedWords>
 		<seedWord>
 			good

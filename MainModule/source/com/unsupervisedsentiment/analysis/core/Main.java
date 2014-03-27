@@ -65,7 +65,7 @@ public class Main {
 					inputData);
 
 			HashSet<Tuple> seedWords = new HashSet<Tuple>();
-
+			
 			config.setSeedWords(inputService.getSeedWordsFromFile());
 			
 			for (String seedString : config.getSeedWords()) {

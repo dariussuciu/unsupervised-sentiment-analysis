@@ -4,10 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
 import com.unsupervisedsentiment.analysis.core.Config;
+import com.unsupervisedsentiment.analysis.core.constants.Constants;
 
 public class InputService {
 
@@ -29,24 +32,68 @@ public class InputService {
 
 		try {
 			File file = new File(config.getPositiveSeedWordsFile());
-			Scanner positiveScanner = new Scanner(
-					new FileReader(file.getPath()));
-			List<String> positiveSeedWords = getSeedWords(positiveScanner);
+			Scanner scanner = new Scanner(new FileReader(file.getPath()));
+			List<String> positiveSeedWords = getSeedWords(scanner);
 
 			file = new File(config.getNegativeSeedWordsFile());
-			Scanner negativeScanner = new Scanner(
-					new FileReader(file.getPath()));
-			final List<String> negativeSeedWords = getSeedWords(negativeScanner);
+			scanner = new Scanner(new FileReader(file.getPath()));
+			final List<String> negativeSeedWords = getSeedWords(scanner);
 
-			seedWords.addAll(positiveSeedWords);
-			seedWords.addAll(negativeSeedWords);
+			String numberOfSeeds = config.getNumberOfSeeds();
 
+			// add all seeds
+
+			if (numberOfSeeds.equals(Constants.MAX)
+					|| !numberOfSeeds.matches("\\d+")) {
+				seedWords.addAll(positiveSeedWords);
+				seedWords.addAll(negativeSeedWords);
+			} else {
+				int nrOfSeeds = Integer.valueOf(numberOfSeeds);
+
+				seedWords.addAll(getSeedWords(positiveSeedWords,
+						negativeSeedWords, nrOfSeeds));
+
+			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		return seedWords;
+	}
+
+	private Collection<? extends String> getSeedWords(
+			List<String> positiveSeedWords, List<String> negativeSeedWords,
+			int nrOfSeeds) {
+		List<String> seeds = new ArrayList<String>();
+
+		// we try to keep the ratio between the positive an negative seed words
+		// as if they were all added
+		int nrPosSeedWords = positiveSeedWords.size();
+		int nrNegSeedWords = negativeSeedWords.size();
+		if (nrOfSeeds >= (nrPosSeedWords + nrNegSeedWords)) {
+			seeds.addAll(negativeSeedWords);
+			seeds.addAll(positiveSeedWords);
+			return seeds;
+		}
+
+		double ratio = ((double) nrPosSeedWords / (double) nrNegSeedWords);
+
+		// do the math. it's good, trust me.
+		nrNegSeedWords = (int) (nrOfSeeds / (1 + ratio));
+		nrPosSeedWords = nrOfSeeds - nrNegSeedWords;
+
+		Collections.shuffle(positiveSeedWords);
+		Collections.shuffle(negativeSeedWords);
+
+		for (int i = 0; i < nrNegSeedWords; i++) {
+			seeds.add(negativeSeedWords.get(i));
+		}
+		for (int i = 0; i < nrPosSeedWords; i++) {
+			seeds.add(positiveSeedWords.get(i));
+		}
+
+		return seeds;
 	}
 
 	public List<InputWrapper> getTextFromFile() {
