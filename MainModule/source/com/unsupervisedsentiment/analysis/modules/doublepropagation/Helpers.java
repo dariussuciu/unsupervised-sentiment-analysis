@@ -325,11 +325,14 @@ public class Helpers {
 			if (Helpers.checkEquivalentRelations(relationHSource,
 					relationHTarget)) {
 				final IndexedWord target = edgeWithTarget.getSource();
-				if (validateTriple(source, target, H))
-					targets.add(createTriple(source, target, H,
-							relationHSource, relationHTarget, targetType,
-							semanticGraphIndex,
-							semanticGraph.toRecoveredSentenceString()));
+				if(targetPos.contains(target.tag()))
+				{
+					if (validateTriple(source, target, H))
+						targets.add(createTriple(source, target, H,
+								relationHSource, relationHTarget, targetType,
+								semanticGraphIndex,
+								semanticGraph.toRecoveredSentenceString()));
+				}
 			}
 		}
 
@@ -346,11 +349,14 @@ public class Helpers {
 			if (Helpers.checkEquivalentRelations(relationHSource,
 					relationHTarget)) {
 				final IndexedWord target = edgeWithTarget.getTarget();
-				if (validateTriple(source, target, H))
-					targets.add(createTriple(source, target, H,
-							relationHSource, relationHTarget, targetType,
-							semanticGraphIndex,
-							semanticGraph.toRecoveredSentenceString()));
+				if(targetPos.contains(target.tag()))
+				{
+					if (validateTriple(source, target, H))
+						targets.add(createTriple(source, target, H,
+								relationHSource, relationHTarget, targetType,
+								semanticGraphIndex,
+								semanticGraph.toRecoveredSentenceString()));
+				}
 			}
 		}
 		return targets;

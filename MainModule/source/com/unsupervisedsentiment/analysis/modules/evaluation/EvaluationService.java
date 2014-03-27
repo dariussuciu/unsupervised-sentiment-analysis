@@ -67,7 +67,10 @@ public class EvaluationService {
 				}
 
 				if (!found)
+				{
+					System.out.println(tuple.getOpinionWord().getValue() + tuple.getOpinionWord().getPosTag() + " - " + tuple.getSentence());
 					falsePositive++;
+				}
 			}
 		}
 
