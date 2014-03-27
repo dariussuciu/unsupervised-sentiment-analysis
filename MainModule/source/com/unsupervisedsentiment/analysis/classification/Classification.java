@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.unsupervisedsentiment.analysis.classification.SentiWordNetService.SWNPos;
 import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.Word;
+import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 public class Classification {
 
@@ -29,7 +31,9 @@ public class Classification {
 		for (Tuple tuple : tuples) {
 			Word opinionWord = tuple.getOpinionWord();
 			String opinionWordValue = opinionWord.getValue();
-			double score = getScore(opinionWordValue);
+			double score = getScore(opinionWordValue,
+					new String[] { Helpers.getEquivalentPOS(opinionWord
+							.getPosTag()) });
 			// either one
 			opinionScores.put(opinionWord, score);
 			tuple.getSource().setScore(score);
@@ -40,24 +44,16 @@ public class Classification {
 		HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
 
 		for (Tuple tuple : tuples) {
-			 Word opinionWord = tuple.getOpinionWord();
-			 String opinionWordValue = opinionWord.getValue();
-			 double score = getScore(opinionWordValue);
-			 //either one
-			 opinionScores.put(opinionWord, score);
-			 tuple.getOpinionWord().setSentiWordScore(score);
+			Word opinionWord = tuple.getOpinionWord();
+			String opinionWordValue = opinionWord.getValue();
+			double score = getScore(opinionWordValue,
+					new String[] { Helpers.getEquivalentPOS(opinionWord
+							.getPosTag()) });
+			// either one
+			opinionScores.put(opinionWord, score);
+			tuple.getOpinionWord().setSentiWordScore(score);
 		}
 	}
-
-//	public void assignScoresBasedOnSeeds(final Set<Tuple> data) {
-//			Word opinionWord = tuple.getOpinionWord();
-//			String opinionWordValue = opinionWord.getValue();
-//			double score = getScore(opinionWordValue);
-//			// either one
-//			opinionScores.put(opinionWord, score);
-//			tuple.getSource().setSentiWordScore(score);
-//		}
-//	}
 
 	public ArrayList<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data) {
 
@@ -71,22 +67,13 @@ public class Classification {
 
 		// ArrayList<Tuple> fullyAssignedTuples =
 		// assignScoresByPropagation(partiallyAssignedTuples);
-		
-		ArrayList<Tuple> fullyAssignedTuples = assignScores(partiallyAssignedTuples, seeds);
+
+		ArrayList<Tuple> fullyAssignedTuples = assignScores(
+				partiallyAssignedTuples, seeds);
 
 		// printResults(fullyAssignedTuples);
 		return fullyAssignedTuples;
 	}
-
-//	private ArrayList<Tuple> assignScoresToSeeds(ArrayList<Tuple> tuples,
-//			final ArrayList<SeedScoreModel> seeds) {
-//		HashSet<Tuple> set = new HashSet<Tuple>();
-//		ArrayList<Tuple> fullyAssignedTuples = assignScores(
-//				partiallyAssignedTuples, seeds);
-//
-//		return fullyAssignedTuples;
-//		// printResults(fullyAssignedTuples);
-//	}
 
 	private ArrayList<Tuple> assignScores(ArrayList<Tuple> data,
 			ArrayList<SeedScoreModel> seeds) {
@@ -108,17 +95,19 @@ public class Classification {
 		for (Tuple tuple : data) {
 			if (tuple.getSource().getValue().toLowerCase()
 					.equals(assignedTuple.getSource().getValue().toLowerCase())
-					|| (tuple.getTarget() != null && assignedTuple.getTarget() != null && tuple
+					|| (tuple.getTarget() != null
+							&& assignedTuple.getTarget() != null && tuple
 							.getTarget()
 							.getValue()
 							.toLowerCase()
 							.equals(assignedTuple.getTarget().getValue()
 									.toLowerCase()))
-					|| (assignedTuple.getTarget() != null && tuple.getSource()
+					|| (assignedTuple.getTarget() != null && tuple
+							.getSource()
 							.getValue()
 							.toLowerCase()
 							.equals(assignedTuple.getTarget().getValue()
-									.toLowerCase()) )
+									.toLowerCase()))
 					|| (tuple.getTarget() != null && tuple
 							.getTarget()
 							.getValue()
@@ -159,19 +148,7 @@ public class Classification {
 						double score = model.getScore();
 						tuple.getSource().setScore(score);
 						tuple.getTarget().setScore(score);
-						// set.add(tuple);
 					}
-//					if (set.contains(tuple)
-//							&& (tuple.getSource().getScore() == DEFAULT_SCORE || tuple
-//									.getTarget().getScore() == DEFAULT_SCORE)) {
-//						set.add(tuple);
-//					} else if (!set.contains(tuple)) {
-//						set.add(tuple);
-//						if (tuple.getSource().getScore() == DEFAULT_SCORE) {
-//							tuple.getSource().setScore(score);
-//							tuple.getTarget().setScore(score);
-//						}
-//					}
 				}
 			}
 
@@ -254,8 +231,8 @@ public class Classification {
 		System.out.println(tuples.size());
 	}
 
-	private double getScore(final String word) {
-		double score = sentimentScoreSource.extract(word);
+	private double getScore(final String word, final String[] pos) {
+		double score = sentimentScoreSource.extract(word, pos);
 		return score;
 	}
 
