@@ -20,6 +20,7 @@ import java.util.Set;
 import com.unsupervisedsentiment.analysis.classification.SentiWordNetService;
 import com.unsupervisedsentiment.analysis.core.constants.RelationEquivalency;
 import com.unsupervisedsentiment.analysis.core.constants.relations.GenericRelation;
+import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel;
 import com.unsupervisedsentiment.analysis.model.Dependency;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.Pair;
@@ -439,9 +440,16 @@ public class Helpers {
 
 		if (tuple.getTarget().getType().equals(ElementType.OPINION_WORD))
 			if (SentiWordNetService.getInstance().extract(
-					tuple.getTarget().getValue()) == 0)
+					tuple.getTarget().getValue(), new String[]{getEquivalentPOS(tuple.getTarget().getPosTag())}) == 0)
 				return true;
 
 		return false;
+	}
+	
+	public static String getEquivalentPOS(String posTag){
+		if (Pos_JJRel.getInstance().contains(posTag)){
+			return SentiWordNetService.SWNPos.Adjective.toString();
+		}
+		return "";
 	}
 }
