@@ -32,8 +32,8 @@ public class Classification {
 			Word opinionWord = tuple.getOpinionWord();
 			String opinionWordValue = opinionWord.getValue();
 			double score = getScore(opinionWordValue,
-					new String[] { Helpers.getEquivalentPOS(opinionWord
-							.getPosTag()) });
+					Helpers.getEquivalentPOS(opinionWord
+							.getPosTag()));
 			// either one
 			opinionScores.put(opinionWord, score);
 			tuple.getSource().setScore(score);
@@ -47,8 +47,8 @@ public class Classification {
 			Word opinionWord = tuple.getOpinionWord();
 			String opinionWordValue = opinionWord.getValue();
 			double score = getScore(opinionWordValue,
-					new String[] { Helpers.getEquivalentPOS(opinionWord
-							.getPosTag()) });
+					Helpers.getEquivalentPOS(opinionWord
+							.getPosTag()) );
 			// either one
 			opinionScores.put(opinionWord, score);
 			tuple.getOpinionWord().setSentiWordScore(score);

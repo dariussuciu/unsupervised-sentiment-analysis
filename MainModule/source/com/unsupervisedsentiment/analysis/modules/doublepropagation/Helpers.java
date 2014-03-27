@@ -446,16 +446,16 @@ public class Helpers {
 
 		if (tuple.getTarget().getType().equals(ElementType.OPINION_WORD))
 			if (SentiWordNetService.getInstance().extract(
-					tuple.getTarget().getValue(), new String[]{getEquivalentPOS(tuple.getTarget().getPosTag())}) == 0)
+					tuple.getTarget().getValue(), getEquivalentPOS(tuple.getTarget().getPosTag())) == 0)
 				return true;
 
 		return false;
 	}
 	
-	public static String getEquivalentPOS(String posTag){
+	public static String[] getEquivalentPOS(String posTag){
 		if (Pos_JJRel.getInstance().contains(posTag)){
-			return SentiWordNetService.SWNPos.Adjective.toString();
+			return new String[] {SentiWordNetService.SWNPos.Adjective.toString(), SentiWordNetService.SWNPos.Adverb.toString()};
 		}
-		return "";
+		return new String[]{};
 	}
 }
