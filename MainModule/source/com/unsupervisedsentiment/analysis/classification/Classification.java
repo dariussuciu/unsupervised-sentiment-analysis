@@ -32,8 +32,7 @@ public class Classification {
 			Word opinionWord = tuple.getOpinionWord();
 			String opinionWordValue = opinionWord.getValue();
 			double score = getScore(opinionWordValue,
-					Helpers.getEquivalentPOS(opinionWord
-							.getPosTag()));
+					Helpers.getEquivalentPOS(opinionWord.getPosTag()));
 			// either one
 			opinionScores.put(opinionWord, score);
 			tuple.getSource().setScore(score);
@@ -46,12 +45,12 @@ public class Classification {
 		for (Tuple tuple : tuples) {
 			Word opinionWord = tuple.getOpinionWord();
 			String opinionWordValue = opinionWord.getValue();
-			String[] equivalentPOS = Helpers.getEquivalentPOS(opinionWord.getPosTag());
-			if (equivalentPOS.length <= 0)
-			{
+			String[] equivalentPOS = Helpers.getEquivalentPOS(opinionWord
+					.getPosTag());
+			if (equivalentPOS.length <= 0) {
 				System.out.println(opinionWord.getPosTag());
 			}
-			double score = getScore(opinionWordValue,equivalentPOS);
+			double score = getScore(opinionWordValue, equivalentPOS);
 			// either one
 			opinionScores.put(opinionWord, score);
 			tuple.getOpinionWord().setSentiWordScore(score);
@@ -84,7 +83,8 @@ public class Classification {
 
 		for (Tuple tuple : data) {
 			if (isSeed(seeds, tuple.getSource().getValue())
-					|| isSeed(seeds, tuple.getTarget().getValue())) {
+					|| (tuple.getTarget() != null)
+					&& isSeed(seeds, tuple.getTarget().getValue())) {
 				if (tuple.getSource().getScore() != DEFAULT_SCORE) {
 					propagateScore(data, tuple);
 				}
