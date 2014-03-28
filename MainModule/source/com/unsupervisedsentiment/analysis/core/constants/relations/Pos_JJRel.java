@@ -31,4 +31,10 @@ public class Pos_JJRel extends GenericRelation {
 	public boolean contains(final String word) {
 		return super.isInEnum(word, JJ.class);
 	};
+
+	public String getAllEnumElementsAsString() {
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append(getPrettyStringFromEnumValues(JJ.values()));
+		return sBuilder.toString();
+	}
 }

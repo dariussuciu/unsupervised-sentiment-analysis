@@ -13,6 +13,7 @@ import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Triple;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
+import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationMetadata;
 
 public class OutputService {
 
@@ -118,6 +119,33 @@ public class OutputService {
 				writer.write(evaluationModel.getOpinionWord() + "["
 						+ evaluationModel.getSentenceIndex() + "]" + " - "
 						+ evaluationModel.getSentence());
+				writer.newLine();
+			}
+
+			writer.flush();
+			writer.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void writeToEvaluationMetadataCsv(
+			List<EvaluationMetadata> metadataResults) {
+		try {
+			final File file = new File(config.getEvaluationMetadataFile());
+
+			final BufferedWriter writer = new BufferedWriter(new FileWriter(
+					file));
+
+			if (!file.exists()) {
+				file.createNewFile();
+				// dat header, write it!
+				writer.append("Date, Seed Type, Filename, Number of Seeds, Iterations, Duration (millis), Precision, Recall, Total Relations Used");
+			}
+
+			for (EvaluationMetadata metadataResult : metadataResults) {
+				writer.append(metadataResult.toString());
 				writer.newLine();
 			}
 

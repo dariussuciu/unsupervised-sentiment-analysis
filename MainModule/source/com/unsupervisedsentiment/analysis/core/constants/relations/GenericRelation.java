@@ -23,4 +23,12 @@ public abstract class GenericRelation {
 
 	protected static boolean isInstantiated = false;
 
+	protected String getPrettyStringFromEnumValues(Enum[] values) {
+		StringBuilder sBuilder = new StringBuilder();
+		for (Enum e : values) {
+			sBuilder.append(e.name() + " ");
+		}
+		return sBuilder.toString();
+	}
+
 }

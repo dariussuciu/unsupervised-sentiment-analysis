@@ -24,6 +24,12 @@ public class Config {
 
 	private String evaluationModelsDirectory;
 
+	private String evaluationMetadataFile;
+
+	private String numberOfSeeds;
+
+	private String seedType;
+
 	@XmlElement(name = "inputDirectory")
 	public String getInputDirectory() {
 		return inputDirectory.trim();
@@ -51,7 +57,6 @@ public class Config {
 	public void setSeedWords(final List<String> list) {
 		this.seedWords = list;
 	}
-
 
 	@XmlElement(name = "SWNDirectory")
 	public String getSWNPath() {
@@ -95,10 +100,38 @@ public class Config {
 		return evaluationModelsDirectory.trim();
 	}
 
-	public void setEvaluationModelsDirectory(final String evaluationModelsDirectory) {
+	public void setEvaluationModelsDirectory(
+			final String evaluationModelsDirectory) {
 		this.evaluationModelsDirectory = evaluationModelsDirectory;
 	}
-	
+
+	@XmlElement(name = "evaluationMetadataFile")
+	public String getEvaluationMetadataFile() {
+		return evaluationMetadataFile.trim();
+	}
+
+	public void setEvaluationMetadataFile(String evaluationMetadataFile) {
+		this.evaluationMetadataFile = evaluationMetadataFile;
+	}
+
+	@XmlElement(name = "numberOfSeeds")
+	public String getNumberOfSeeds() {
+		return numberOfSeeds.trim();
+	}
+
+	public void setNumberOfSeeds(String numberOfSeeds) {
+		this.numberOfSeeds = numberOfSeeds;
+	}
+
+	@XmlElement(name = "seedType")
+	public String getSeedType() {
+		return seedType.trim();
+	}
+
+	public void setSeedType(String seedType) {
+		this.seedType = seedType;
+	}
+
 	@Override
 	public String toString() {
 		return "Input Directory: " + inputDirectory + "\n"

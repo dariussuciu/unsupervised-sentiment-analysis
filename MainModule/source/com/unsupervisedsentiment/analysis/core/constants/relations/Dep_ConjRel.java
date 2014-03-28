@@ -31,4 +31,9 @@ public class Dep_ConjRel extends GenericRelation {
 		return super.isInEnum(word, CONJ.class);
 	}
 
+	public String getAllEnumElementsAsString() {
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append(getPrettyStringFromEnumValues(CONJ.values()));
+		return sBuilder.toString();
+	}
 }

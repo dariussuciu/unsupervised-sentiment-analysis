@@ -20,6 +20,15 @@
 	<evaluationModelsDirectory> 
 		F:\Licenta\EvaluationModels
 	</evaluationModelsDirectory>
+	<evaluationMetadataFile>
+		C:\Users\Alex\Desktop\Research\Project\Output\EvaluationMetadata.csv
+	</evaluationMetadataFile>
+	<numberOfSeeds>
+		MAX
+	</numberOfSeeds>
+	<seedType>
+		OW
+	</seedType>
 	<seedWords>
 		<seedWord>
 			good
