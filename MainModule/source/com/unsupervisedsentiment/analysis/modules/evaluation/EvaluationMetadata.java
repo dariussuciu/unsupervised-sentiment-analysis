@@ -1,24 +1,25 @@
 package com.unsupervisedsentiment.analysis.modules.evaluation;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 
 import com.unsupervisedsentiment.analysis.core.constants.Constants;
 
 public class EvaluationMetadata {
-	private final Date date;
+	private String date;
 	private final String seedType;
 	private final String filename;
-	private final Integer numberOfSeeds;
-	private final Integer numberOfIterations;
-	private final Long durationMilliseconds;
-	private final Double precision;
-	private final Double recall;
+	private final String numberOfSeeds;
+	private final String numberOfIterations;
+	private final String durationMilliseconds;
+	private final String precision;
+	private final String recall;
 	private final String totalRelationsUsed;
 
-	public EvaluationMetadata(final Date date, final String seedType,
-			final String filename, final Integer numberOfSeeds,
-			final Integer numberOfIterations, final Long durationMilliseconds,
-			final Double precision, final Double recall,
+	public EvaluationMetadata(String date, final String seedType,
+			final String filename, final String numberOfSeeds,
+			final String numberOfIterations, final String durationMilliseconds,
+			final String precision, final String recall,
 			final String totalRelationsUsed) {
 		this.date = date;
 		this.seedType = seedType;
@@ -31,7 +32,7 @@ public class EvaluationMetadata {
 		this.totalRelationsUsed = totalRelationsUsed;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
@@ -43,28 +44,50 @@ public class EvaluationMetadata {
 		return filename;
 	}
 
-	public Integer getNumberOfSeeds() {
+	public String getNumberOfSeeds() {
 		return numberOfSeeds;
 	}
 
-	public Integer getNumberOfIterations() {
+	public String getNumberOfIterations() {
 		return numberOfIterations;
 	}
 
-	public Long getDurationMilliseconds() {
+	public String getDurationMilliseconds() {
 		return durationMilliseconds;
 	}
 
-	public Double getPrecision() {
+	public String getPrecision() {
 		return precision;
 	}
 
-	public Double getRecall() {
+	public String getRecall() {
 		return recall;
 	}
 
 	public String getTotalRelationsUsed() {
 		return totalRelationsUsed;
+	}
+
+	public String[] getCSVdata() {
+		int numberOfFields = this.getClass().getDeclaredFields().length;
+		Field[] fields = this.getClass().getDeclaredFields();
+		String[] s = new String[numberOfFields];
+		//
+		// for (int i = 0; i < numberOfFields; i++) {
+		// s[i] = this.getClass().getDeclaredField(fields[i].getName())
+		// .get(this.getClass().getDeclaredField(fields[i].getName())).toString();
+		// }
+
+		s[0] = getDate();
+		s[1] = getSeedType();
+		s[2] = getFilename();
+		s[3] = getNumberOfSeeds();
+		s[4] = getNumberOfIterations();
+		s[5] = getDurationMilliseconds();
+		s[6] = getPrecision();
+		s[7] = getRecall();
+		s[8] = getTotalRelationsUsed();
+		return s;
 	}
 
 	@Override
