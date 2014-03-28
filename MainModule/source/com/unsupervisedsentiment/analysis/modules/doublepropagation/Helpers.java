@@ -17,10 +17,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.unsupervisedsentiment.analysis.classification.ISentimentScoreSource;
 import com.unsupervisedsentiment.analysis.classification.SentiWordNetService;
 import com.unsupervisedsentiment.analysis.core.constants.RelationEquivalency;
 import com.unsupervisedsentiment.analysis.core.constants.relations.GenericRelation;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel;
+import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_NNRel;
 import com.unsupervisedsentiment.analysis.model.Dependency;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.Pair;
@@ -438,18 +440,35 @@ public class Helpers {
 				|| tuple.getTarget().getValue().equals("-rrb-"))
 			return true;
 
-		if (tuple.getTarget().getType().equals(ElementType.OPINION_WORD))
-			if (SentiWordNetService.getInstance().extract(
-					tuple.getTarget().getValue(), getEquivalentPOS(tuple.getTarget().getPosTag())) == 0)
+		if (tuple.getTarget().getType().equals(ElementType.OPINION_WORD)) {
+			ISentimentScoreSource swnService = SentiWordNetService
+					.getInstance();
+			Word target = tuple.getTarget();
+			String[] equivalentPOS = getEquivalentPOS(target.getPosTag());
+			Double score = swnService.extract(target.getValue(), equivalentPOS); 
+			if (score == 0)
 				return true;
+		}
 
 		return false;
 	}
-	
-	public static String[] getEquivalentPOS(String posTag){
-		if (Pos_JJRel.getInstance().contains(posTag)){
-			return new String[] {SentiWordNetService.SWNPos.Adjective.toString(), SentiWordNetService.SWNPos.Adverb.toString()};
+
+	public static String[] getEquivalentPOS(String posTag) {
+		if (Pos_JJRel.getInstance().contains(posTag)) {
+			return new String[] {
+					SentiWordNetService.SWNPos.Adjective.toString(),
+					SentiWordNetService.SWNPos.Adverb.toString() };
 		}
-		return new String[]{};
+		if (Pos_NNRel.getInstance().contains(posTag)){
+			return new String[]{
+				SentiWordNetService.SWNPos.Noun.toString()	
+			};
+		}
+		if (posTag.toLowerCase().equals("vbp")){
+			return new String[]{
+				SentiWordNetService.SWNPos.Verb.toString()
+			};
+		}
+		return new String[] {};
 	}
 }
