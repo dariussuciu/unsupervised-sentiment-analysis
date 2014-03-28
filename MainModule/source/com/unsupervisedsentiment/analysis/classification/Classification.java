@@ -46,9 +46,12 @@ public class Classification {
 		for (Tuple tuple : tuples) {
 			Word opinionWord = tuple.getOpinionWord();
 			String opinionWordValue = opinionWord.getValue();
-			double score = getScore(opinionWordValue,
-					Helpers.getEquivalentPOS(opinionWord
-							.getPosTag()) );
+			String[] equivalentPOS = Helpers.getEquivalentPOS(opinionWord.getPosTag());
+			if (equivalentPOS.length <= 0)
+			{
+				System.out.println(opinionWord.getPosTag());
+			}
+			double score = getScore(opinionWordValue,equivalentPOS);
 			// either one
 			opinionScores.put(opinionWord, score);
 			tuple.getOpinionWord().setSentiWordScore(score);
