@@ -24,6 +24,8 @@ public class Config {
 
 	private String evaluationModelsDirectory;
 
+	private String evaluationMetadataFile;
+
 	private String numberOfSeeds;
 
 	private String seedType;
@@ -101,6 +103,15 @@ public class Config {
 	public void setEvaluationModelsDirectory(
 			final String evaluationModelsDirectory) {
 		this.evaluationModelsDirectory = evaluationModelsDirectory;
+	}
+
+	@XmlElement(name = "evaluationMetadataFile")
+	public String getEvaluationMetadataFile() {
+		return evaluationMetadataFile.trim();
+	}
+
+	public void setEvaluationMetadataFile(String evaluationMetadataFile) {
+		this.evaluationMetadataFile = evaluationMetadataFile;
 	}
 
 	@XmlElement(name = "numberOfSeeds")

@@ -33,4 +33,10 @@ public class Pos_NNRel extends GenericRelation {
 	public boolean contains(final String word) {
 		return super.isInEnum(word, NN.class);
 	};
+
+	public String getAllEnumElementsAsString() {
+		StringBuilder sBuilder = new StringBuilder();
+		sBuilder.append(getPrettyStringFromEnumValues(NN.values()));
+		return sBuilder.toString();
+	}
 }

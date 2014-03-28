@@ -22,4 +22,13 @@ public class RelationsContainer {
 
 		return false;
 	}
+
+	public static String getAllEnumElementsAsString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(DEP_MR.getAllEnumElementsAsString());
+		sb.append(DEP_CONJ.getAllEnumElementsAsString());
+		sb.append(POS_JJ.getAllEnumElementsAsString());
+		sb.append(POS_NN.getAllEnumElementsAsString());
+		return sb.toString();
+	}
 }
