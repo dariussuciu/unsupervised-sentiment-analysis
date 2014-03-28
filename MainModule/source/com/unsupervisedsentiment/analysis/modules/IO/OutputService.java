@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 import com.unsupervisedsentiment.analysis.core.Config;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Pair;
@@ -132,26 +134,26 @@ public class OutputService {
 
 	public void writeToEvaluationMetadataCsv(
 			List<EvaluationMetadata> metadataResults) {
+
+		CSVWriter writer = null;
 		try {
-			final File file = new File(config.getEvaluationMetadataFile());
+			writer = new CSVWriter(new FileWriter(
+					config.getEvaluationMetadataFile(), true));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-			final BufferedWriter writer = new BufferedWriter(new FileWriter(
-					file));
+		for (EvaluationMetadata metadataResult : metadataResults) {
+			try {
+				writer.writeNext(metadataResult.getCSVdata());
 
-			if (!file.exists()) {
-				file.createNewFile();
-				// dat header, write it!
-				writer.append("Date, Seed Type, Filename, Number of Seeds, Iterations, Duration (millis), Precision, Recall, Total Relations Used");
+			} catch (SecurityException e) {
+				e.printStackTrace();
 			}
-
-			for (EvaluationMetadata metadataResult : metadataResults) {
-				writer.append(metadataResult.toString());
-				writer.newLine();
-			}
-
-			writer.flush();
+		}
+		try {
+			writer.writeNext(new String[0]);
 			writer.close();
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

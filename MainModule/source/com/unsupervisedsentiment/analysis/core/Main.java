@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import com.unsupervisedsentiment.analysis.classification.Classification;
+import com.unsupervisedsentiment.analysis.core.constants.Constants;
 import com.unsupervisedsentiment.analysis.core.constants.relations.RelationsContainer;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.ElementType;
@@ -128,12 +129,14 @@ public class Main {
 			System.out.println("Recall : " + evaluationResult.getRecall());
 			System.out.println("-----------------------------------------");
 
-			metadataResults.add(new EvaluationMetadata(new Date(), config
-					.getSeedType(), input.getFilename(), seedWords.size(),
-					algorithm.getNumberOfIterations(), elapsedTime,
-					evaluationResult.getPrecision(), evaluationResult
-							.getRecall(), RelationsContainer
-							.getAllEnumElementsAsString()));
+			metadataResults.add(new EvaluationMetadata(Constants.sdf
+					.format(new Date()), config.getSeedType(), input
+					.getFilename(), String.valueOf(seedWords.size()), String
+					.valueOf(algorithm.getNumberOfIterations()), String
+					.valueOf(elapsedTime), String.valueOf(evaluationResult
+					.getPrecision()), String.valueOf(evaluationResult
+					.getRecall()), RelationsContainer
+					.getAllEnumElementsAsString()));
 
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);
