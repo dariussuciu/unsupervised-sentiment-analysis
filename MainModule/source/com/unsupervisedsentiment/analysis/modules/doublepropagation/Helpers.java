@@ -470,11 +470,12 @@ public class Helpers {
 				SentiWordNetService.SWNPos.Noun.toString()	
 			};
 		}
+		
 		if (posTag.toLowerCase().equals("vbp")){
 			return new String[]{
 				SentiWordNetService.SWNPos.Verb.toString()
 			};
 		}
-		return new String[] {};
+		return new String[] {SentiWordNetService.SWNPos.Verb.toString()};
 	}
 }
