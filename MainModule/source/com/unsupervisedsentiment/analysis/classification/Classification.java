@@ -17,7 +17,7 @@ public class Classification {
 	 * Should make cases for modifiers like : very, especially, noticeably,
 	 * clearly, undisputed negatia
 	 */
-	private final double DEFAULT_SCORE = -100;
+	public static double DEFAULT_SCORE = -100;
 
 	private ISentimentScoreSource sentimentScoreSource;
 
@@ -79,7 +79,6 @@ public class Classification {
 
 	private ArrayList<Tuple> assignScores(ArrayList<Tuple> data,
 			ArrayList<SeedScoreModel> seeds) {
-		ArrayList<Tuple> tuples = new ArrayList<Tuple>();
 
 		for (Tuple tuple : data) {
 			if (isSeed(seeds, tuple.getSource().getValue())

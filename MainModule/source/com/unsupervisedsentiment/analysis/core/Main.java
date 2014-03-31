@@ -21,7 +21,8 @@ import com.unsupervisedsentiment.analysis.modules.doublepropagation.DoublePropag
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationMetadata;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationResult;
-import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationService;
+import com.unsupervisedsentiment.analysis.modules.evaluation.ExtractionEvaluationService;
+import com.unsupervisedsentiment.analysis.modules.evaluation.ScoreEvaluationService;
 import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 public class Main {
@@ -49,6 +50,7 @@ public class Main {
 			System.out.println(input.getOriginalContent());
 			// !!!!!!!! FOR EVALUTAION ONLY !!!!!!!
 			List<EvaluationModel> evaluationModels = null;
+			
 			// List<EvaluationModel> evaluationModels =
 			// NLPService.getInstance().getEvaluationModels(input.getContent());
 			// outputService.WriteEvaluationModels(input.getFilename(),
@@ -56,19 +58,8 @@ public class Main {
 
 			String storedEvaluationModelsDirectory = Initializer.getConfig()
 					.getEvaluationModelsDirectory();
-			if (Helpers.existsObjectsForFile(storedEvaluationModelsDirectory,
-					input.getFilename(), "EvaluationModel")) {
-				evaluationModels = Helpers
-						.<EvaluationModel> getObjectsFromFile(
-								storedEvaluationModelsDirectory,
-								input.getFilename(), "EvaluationModel");
-			} else {
-				evaluationModels = NLPService.getInstance()
-						.getEvaluationModels(input.getContent());
-				Helpers.saveObjectsToFile(evaluationModels,
-						storedEvaluationModelsDirectory, input.getFilename(),
-						"EvaluationModel");
-			}
+			
+			evaluationModels = Helpers.getEvaluationModels(storedEvaluationModelsDirectory, input, false);
 
 			inputData.setInput(input.getOriginalContent());
 			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(
@@ -120,20 +111,24 @@ public class Main {
 			outputFile.setTuples(combinedTuples);
 			outputFiles.add(outputFile);
 
-			EvaluationService evaluationService = new EvaluationService(
+			ExtractionEvaluationService extractionEvaluationService = new ExtractionEvaluationService(
 					evaluationModels, combinedTuples);
-			EvaluationResult evaluationResult = evaluationService.getResults();
+			EvaluationResult extractionEvaluationResult = extractionEvaluationService.getResults();
 			System.out
-					.println("Precision : " + evaluationResult.getPrecision());
-			System.out.println("Recall : " + evaluationResult.getRecall());
+					.println("Precision : " + extractionEvaluationResult.getPrecision());
+			System.out.println("Recall : " + extractionEvaluationResult.getRecall());
 			System.out.println("-----------------------------------------");
 
 			metadataResults.add(new EvaluationMetadata(new Date(), config
 					.getSeedType(), input.getFilename(), seedWords.size(),
 					algorithm.getNumberOfIterations(), elapsedTime,
-					evaluationResult.getPrecision(), evaluationResult
+					extractionEvaluationResult.getPrecision(), extractionEvaluationResult
 							.getRecall(), RelationsContainer
 							.getAllEnumElementsAsString()));
+			
+			
+			List<EvaluationModel> scoreEvaluationModels = Helpers.getEvaluationModels(storedEvaluationModelsDirectory, input, true);
+			ScoreEvaluationService.performEvaluation(scoreEvaluationModels, combinedTuples);
 
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);

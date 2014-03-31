@@ -25,11 +25,14 @@ import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_NNRel;
 import com.unsupervisedsentiment.analysis.model.Dependency;
 import com.unsupervisedsentiment.analysis.model.ElementType;
+import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Triple;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
+import com.unsupervisedsentiment.analysis.modules.IO.InputWrapper;
+import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
@@ -477,5 +480,24 @@ public class Helpers {
 			};
 		}
 		return new String[] {SentiWordNetService.SWNPos.Verb.toString()};
+	}
+	
+	public static List<EvaluationModel> getEvaluationModels(String directory, InputWrapper input, boolean forScoring){
+		String fileDetails = forScoring? "ScoreEvaluationModel" : "EvaluationModel";
+		List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
+		if (Helpers.existsObjectsForFile(directory,
+				input.getFilename(), fileDetails)) {
+			evaluationModels = Helpers
+					.<EvaluationModel> getObjectsFromFile(
+							directory,
+							input.getFilename(), fileDetails);
+		} else {
+			evaluationModels = NLPService.getInstance()
+					.getEvaluationModels(input.getContent(), forScoring);
+			Helpers.saveObjectsToFile(evaluationModels,
+					directory, input.getFilename(),
+					fileDetails);
+		}
+		return evaluationModels;
 	}
 }

@@ -11,6 +11,7 @@ public class EvaluationModel implements Serializable {
 	private final String opinionWord;
 	private final String sentence;
 	private final int sentenceIndex;
+	private double opinionWordScore;
 
 	public EvaluationModel(final String opinionWord, final String sentence,
 			final int sentenceIndex) {
@@ -42,6 +43,14 @@ public class EvaluationModel implements Serializable {
 	public String toString() {
 		return "EvaluationModel [opinionWord=" + opinionWord + ", sentence="
 				+ sentence + ", sentenceIndex=" + sentenceIndex + "]";
+	}
+	
+	public double getOpinionWordScore() {
+		return opinionWordScore;
+	}
+
+	public void setOpinionWordScore(double opinionWordScore) {
+		this.opinionWordScore = opinionWordScore;
 	}
 
 }

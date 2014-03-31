@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.unsupervisedsentiment.analysis.classification.Classification;
 import com.unsupervisedsentiment.analysis.model.Dependency;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
@@ -83,7 +84,8 @@ public class NLPService {
 		return sentences;
 	}
 
-	public List<EvaluationModel> getEvaluationModels(final String text) {
+	public List<EvaluationModel> getEvaluationModels(final String text,
+			boolean forScoring) {
 		final List<SemanticGraph> semanticGraphs = createSemanticGraphsListForSentances(text);
 		final List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
 
@@ -91,13 +93,24 @@ public class NLPService {
 			final String sentence = semanticGraphs.get(i)
 					.toRecoveredSentenceString();
 			final String cleanSentence = sentence.replaceAll(
-					"(### )|(% % % )|(\\$ \\$ \\$ )", "");
-			final Pattern MY_PATTERN = Pattern.compile("### (\\w*\\b)");
-			final Matcher m = MY_PATTERN.matcher(sentence);
+					"(### )|(% % % )|(\\$ \\$ \\$ )|(\\@\\d\\.\\d*)", "");
+			String pattern = forScoring ? "### (\\w*\\@\\d\\.\\d*\\b)"
+					: "### (\\w*\\b)";
+			final Pattern OPINION_WORD_PATTERN = Pattern.compile(pattern);
+			final Matcher m = OPINION_WORD_PATTERN.matcher(sentence);
 			while (m.find()) {
-				final String opinionWord = m.group(1);
+				String opinionWord = m.group(1);
+				double score = new Double(Classification.DEFAULT_SCORE);
+				if (forScoring) {
+					String numberString = opinionWord.substring(
+							opinionWord.indexOf("@") + 1, opinionWord.length());
+					score = Double.parseDouble(numberString);
+					opinionWord = opinionWord.substring(0,
+							opinionWord.indexOf("@"));
+				}
 				final EvaluationModel model = new EvaluationModel(opinionWord,
 						cleanSentence, i);
+				model.setOpinionWordScore(score);
 				evaluationModels.add(model);
 			}
 		}

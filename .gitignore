@@ -13,3 +13,5 @@ SWN/SentiWordNet.txt
 Input/StoredSemanticGraphs/Nikon coolpix 4300.txt-SemanticGraph
 Input/StoredSemanticGraphs/Nikon coolpix 4300 short.txt-SemanticGraph
 EvaluationModels/Nikon coolpix 4300 short.txt-EvaluationModel
+Output/EvaluationMetadata.csv
+EvaluationModels/Nikon coolpix 4300.txt-EvaluationModel
