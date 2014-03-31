@@ -16,6 +16,7 @@ public class ExtractionEvaluationService extends EvaluationService {
 		super(evaluationModels, tuples);
 	}
 
+	@Override
 	protected void evaluate() {
 		truePositive = 0;
 		falsePositive = 0;

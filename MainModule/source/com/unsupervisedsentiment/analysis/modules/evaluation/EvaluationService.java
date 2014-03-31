@@ -44,7 +44,5 @@ public abstract class EvaluationService {
 		return truePositive / (truePositive + falseNegative);
 	}
 
-	private void evaluate() {
-		
-	}
+	protected abstract void evaluate();
 }
