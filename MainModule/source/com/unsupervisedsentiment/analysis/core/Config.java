@@ -29,6 +29,8 @@ public class Config {
 	private String numberOfSeeds;
 
 	private String seedType;
+	
+	private String polarityThreshold;
 
 	@XmlElement(name = "inputDirectory")
 	public String getInputDirectory() {
@@ -136,6 +138,15 @@ public class Config {
 	public String toString() {
 		return "Input Directory: " + inputDirectory + "\n"
 				+ "Output Directory: " + inputDirectory + "\n";
+	}
+
+	@XmlElement(name = "polarityThreshold")
+	public String getPolarityThreshold() {
+		return polarityThreshold;
+	}
+
+	public void setPolarityThreshold(String polarityThreshold) {
+		this.polarityThreshold = polarityThreshold;
 	}
 
 }

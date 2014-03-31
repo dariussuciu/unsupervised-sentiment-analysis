@@ -117,7 +117,7 @@ public class InputService {
 		try {
 			Scanner in = new Scanner(new FileReader(file.getPath()));
 			InputWrapper iWrapper = new InputWrapper();
-			getHeaders(in, iWrapper);
+			//getHeaders(in, iWrapper);
 			getContent(in, iWrapper);
 			iWrapper.setFilename(file.getName());
 			return iWrapper;

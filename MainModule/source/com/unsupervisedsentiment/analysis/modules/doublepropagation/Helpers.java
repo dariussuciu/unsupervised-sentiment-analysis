@@ -19,6 +19,7 @@ import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.classification.ISentimentScoreSource;
 import com.unsupervisedsentiment.analysis.classification.SentiWordNetService;
+import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.core.constants.RelationEquivalency;
 import com.unsupervisedsentiment.analysis.core.constants.relations.GenericRelation;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel;
@@ -148,7 +149,8 @@ public class Helpers {
 
 	public static boolean checkEquivalentRelations(
 			final GrammaticalRelation relationSourceH,
-			final GrammaticalRelation relationTargetH) {
+			final GrammaticalRelation relationTargetH,
+			final GenericRelation relationType) {
 		// equivalency from Stanford, keep for know, until we know more about
 		// how it decides when relations
 		// are equivalent
@@ -157,6 +159,9 @@ public class Helpers {
 
 		final String relSourceHName = relationSourceH.toString();
 		final String relTargetHName = relationTargetH.toString();
+		
+		if(!relationType.contains(relationSourceH.toString()) || !relationType.contains(relationTargetH.toString()))
+			return false;
 
 		return compareRelations(relSourceHName, relTargetHName);
 	}
@@ -319,6 +324,7 @@ public class Helpers {
 			final SemanticGraph semanticGraph, final Word source,
 			final SemanticGraphEdge edgeWithH, final IndexedWord H,
 			final boolean isSource, 
+			final GenericRelation relationPos,
 			final GenericRelation sourcePos,
 			final GenericRelation targetPos,
 			final ElementType targetType, final int semanticGraphIndex) {
@@ -334,7 +340,7 @@ public class Helpers {
 					.getRelation();
 
 			if (Helpers.checkEquivalentRelations(relationHSource,
-					relationHTarget)) {
+					relationHTarget, relationPos)) {
 				final IndexedWord target = edgeWithTarget.getSource();
 				if(targetPos.contains(target.tag()) && sourcePos.contains(source.getPosTag()))
 				{
@@ -358,7 +364,7 @@ public class Helpers {
 					.getRelation();
 
 			if (Helpers.checkEquivalentRelations(relationHSource,
-					relationHTarget)) {
+					relationHTarget, relationPos)) {
 				final IndexedWord target = edgeWithTarget.getTarget();
 				if(targetPos.contains(target.tag()) && sourcePos.contains(source.getPosTag()))
 				{
@@ -460,7 +466,7 @@ public class Helpers {
 			Word target = tuple.getTarget();
 			String[] equivalentPOS = getEquivalentPOS(target.getPosTag());
 			Double score = swnService.extract(target.getValue(), equivalentPOS); 
-			if (score < new Double(0.01))
+			if (score < new Double(Initializer.getConfig().getPolarityThreshold()))
 				return true;
 		}
 

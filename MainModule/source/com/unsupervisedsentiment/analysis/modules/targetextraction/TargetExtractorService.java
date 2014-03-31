@@ -135,7 +135,7 @@ public class TargetExtractorService implements ITargetExtractorService {
 					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToHOnEquivalency(semanticGraph,
 									feature, edgeWithH, edgeWithH.getTarget(),
-									true, Pos_NNRel.getInstance(), Pos_NNRel.getInstance(), targetType,
+									true, Dep_ConjRel.getInstance(), Pos_NNRel.getInstance(), Pos_NNRel.getInstance(), targetType,
 									semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets,
 							existingFeatures));
@@ -153,7 +153,7 @@ public class TargetExtractorService implements ITargetExtractorService {
 					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToHOnEquivalency(semanticGraph,
 									feature, edgeWithH, edgeWithH.getSource(),
-									false, Pos_NNRel.getInstance(), Pos_NNRel.getInstance(), targetType,
+									false, Dep_ConjRel.getInstance(), Pos_NNRel.getInstance(), Pos_NNRel.getInstance(), targetType,
 									semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets,
 							existingFeatures));

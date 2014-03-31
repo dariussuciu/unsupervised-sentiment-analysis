@@ -52,4 +52,7 @@
 			slow
 		</seedWord>
 	</seedWords>
+	<polarityThreshold>
+	0
+	</polarityThreshold>
 </Config>

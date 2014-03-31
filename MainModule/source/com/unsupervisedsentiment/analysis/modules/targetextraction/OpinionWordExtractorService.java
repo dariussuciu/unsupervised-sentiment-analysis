@@ -139,7 +139,7 @@ public class OpinionWordExtractorService implements
 					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToHOnEquivalency(semanticGraph,
 									feature, edgeWithH, edgeWithH.getTarget(),
-									true, Pos_JJRel.getInstance(), Pos_JJRel.getInstance(), targetType,
+									true, Dep_ConjRel.getInstance(), Pos_JJRel.getInstance(), Pos_JJRel.getInstance(), targetType,
 									semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets,
 							existingOpinionWords));
@@ -156,7 +156,7 @@ public class OpinionWordExtractorService implements
 					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToHOnEquivalency(semanticGraph,
 									feature, edgeWithH, edgeWithH.getSource(),
-									false, Pos_JJRel.getInstance(), Pos_JJRel.getInstance(), targetType,
+									false, Dep_ConjRel.getInstance(), Pos_JJRel.getInstance(), Pos_JJRel.getInstance(), targetType,
 									semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets,
 							existingOpinionWords));

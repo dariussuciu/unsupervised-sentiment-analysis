@@ -29,7 +29,7 @@ public class Dep_MRRel extends GenericRelation {
 	 * - acomp: She looks very beautiful<br>
 	 */
 	public enum mod {
-		acomp, amod
+		acomp, amod, advmod, rcmod, npadvmod
 	};
 
 	public enum pmod {
@@ -45,7 +45,7 @@ public class Dep_MRRel extends GenericRelation {
 	 * 
 	 */
 	public enum subj {
-		nsubj
+		nsubj, csubj, nsubjpass
 	};
 
 	public enum s {
@@ -66,7 +66,7 @@ public class Dep_MRRel extends GenericRelation {
 	};
 
 	public enum desc {
-
+		dep
 	}
 
 	private static Dep_MRRel mrRel;
