@@ -1,5 +1,6 @@
 package com.unsupervisedsentiment.analysis.modules.doublepropagation;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +58,7 @@ public class DoublePropagationAlgorithm {
 					"SemanticGraph");
 			data.setSentancesSemanticGraphs(semanticGraphsListForSentances);
 		}
-		data.setExpandedOpinionWords(seedWords);
+		data.setExpandedOpinionWords(new HashSet<Tuple>(seedWords));
 	}
 
 	public DoublePropagationData execute(final HashSet<Tuple> seedWords) {

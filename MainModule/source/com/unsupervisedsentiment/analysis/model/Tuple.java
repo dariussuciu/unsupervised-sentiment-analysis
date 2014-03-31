@@ -34,7 +34,7 @@ public class Tuple {
 		result = prime * result + ((target == null) ? 0 : target.hashCode());
 		result = prime * result
 				+ ((tupleType == null) ? 0 : tupleType.hashCode());
-		return result;
+		return 1;
 	}
 
 	@Override
@@ -50,14 +50,16 @@ public class Tuple {
 		
 		if(this.getTupleType().equals(TupleType.Seed) && other.getTupleType().equals(TupleType.Seed))
 		{
-			if (this.source.equals(other.source))
-				return true;
+			return this.source.equals(other.source);
+
 		}
 		else 
 		{
-			if(!this.sentence.equals(other.sentence))
-				return false;
-			
+			if(this.getSentenceIndex() != (other.getSentenceIndex()))
+				{
+					return false;
+				}
+					
 			if(this.source == null && this.target == null) {
 				if(other.source != null || other.target != null)
 					return false;
@@ -78,12 +80,6 @@ public class Tuple {
 					if(other.target == null && !other.source.equals(this.source))
 						return false;
 				}
-				
-				if(!(this.source.equals(other.source) || this.source.equals(other.target)))
-					return false;
-				
-				if(!(this.target.equals(other.source) || this.target.equals(other.target)))
-					return false;
 				
 				if(this.source.equals(other.source))
 				{
@@ -163,11 +159,11 @@ public class Tuple {
 		this.source = source;
 	}
 
-	public List<Word> getOpinionWords(){
+	public List<Word> getElements(ElementType elementType){
 		List<Word> opinionWords = new ArrayList<Word>();
-		if(getSource().getType().equals(ElementType.OPINION_WORD))
+		if(getSource().getType().equals(elementType))
 			opinionWords.add(getSource());
-		if(getTarget().getType().equals(ElementType.OPINION_WORD))
+		if(getTarget() != null && getTarget().getType().equals(ElementType.OPINION_WORD))
 			opinionWords.add(getTarget());
 		return opinionWords;
 	}

@@ -15,3 +15,12 @@ Input/StoredSemanticGraphs/Nikon coolpix 4300 short.txt-SemanticGraph
 EvaluationModels/Nikon coolpix 4300 short.txt-EvaluationModel
 Output/EvaluationMetadata.csv
 EvaluationModels/Nikon coolpix 4300.txt-EvaluationModel
+*.txt-EvaluationModel
+*.txt-EvaluationModel
+*.txt-EvaluationModel
+EvaluationModels/Canon G3.txt-EvaluationModel
+*.csv
+*.txt-ScoreEvaluationModel
+*.txt-SemanticGraph
+*.csv
+*.txt-EvaluationModel

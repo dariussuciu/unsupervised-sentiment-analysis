@@ -7,6 +7,7 @@ import java.util.Set;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Dep_ConjRel;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Dep_MRRel;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel;
+import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_NNRel;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.Word;
@@ -54,7 +55,7 @@ public class OpinionWordExtractorService implements
 			final Set<Tuple> existingOpinionWords,
 			final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph,
-				opinionWords, Dep_MRRel.getInstance(), Pos_JJRel.getInstance(),
+				opinionWords, Dep_MRRel.getInstance(), Pos_NNRel.getInstance(), Pos_JJRel.getInstance(),
 				targetType, semanticGraphIndex);
 		return Helpers.getNewTuples(foundTargets, existingOpinionWords);
 		// return Helpers.extractTargets(semanticGraph, opinionWords,
@@ -80,6 +81,7 @@ public class OpinionWordExtractorService implements
 					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToH(semanticGraph, feature,
 									edgeWithH, edgeWithH.getTarget(), true,
+									Pos_NNRel.getInstance(),
 									Pos_JJRel.getInstance(),
 									Dep_MRRel.getInstance(), targetType,
 									semanticGraphIndex);
@@ -96,6 +98,7 @@ public class OpinionWordExtractorService implements
 					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToH(semanticGraph, feature,
 									edgeWithH, edgeWithH.getSource(), false,
+									Pos_NNRel.getInstance(),
 									Pos_JJRel.getInstance(),
 									Dep_MRRel.getInstance(), targetType,
 									semanticGraphIndex);
@@ -115,7 +118,7 @@ public class OpinionWordExtractorService implements
 
 		final Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph,
 				opinionWords, Dep_ConjRel.getInstance(),
-				Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
+				Pos_JJRel.getInstance(), Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
 		return Helpers.getNewTuples(foundTargets, existingOpinionWords);
 	}
 
@@ -136,7 +139,7 @@ public class OpinionWordExtractorService implements
 					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToHOnEquivalency(semanticGraph,
 									feature, edgeWithH, edgeWithH.getTarget(),
-									true, Pos_JJRel.getInstance(), targetType,
+									true, Dep_ConjRel.getInstance(), Pos_JJRel.getInstance(), Pos_JJRel.getInstance(), targetType,
 									semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets,
 							existingOpinionWords));
@@ -153,7 +156,7 @@ public class OpinionWordExtractorService implements
 					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToHOnEquivalency(semanticGraph,
 									feature, edgeWithH, edgeWithH.getSource(),
-									false, Pos_JJRel.getInstance(), targetType,
+									false, Dep_ConjRel.getInstance(), Pos_JJRel.getInstance(), Pos_JJRel.getInstance(), targetType,
 									semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets,
 							existingOpinionWords));

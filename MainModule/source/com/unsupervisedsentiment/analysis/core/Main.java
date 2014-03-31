@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import com.unsupervisedsentiment.analysis.classification.Classification;
+import com.unsupervisedsentiment.analysis.core.constants.Constants;
 import com.unsupervisedsentiment.analysis.core.constants.relations.RelationsContainer;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.ElementType;
@@ -47,7 +48,6 @@ public class Main {
 			DoublePropagationData inputData = new DoublePropagationData();
 
 			inputData.setFilename(input.getFilename());
-			System.out.println(input.getOriginalContent());
 			// !!!!!!!! FOR EVALUTAION ONLY !!!!!!!
 			List<EvaluationModel> evaluationModels = null;
 			
@@ -102,29 +102,78 @@ public class Main {
 
 			combinedTuples.addAll(featureTuples);
 			combinedTuples.addAll(opinionWordTuples);
+			
+			HashSet<Tuple> resultTuples = new HashSet<Tuple>();
+			
+			resultTuples = combinedTuples;
+			
+//			for(Tuple tuple : combinedTuples)
+//			{
+//				double count = 0;
+//				for(Word feature : tuple.getElements(ElementType.FEATURE))
+//				{
+//					for(Tuple otherTuple : combinedTuples)
+//					{
+//						if(!otherTuple.equals(tuple))
+//						{
+//							for(Word otherFeature : otherTuple.getElements(ElementType.FEATURE))
+//							{
+//								if(feature.getValue().equals(otherFeature.getValue()))
+//								{
+//									count++;
+//								}
+//							}	
+//						}
+//					}
+//				}
+//				
+//				if(count / tuple.getElements(ElementType.FEATURE).size() > 7)
+//				{
+//					resultTuples.add(tuple);
+//				}
+//			}
 
 			OutputWrapper outputFile = new OutputWrapper();
 
 			outputFile.setAuthor(input.getAuthor());
 			outputFile.setFilename(input.getFilename());
 			outputFile.setSource(input.getSource());
-			outputFile.setTuples(combinedTuples);
+			outputFile.setTuples(resultTuples);
 			outputFiles.add(outputFile);
 
 			ExtractionEvaluationService extractionEvaluationService = new ExtractionEvaluationService(
-					evaluationModels, combinedTuples);
+					evaluationModels, resultTuples);
 			EvaluationResult extractionEvaluationResult = extractionEvaluationService.getResults();
 			System.out
 					.println("Precision : " + extractionEvaluationResult.getPrecision());
 			System.out.println("Recall : " + extractionEvaluationResult.getRecall());
 			System.out.println("-----------------------------------------");
+			
+			
+//			EvaluationService evaluationService = new EvaluationService(
+//					evaluationModels, opinionWordTuples);
+//			EvaluationResult evaluationResult = evaluationService.getResults();
+//			System.out
+//					.println("Precision : " + evaluationResult.getPrecision());
+//			System.out.println("Recall : " + evaluationResult.getRecall());
+//			System.out.println("-----------------------------------------");
+//			
+//			evaluationService = new EvaluationService(
+//					evaluationModels, featureTuples);
+//			evaluationResult = evaluationService.getResults();
+//			System.out
+//					.println("Precision : " + evaluationResult.getPrecision());
+//			System.out.println("Recall : " + evaluationResult.getRecall());
+//			System.out.println("-----------------------------------------");
 
-			metadataResults.add(new EvaluationMetadata(new Date(), config
-					.getSeedType(), input.getFilename(), seedWords.size(),
-					algorithm.getNumberOfIterations(), elapsedTime,
-					extractionEvaluationResult.getPrecision(), extractionEvaluationResult
-							.getRecall(), RelationsContainer
-							.getAllEnumElementsAsString()));
+			metadataResults.add(new EvaluationMetadata(Constants.sdf
+					.format(new Date()), config.getSeedType(), input
+					.getFilename(), String.valueOf(seedWords.size()), String
+					.valueOf(algorithm.getNumberOfIterations()), String
+					.valueOf(elapsedTime), String.valueOf(evaluationResult
+					.getPrecision()), String.valueOf(evaluationResult
+					.getRecall()), RelationsContainer
+					.getAllEnumElementsAsString()));
 			
 			
 			List<EvaluationModel> scoreEvaluationModels = Helpers.getEvaluationModels(storedEvaluationModelsDirectory, input, true);
