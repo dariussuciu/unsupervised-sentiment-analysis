@@ -170,8 +170,8 @@ public class Main {
 					.format(new Date()), config.getSeedType(), input
 					.getFilename(), String.valueOf(seedWords.size()), String
 					.valueOf(algorithm.getNumberOfIterations()), String
-					.valueOf(elapsedTime), String.valueOf(evaluationResult
-					.getPrecision()), String.valueOf(evaluationResult
+					.valueOf(elapsedTime), String.valueOf(extractionEvaluationResult
+					.getPrecision()), String.valueOf(extractionEvaluationResult
 					.getRecall()), RelationsContainer
 					.getAllEnumElementsAsString()));
 			

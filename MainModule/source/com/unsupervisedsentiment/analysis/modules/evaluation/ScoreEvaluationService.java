@@ -3,6 +3,7 @@ package com.unsupervisedsentiment.analysis.modules.evaluation;
 import java.util.List;
 import java.util.Set;
 
+import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
@@ -16,7 +17,6 @@ public class ScoreEvaluationService extends EvaluationService {
 		super(evaluationModels, tuples);
 	}
 
-	@Override
 	protected void evaluate() {
 
 		truePositive = 0;
@@ -25,10 +25,10 @@ public class ScoreEvaluationService extends EvaluationService {
 
 		for (final Tuple tuple : tuples) {
 			if (tuple.getTupleType().equals(TupleType.Seed)
-					|| tuple.getOpinionWords().size() <= 0)
+					|| tuple.getElements(ElementType.OPINION_WORD).size() <= 0)
 				continue;
 
-			List<Word> opinionWords = tuple.getOpinionWords();
+			List<Word> opinionWords = tuple.getElements(ElementType.OPINION_WORD);
 			for (final Word opinionWord : opinionWords) {
 				boolean found = false;
 				for (final EvaluationModel model : evaluationModels) {
@@ -56,10 +56,10 @@ public class ScoreEvaluationService extends EvaluationService {
 			boolean found = false;
 			for (final Tuple tuple : tuples) {
 				if (tuple.getTupleType().equals(TupleType.Seed)
-						|| tuple.getOpinionWords().size() <= 0)
+						|| tuple.getElements(ElementType.OPINION_WORD).size() <= 0)
 					continue;
 				if (model.getSentenceIndex() == tuple.getSentenceIndex()) {
-					for (final Word opinionWord : tuple.getOpinionWords()) {
+					for (final Word opinionWord : tuple.getElements(ElementType.OPINION_WORD)) {
 						double assignedScore = opinionWord.getScore();
 						double annotatedScore = model.getOpinionWordScore();
 						if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
