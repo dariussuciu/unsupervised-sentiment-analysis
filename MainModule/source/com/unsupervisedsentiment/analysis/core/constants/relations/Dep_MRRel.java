@@ -4,18 +4,14 @@ public class Dep_MRRel extends GenericRelation {
 
 	/**
 	 * Removed: <br>
-	 * - advmod: very... <br>
-	 * - nn: <br>
-	 * - det: a... <br>
+	
 	 * - mark: She sais that you like to swim. mark(that,swim) <br>
-	 * - mwe: I like dogs as well as cats. mwe(well, as) <br>
-	 * - npadvmod: 6 feet long. npadvmod(long, feet) <br>
 	 * - num: Sam ate 3 sheep. num(sheep, 3) <br>
 	 * - number: I have four thousand sheep. number(thousand, four) <br>
 	 * - poss: Their offces. poss(offces, their) <br>
 	 * ' - possesive: Bill's clothes. possesive(Bill, 's) <br>
 	 * - preconj: Both the boys and the girls are here. preconj(boys, both) -
-	 * predet: All the boys are here. predet(boys, all) <br>
+	 * - predet: All the boys are here. predet(boys, all) <br>
 	 * - prep: I saw a cat in a hat" prep(cat, in) <br>
 	 * - prt: They shut down the station. prt(shut, down) <br>
 	 * - quantmod: About 200 people came to the party. quantmod(200, About) <br>
@@ -27,9 +23,14 @@ public class Dep_MRRel extends GenericRelation {
 	 * <br>
 	 * Added: <br>
 	 * - acomp: She looks very beautiful<br>
+	 * - npadvmod: 6 feet long. npadvmod(long, feet) <br>
+	 * - mwe: I like dogs as well as cats. mwe(well, as) <br>
+	 * - advmod: very... <br>
+	 * - nn: <br>
+	 * - det: a... <br>
 	 */
 	public enum mod {
-		acomp, amod, advmod, rcmod, npadvmod
+		acomp, amod, advmod, rcmod, npadvmod, mwe, nn, det, advcl, neg, vmod, prt, prep, predet, preconj, poss, mark
 	};
 
 	public enum pmod {
@@ -45,7 +46,7 @@ public class Dep_MRRel extends GenericRelation {
 	 * 
 	 */
 	public enum subj {
-		nsubj, csubj, nsubjpass
+		nsubj, csubj, nsubjpass, csubjpass
 	};
 
 	public enum s {
@@ -58,7 +59,7 @@ public class Dep_MRRel extends GenericRelation {
 	 * - iobj: She gave me a raise. iobj(gave, me) <br>
 	 */
 	public enum obj {
-		pobj
+		pobj, iobj
 	};
 
 	public enum obj2 {
