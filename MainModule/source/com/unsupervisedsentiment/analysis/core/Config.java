@@ -60,7 +60,7 @@ public class Config {
 		this.seedWords = list;
 	}
 
-	@XmlElement(name = "SWNDirectory")
+	@XmlElement(name = "SWNPath")
 	public String getSWNPath() {
 		return SWNPath.trim();
 	}

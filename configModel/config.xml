@@ -1,24 +1,24 @@
  <Config>
 	<inputDirectory> 
-		F:\Licenta\Input
+		C:\Users\Alex\Desktop\Research\Project\Input
 	</inputDirectory>
 	<outputDirectory>
-		F:\Licenta\Output
+		C:\Users\Alex\Desktop\Research\Project\Output
 	</outputDirectory>
-	<SWNDirectory> 
-		F:\unsupervised-sentiment-analysis\SWN\SentiWordNet.txt
-	</SWNDirectory>
+	<SWNPath> 
+		C:\Users\Alex\Desktop\Research\Project\unsupervised-sentiment-analysis\SWN\SentiWordNet.txt
+	</SWNPath>
 	<positiveSeedWordsFile> 
-		F:\unsupervised-sentiment-analysis\SeedWords\positive-words.txt
+		C:\Users\Alex\Desktop\Research\Project\Input\SeedWords\positive-words.txt
 	</positiveSeedWordsFile>
 	<negativeSeedWordsFile> 
-		F:\unsupervised-sentiment-analysis\SeedWords\negative-words.txt
+		C:\Users\Alex\Desktop\Research\Project\Input\SeedWords\negative-words.txt
 	</negativeSeedWordsFile>
 	<storedSemanticGraphsDirectory> 
-		F:\Licenta\StoredSemanticGraphs
+		C:\Users\Alex\Desktop\Research\Project\Input\StoredSemanticGraphs
 	</storedSemanticGraphsDirectory>
 	<evaluationModelsDirectory> 
-		F:\Licenta\EvaluationModels
+		C:\Users\Alex\Desktop\Research\Project\Evaluation
 	</evaluationModelsDirectory>
 	<evaluationMetadataFile>
 		C:\Users\Alex\Desktop\Research\Project\Output\EvaluationMetadata.csv
@@ -29,6 +29,9 @@
 	<seedType>
 		OW
 	</seedType>
+	<polarityThreshold>
+		0.01
+	</polarityThreshold>
 	<seedWords>
 		<seedWord>
 			good
