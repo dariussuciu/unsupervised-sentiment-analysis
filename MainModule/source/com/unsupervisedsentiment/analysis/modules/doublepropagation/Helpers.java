@@ -43,7 +43,7 @@ import edu.stanford.nlp.trees.GrammaticalRelation;
 public class Helpers {
 
 	/**
-	 * Gets the target edges based on the relation pos tag and the target pos
+	 * Gets the target edges based on the relation pos tag, target pos and the source pos
 	 * tag
 	 * 
 	 * @param edges
@@ -52,7 +52,7 @@ public class Helpers {
 	 * @param isSource
 	 * @return
 	 */
-	public static List<SemanticGraphEdge> getTargetEdgesOnRelAndTarget(
+	public static List<SemanticGraphEdge> getTargetEdgesOnEdge(
 			final Iterable<SemanticGraphEdge> edges,
 			final GenericRelation sourceType,
 			final GenericRelation targetType,
@@ -67,6 +67,39 @@ public class Helpers {
 					targetEdges.add(edge);
 				}
 				if (isSource && targetType.contains(edge.getSource().tag()) && sourceType.contains(edge.getTarget().tag())) {
+					targetEdges.add(edge);
+				}
+			}
+		}
+		return targetEdges;
+	}
+	
+	/**
+	 * Gets the target edges based on the relation pos tag and the target pos
+	 * tag
+	 * 
+	 * @param edges
+	 * @param targetType
+	 * @param relationType
+	 * @param isSource
+	 * @return
+	 */
+	public static List<SemanticGraphEdge> getTargetEdgesOnEdgeAndSource(
+			final Iterable<SemanticGraphEdge> edges,
+			final Word source,
+			final GenericRelation sourceType,
+			final GenericRelation targetType,
+			final GenericRelation relationType, final boolean isSource) {
+		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
+
+		for (SemanticGraphEdge edge : edges) {
+			GrammaticalRelation relation = edge.getRelation();
+			
+			if (relationType.contains(relation.toString())) {
+				if (isSource && targetType.contains(edge.getSource().tag()) && sourceType.contains(source.getPosTag())) {
+					targetEdges.add(edge);
+				}
+				if (!isSource && targetType.contains(edge.getTarget().tag()) && sourceType.contains(source.getPosTag())) {
 					targetEdges.add(edge);
 				}
 			}
@@ -209,7 +242,7 @@ public class Helpers {
 			for (IndexedWord vertex : vertexes) {
 				// for outgoing edges
 				final List<SemanticGraphEdge> outgoingTargetEdges = Helpers
-						.getTargetEdgesOnRelAndTarget(
+						.getTargetEdgesOnEdge(
 								semanticGraph.outgoingEdgeIterable(vertex),
 								sourcePos, targetPos, relationType, false);
 				for (SemanticGraphEdge edge : outgoingTargetEdges) {
@@ -223,7 +256,7 @@ public class Helpers {
 
 				// for incoming edges
 				final List<SemanticGraphEdge> incomingTargetEdges = Helpers
-						.getTargetEdgesOnRelAndTarget(
+						.getTargetEdgesOnEdge(
 								semanticGraph.incomingEdgeIterable(vertex),
 								sourcePos, targetPos, relationType, true);
 				for (SemanticGraphEdge edge : incomingTargetEdges) {
@@ -253,8 +286,8 @@ public class Helpers {
 		final Set<Tuple> targets = new HashSet<Tuple>();
 		// for incoming target edges
 		final List<SemanticGraphEdge> incomingEdgesWithTargets = Helpers
-				.getTargetEdgesOnRelAndTarget(
-						semanticGraph.incomingEdgeIterable(H), sourcePos, targetPos,
+				.getTargetEdgesOnEdgeAndSource(
+						semanticGraph.incomingEdgeIterable(H), source, sourcePos, targetPos,
 						relationPos, !isSource);
 		for (SemanticGraphEdge edgeWithTarget : incomingEdgesWithTargets) {
 
@@ -262,7 +295,7 @@ public class Helpers {
 			final GrammaticalRelation relationHTarget = edgeWithTarget
 					.getRelation();
 			final IndexedWord target = edgeWithTarget.getSource();
-			if (validateTriple(source, target, H))
+			if (validateTriple(source, target, H, sourcePos, targetPos))
 				targets.add(createTriple(source, target, H, relationHSource,
 						relationHTarget, targetType, semanticGraphIndex,
 						semanticGraph.toRecoveredSentenceString()));
@@ -270,8 +303,8 @@ public class Helpers {
 
 		// for outgoing target edges
 		final List<SemanticGraphEdge> outgoingEdgesWithTargets = Helpers
-				.getTargetEdgesOnRelAndTarget(
-						semanticGraph.outgoingEdgeIterable(H), sourcePos, targetPos,
+				.getTargetEdgesOnEdgeAndSource(
+						semanticGraph.outgoingEdgeIterable(H), source, sourcePos, targetPos,
 						relationPos, isSource);
 		for (SemanticGraphEdge edgeWithTarget : outgoingEdgesWithTargets) {
 
@@ -279,7 +312,7 @@ public class Helpers {
 			final GrammaticalRelation relationHTarget = edgeWithTarget
 					.getRelation();
 			final IndexedWord target = edgeWithTarget.getTarget();
-			if (validateTriple(source, target, H))
+			if (validateTriple(source, target, H, sourcePos, targetPos))
 				targets.add(createTriple(source, target, H, relationHSource,
 						relationHTarget, targetType, semanticGraphIndex,
 						semanticGraph.toRecoveredSentenceString()));
@@ -288,13 +321,17 @@ public class Helpers {
 	}
 
 	public static boolean validateTriple(final Word source,
-			final IndexedWord target, final IndexedWord H) {
+			final IndexedWord target, final IndexedWord H, final GenericRelation sourcePos, final GenericRelation targetPos) {
 		final String sourceWord = source.getValue();
 		final String targetWord = target.value();
+		final String hWord = H.value();
 
-		if (sourceWord.equals(targetWord))
+		if (sourceWord.equals(targetWord) || sourceWord.equals(hWord)|| target.equals(hWord))
 			return false;
 
+		if(!sourcePos.contains(source.getPosTag()) || !targetPos.contains(target.tag()))
+				return false;
+		
 		return true;
 	}
 
@@ -347,7 +384,7 @@ public class Helpers {
 				final IndexedWord target = edgeWithTarget.getSource();
 				if(targetPos.contains(target.tag()) && sourcePos.contains(source.getPosTag()))
 				{
-					if (validateTriple(source, target, H))
+					if (validateTriple(source, target, H, sourcePos, targetPos))
 						targets.add(createTriple(source, target, H,
 								relationHSource, relationHTarget, targetType,
 								semanticGraphIndex,
@@ -371,7 +408,7 @@ public class Helpers {
 				final IndexedWord target = edgeWithTarget.getTarget();
 				if(targetPos.contains(target.tag()) && sourcePos.contains(source.getPosTag()))
 				{
-					if (validateTriple(source, target, H))
+					if (validateTriple(source, target, H, sourcePos, targetPos))
 						targets.add(createTriple(source, target, H,
 								relationHSource, relationHTarget, targetType,
 								semanticGraphIndex,
