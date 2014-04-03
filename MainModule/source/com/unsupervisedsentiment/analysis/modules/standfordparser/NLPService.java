@@ -94,7 +94,7 @@ public class NLPService {
 					.toRecoveredSentenceString();
 			final String cleanSentence = sentence.replaceAll(
 					"(### )|(% % % )|(\\$ \\$ \\$ )|(\\@\\d\\.\\d*)", "");
-			String pattern = forScoring ? "### (\\w*\\@\\d\\.\\d*\\b)"
+			String pattern = forScoring ? "### (\\w*\\@.?\\d\\.?\\d*\\b)"
 					: "### (\\w*\\b)";
 			final Pattern OPINION_WORD_PATTERN = Pattern.compile(pattern);
 			final Matcher m = OPINION_WORD_PATTERN.matcher(sentence);

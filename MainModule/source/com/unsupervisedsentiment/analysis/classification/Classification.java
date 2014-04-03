@@ -122,6 +122,13 @@ public class Classification {
 					if (tuple.getTarget() != null)
 						tuple.getTarget().setScore(score);
 				}
+				//if the tuple already has a score, assign an average
+				else {
+					double score = (assignedTuple.getSource().getScore() + tuple.getSource().getScore()) / 2;
+					tuple.getSource().setScore(score);
+					if (tuple.getTarget() != null)
+						tuple.getTarget().setScore(score);
+				}
 
 			}
 		}
