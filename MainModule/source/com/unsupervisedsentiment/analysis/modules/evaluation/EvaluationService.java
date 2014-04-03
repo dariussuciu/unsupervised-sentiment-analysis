@@ -3,11 +3,8 @@ package com.unsupervisedsentiment.analysis.modules.evaluation;
 import java.util.List;
 import java.util.Set;
 
-import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
-import com.unsupervisedsentiment.analysis.model.TupleType;
-import com.unsupervisedsentiment.analysis.model.Word;
 
 public abstract class EvaluationService {
 

@@ -50,7 +50,7 @@ public class Main {
 			inputData.setFilename(input.getFilename());
 			// !!!!!!!! FOR EVALUTAION ONLY !!!!!!!
 			List<EvaluationModel> evaluationModels = null;
-			
+
 			// List<EvaluationModel> evaluationModels =
 			// NLPService.getInstance().getEvaluationModels(input.getContent());
 			// outputService.WriteEvaluationModels(input.getFilename(),
@@ -58,8 +58,9 @@ public class Main {
 
 			String storedEvaluationModelsDirectory = Initializer.getConfig()
 					.getEvaluationModelsDirectory();
-			
-			evaluationModels = Helpers.getEvaluationModels(storedEvaluationModelsDirectory, input, false);
+
+			evaluationModels = Helpers.getEvaluationModels(
+					storedEvaluationModelsDirectory, input, false);
 
 			inputData.setInput(input.getOriginalContent());
 			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(
@@ -102,36 +103,37 @@ public class Main {
 
 			combinedTuples.addAll(featureTuples);
 			combinedTuples.addAll(opinionWordTuples);
-			
+
 			HashSet<Tuple> resultTuples = new HashSet<Tuple>();
-			
+
 			resultTuples = combinedTuples;
-			
-//			for(Tuple tuple : combinedTuples)
-//			{
-//				double count = 0;
-//				for(Word feature : tuple.getElements(ElementType.FEATURE))
-//				{
-//					for(Tuple otherTuple : combinedTuples)
-//					{
-//						if(!otherTuple.equals(tuple))
-//						{
-//							for(Word otherFeature : otherTuple.getElements(ElementType.FEATURE))
-//							{
-//								if(feature.getValue().equals(otherFeature.getValue()))
-//								{
-//									count++;
-//								}
-//							}	
-//						}
-//					}
-//				}
-//				
-//				if(count / tuple.getElements(ElementType.FEATURE).size() > 7)
-//				{
-//					resultTuples.add(tuple);
-//				}
-//			}
+
+			// for(Tuple tuple : combinedTuples)
+			// {
+			// double count = 0;
+			// for(Word feature : tuple.getElements(ElementType.FEATURE))
+			// {
+			// for(Tuple otherTuple : combinedTuples)
+			// {
+			// if(!otherTuple.equals(tuple))
+			// {
+			// for(Word otherFeature :
+			// otherTuple.getElements(ElementType.FEATURE))
+			// {
+			// if(feature.getValue().equals(otherFeature.getValue()))
+			// {
+			// count++;
+			// }
+			// }
+			// }
+			// }
+			// }
+			//
+			// if(count / tuple.getElements(ElementType.FEATURE).size() > 7)
+			// {
+			// resultTuples.add(tuple);
+			// }
+			// }
 
 			OutputWrapper outputFile = new OutputWrapper();
 
@@ -143,41 +145,46 @@ public class Main {
 
 			ExtractionEvaluationService extractionEvaluationService = new ExtractionEvaluationService(
 					evaluationModels, resultTuples);
-			EvaluationResult extractionEvaluationResult = extractionEvaluationService.getResults();
-			System.out
-					.println("Precision : " + extractionEvaluationResult.getPrecision());
-			System.out.println("Recall : " + extractionEvaluationResult.getRecall());
+			EvaluationResult extractionEvaluationResult = extractionEvaluationService
+					.getResults();
+			System.out.println("Precision : "
+					+ extractionEvaluationResult.getPrecision());
+			System.out.println("Recall : "
+					+ extractionEvaluationResult.getRecall());
 			System.out.println("-----------------------------------------");
-			
-			
-//			EvaluationService evaluationService = new EvaluationService(
-//					evaluationModels, opinionWordTuples);
-//			EvaluationResult evaluationResult = evaluationService.getResults();
-//			System.out
-//					.println("Precision : " + evaluationResult.getPrecision());
-//			System.out.println("Recall : " + evaluationResult.getRecall());
-//			System.out.println("-----------------------------------------");
-//			
-//			evaluationService = new EvaluationService(
-//					evaluationModels, featureTuples);
-//			evaluationResult = evaluationService.getResults();
-//			System.out
-//					.println("Precision : " + evaluationResult.getPrecision());
-//			System.out.println("Recall : " + evaluationResult.getRecall());
-//			System.out.println("-----------------------------------------");
+
+			// EvaluationService evaluationService = new EvaluationService(
+			// evaluationModels, opinionWordTuples);
+			// EvaluationResult evaluationResult =
+			// evaluationService.getResults();
+			// System.out
+			// .println("Precision : " + evaluationResult.getPrecision());
+			// System.out.println("Recall : " + evaluationResult.getRecall());
+			// System.out.println("-----------------------------------------");
+			//
+			// evaluationService = new EvaluationService(
+			// evaluationModels, featureTuples);
+			// evaluationResult = evaluationService.getResults();
+			// System.out
+			// .println("Precision : " + evaluationResult.getPrecision());
+			// System.out.println("Recall : " + evaluationResult.getRecall());
+			// System.out.println("-----------------------------------------");
 
 			metadataResults.add(new EvaluationMetadata(Constants.sdf
 					.format(new Date()), config.getSeedType(), input
 					.getFilename(), String.valueOf(seedWords.size()), String
 					.valueOf(algorithm.getNumberOfIterations()), String
-					.valueOf(elapsedTime), String.valueOf(extractionEvaluationResult
-					.getPrecision()), String.valueOf(extractionEvaluationResult
-					.getRecall()), RelationsContainer
+					.valueOf(elapsedTime), String
+					.valueOf(extractionEvaluationResult.getPrecision()), String
+					.valueOf(extractionEvaluationResult.getRecall()), config
+					.getPolarityThreshold(), RelationsContainer
 					.getAllEnumElementsAsString()));
-			
-			
-			List<EvaluationModel> scoreEvaluationModels = Helpers.getEvaluationModels(storedEvaluationModelsDirectory, input, true);
-			ScoreEvaluationService.performEvaluation(scoreEvaluationModels, combinedTuples);
+
+			List<EvaluationModel> scoreEvaluationModels = Helpers
+					.getEvaluationModels(storedEvaluationModelsDirectory,
+							input, true);
+			ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
+					combinedTuples);
 
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);

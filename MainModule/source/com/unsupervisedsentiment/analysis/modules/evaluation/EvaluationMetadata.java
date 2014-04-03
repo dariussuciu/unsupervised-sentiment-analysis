@@ -14,13 +14,14 @@ public class EvaluationMetadata {
 	private final String durationMilliseconds;
 	private final String precision;
 	private final String recall;
+	private final String threshold;
 	private final String totalRelationsUsed;
 
 	public EvaluationMetadata(String date, final String seedType,
 			final String filename, final String numberOfSeeds,
 			final String numberOfIterations, final String durationMilliseconds,
 			final String precision, final String recall,
-			final String totalRelationsUsed) {
+			final String threshold, final String totalRelationsUsed) {
 		this.date = date;
 		this.seedType = seedType;
 		this.filename = filename;
@@ -29,6 +30,7 @@ public class EvaluationMetadata {
 		this.durationMilliseconds = durationMilliseconds;
 		this.precision = precision;
 		this.recall = recall;
+		this.threshold = threshold;
 		this.totalRelationsUsed = totalRelationsUsed;
 	}
 
@@ -64,6 +66,10 @@ public class EvaluationMetadata {
 		return recall;
 	}
 
+	public String getThreshold() {
+		return threshold;
+	}
+
 	public String getTotalRelationsUsed() {
 		return totalRelationsUsed;
 	}
@@ -86,7 +92,8 @@ public class EvaluationMetadata {
 		s[5] = getDurationMilliseconds();
 		s[6] = getPrecision();
 		s[7] = getRecall();
-		s[8] = getTotalRelationsUsed();
+		s[8] = getThreshold();
+		s[9] = getTotalRelationsUsed();
 		return s;
 	}
 
@@ -99,4 +106,5 @@ public class EvaluationMetadata {
 				+ String.valueOf(precision) + "," + String.valueOf(recall)
 				+ "," + totalRelationsUsed;
 	}
+
 }
