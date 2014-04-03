@@ -3,6 +3,7 @@ package com.unsupervisedsentiment.analysis.modules.evaluation;
 import java.util.List;
 import java.util.Set;
 
+import com.unsupervisedsentiment.analysis.classification.Classification;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
@@ -34,6 +35,8 @@ public class ScoreEvaluationService extends EvaluationService {
 				boolean found = false;
 				for (final EvaluationModel model : evaluationModels) {
 					if (model.getSentenceIndex() == tuple.getSentenceIndex()) {
+						if (model.getOpinionWordScore() == Classification.DEFAULT_SCORE)
+							continue;
 						double assignedScore = opinionWord.getScore();
 						double annotatedScore = model.getOpinionWordScore();
 						if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
@@ -45,9 +48,6 @@ public class ScoreEvaluationService extends EvaluationService {
 				}
 
 				if (!found) {
-					// System.out.println(tuple.getOpinionWord().getValue() +
-					// tuple.getOpinionWord().getPosTag() + " - " +
-					// tuple.getSentence());
 					falsePositive++;
 				}
 			}
@@ -61,6 +61,8 @@ public class ScoreEvaluationService extends EvaluationService {
 					continue;
 				if (model.getSentenceIndex() == tuple.getSentenceIndex()) {
 					for (final Word opinionWord : tuple.getElements(ElementType.OPINION_WORD)) {
+						if (model.getOpinionWordScore() == Classification.DEFAULT_SCORE)
+							continue;
 						double assignedScore = opinionWord.getScore();
 						double annotatedScore = model.getOpinionWordScore();
 						if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
