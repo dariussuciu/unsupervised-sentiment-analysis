@@ -505,8 +505,9 @@ public class Helpers {
 					.getInstance();
 			Word target = tuple.getTarget();
 			String[] equivalentPOS = getEquivalentPOS(target.getPosTag());
-			Double score = swnService.extract(target.getValue(), equivalentPOS); 
-			if (score < new Double(Initializer.getConfig().getPolarityThreshold()))
+			Double score = swnService.extract(target.getValue(), equivalentPOS);
+			Double threshold = new Double(Initializer.getConfig().getPolarityThreshold());
+			if (score < threshold && score > -threshold)
 				return true;
 		}
 
