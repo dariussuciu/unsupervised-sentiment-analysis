@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.LinkedHashSet;
 
 import com.unsupervisedsentiment.analysis.classification.Classification;
 import com.unsupervisedsentiment.analysis.core.constants.Constants;
@@ -85,13 +88,12 @@ public class Main {
 			long elapsedTime = System.currentTimeMillis() - currentTime;
 			System.out.println("Elapsed time: " + elapsedTime + " ms");
 
-			HashSet<Tuple> featureTuples = algorithm.getData()
-					.getFeatureTuples();
+			Set<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
 
-			HashSet<Tuple> opinionWordTuples = algorithm.getData()
+			Set<Tuple> opinionWordTuples = algorithm.getData()
 					.getExpandedOpinionWordsTuples();
 
-			HashSet<Tuple> combinedTuples = new HashSet<Tuple>();
+			LinkedHashSet<Tuple> combinedTuples = new LinkedHashSet<Tuple>();
 
 			Classification classification = new Classification();
 			classification.assignScoresBasedOnSeeds(featureTuples);
@@ -104,7 +106,7 @@ public class Main {
 			combinedTuples.addAll(featureTuples);
 			combinedTuples.addAll(opinionWordTuples);
 
-			HashSet<Tuple> resultTuples = new HashSet<Tuple>();
+			LinkedHashSet<Tuple> resultTuples = new LinkedHashSet<Tuple>();
 
 			resultTuples = combinedTuples;
 
