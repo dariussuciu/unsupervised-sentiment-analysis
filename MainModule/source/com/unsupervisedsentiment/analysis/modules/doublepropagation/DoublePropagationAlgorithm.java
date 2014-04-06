@@ -1,9 +1,8 @@
 package com.unsupervisedsentiment.analysis.modules.doublepropagation;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
@@ -27,10 +26,10 @@ public class DoublePropagationAlgorithm {
 		return data;
 	}
 
-	private Set<Tuple> featuresIteration1;
-	private Set<Tuple> opinionWordsIteration1;
-	private Set<Tuple> featuresIteration2;
-	private Set<Tuple> opinionWordsIteration2;
+	private LinkedHashSet<Tuple> featuresIteration1;
+	private LinkedHashSet<Tuple> opinionWordsIteration1;
+	private LinkedHashSet<Tuple> featuresIteration2;
+	private LinkedHashSet<Tuple> opinionWordsIteration2;
 	private NLPService nlpService;
 
 	public DoublePropagationAlgorithm(DoublePropagationData data) {
@@ -41,7 +40,7 @@ public class DoublePropagationAlgorithm {
 	}
 
 	private void initialize(HashSet<Tuple> seedWords) {
-		data.setExpandedOpinionWords(new HashSet<Tuple>());
+		data.setExpandedOpinionWords(new LinkedHashSet<Tuple>());
 		String storedSemanticGraphsDirectory = Initializer.getConfig()
 				.getStoredSemanticGraphsDirectory();
 		if (Helpers.existsObjectsForFile(storedSemanticGraphsDirectory,
@@ -58,7 +57,7 @@ public class DoublePropagationAlgorithm {
 					"SemanticGraph");
 			data.setSentancesSemanticGraphs(semanticGraphsListForSentances);
 		}
-		data.setExpandedOpinionWords(new HashSet<Tuple>(seedWords));
+		data.setExpandedOpinionWords(new LinkedHashSet<Tuple>(seedWords));
 	}
 
 	public DoublePropagationData execute(final HashSet<Tuple> seedWords) {
@@ -111,10 +110,10 @@ public class DoublePropagationAlgorithm {
 	}
 
 	void resetIterationFeaturesAndOpinionWords() {
-		featuresIteration1 = new HashSet<Tuple>();
-		opinionWordsIteration1 = new HashSet<Tuple>();
-		featuresIteration2 = new HashSet<Tuple>();
-		opinionWordsIteration2 = new HashSet<Tuple>();
+		featuresIteration1 = new LinkedHashSet<Tuple>();
+		opinionWordsIteration1 = new LinkedHashSet<Tuple>();
+		featuresIteration2 = new LinkedHashSet<Tuple>();
+		opinionWordsIteration2 = new LinkedHashSet<Tuple>();
 	}
 
 	public int getNumberOfIterations() {

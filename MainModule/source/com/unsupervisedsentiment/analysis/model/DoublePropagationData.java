@@ -1,7 +1,7 @@
 package com.unsupervisedsentiment.analysis.model;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.LinkedHashSet;
 
 import edu.stanford.nlp.semgraph.SemanticGraph;
 
@@ -14,12 +14,12 @@ public class DoublePropagationData {
 	private List<SemanticGraph> sentancesSemanticGraphs;
 
 	// output
-	private HashSet<Tuple> features;
-	private HashSet<Tuple> expandedOpinionWords;
+	private LinkedHashSet<Tuple> features;
+	private LinkedHashSet<Tuple> expandedOpinionWords;
 
 	public DoublePropagationData() {
-		setFeatures(new HashSet<Tuple>());
-		setExpandedOpinionWords(new HashSet<Tuple>());
+		setFeatures(new LinkedHashSet<Tuple>());
+		setExpandedOpinionWords(new LinkedHashSet<Tuple>());
 	}
 
 	public String getInput() {
@@ -39,25 +39,25 @@ public class DoublePropagationData {
 		this.sentancesSemanticGraphs = sentancesSemanticGraph;
 	}
 
-	public HashSet<Tuple> getFeatureTuples() {
+	public LinkedHashSet<Tuple> getFeatureTuples() {
 		return features;
 	}
 
-	public void setFeatures(final HashSet<Tuple> features) {
+	public void setFeatures(final LinkedHashSet<Tuple> features) {
 		this.features = features;
 	}
 
-	public HashSet<Tuple> getExpandedOpinionWordsTuples() {
+	public LinkedHashSet<Tuple> getExpandedOpinionWordsTuples() {
 		return expandedOpinionWords;
 	}
 
 	public void setExpandedOpinionWords(
-			final HashSet<Tuple> expandedOpinionWords) {
+			final LinkedHashSet<Tuple> expandedOpinionWords) {
 		this.expandedOpinionWords = expandedOpinionWords;
 	}
 
-	public HashSet<Word> getExpandedOpinionWords() {
-		final HashSet<Word> opinionWords = new HashSet<Word>();
+	public LinkedHashSet<Word> getExpandedOpinionWords() {
+		final LinkedHashSet<Word> opinionWords = new LinkedHashSet<Word>();
 		for (Tuple tuple : expandedOpinionWords) {
 			Word foundOpinionWord = getWord(tuple, ElementType.OPINION_WORD);
 			if (foundOpinionWord != null)
@@ -66,8 +66,8 @@ public class DoublePropagationData {
 		return opinionWords;
 	}
 
-	public HashSet<Word> getFeatures() {
-		final HashSet<Word> featureWords = new HashSet<Word>();
+	public LinkedHashSet<Word> getFeatures() {
+		final LinkedHashSet<Word> featureWords = new LinkedHashSet<Word>();
 		for (Tuple tuple : features) {
 			Word foundFeature = getWord(tuple, ElementType.FEATURE);
 			if (foundFeature != null)
