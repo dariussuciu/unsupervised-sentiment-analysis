@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.LinkedHashSet;
 
 import com.unsupervisedsentiment.analysis.classification.Classification;
@@ -27,7 +26,6 @@ import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationMetadata;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationResult;
 import com.unsupervisedsentiment.analysis.modules.evaluation.ExtractionEvaluationService;
 import com.unsupervisedsentiment.analysis.modules.evaluation.ScoreEvaluationService;
-import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 public class Main {
 
@@ -83,7 +81,6 @@ public class Main {
 				seed.setSentence(null);
 				seedWords.add(seed);
 			}
-
 			algorithm.execute(seedWords);
 			long elapsedTime = System.currentTimeMillis() - currentTime;
 			System.out.println("Elapsed time: " + elapsedTime + " ms");
