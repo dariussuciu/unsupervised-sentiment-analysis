@@ -97,11 +97,11 @@ public class Main {
 
 			Classification classification = new Classification();
 			classification.assignScoresBasedOnSeeds(featureTuples);
-			classification.assignSentiWordScores(featureTuples);
+			//classification.assignSentiWordScores(featureTuples);
 
 			classification = new Classification();
 			classification.assignScoresBasedOnSeeds(opinionWordTuples);
-			classification.assignSentiWordScores(opinionWordTuples);
+			//classification.assignSentiWordScores(opinionWordTuples);
 
 			combinedTuples.addAll(featureTuples);
 			combinedTuples.addAll(opinionWordTuples);

@@ -25,37 +25,23 @@ public class Classification {
 		initReader();
 	}
 
-	public void assignScores(final Set<Tuple> tuples) {
-		HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
-
-		for (Tuple tuple : tuples) {
-			Word opinionWord = tuple.getOpinionWord();
-			String opinionWordValue = opinionWord.getValue();
-			double score = getScore(opinionWordValue,
-					Helpers.getEquivalentPOS(opinionWord.getPosTag()));
-			// either one
-			opinionScores.put(opinionWord, score);
-			tuple.getSource().setScore(score);
-		}
-	}
-
-	public void assignSentiWordScores(final Set<Tuple> tuples) {
-		HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
-
-		for (Tuple tuple : tuples) {
-			Word opinionWord = tuple.getOpinionWord();
-			String opinionWordValue = opinionWord.getValue();
-			String[] equivalentPOS = Helpers.getEquivalentPOS(opinionWord
-					.getPosTag());
-			if (equivalentPOS.length <= 0) {
-				System.out.println(opinionWord.getPosTag());
-			}
-			double score = getScore(opinionWordValue, equivalentPOS);
-			// either one
-			opinionScores.put(opinionWord, score);
-			tuple.getOpinionWord().setSentiWordScore(score);
-		}
-	}
+//	public void assignSentiWordScores(final Set<Tuple> tuples) {
+//		HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
+//
+//		for (Tuple tuple : tuples) {
+//			Word opinionWord = tuple.getOpinionWord();
+//			String opinionWordValue = opinionWord.getValue();
+//			String[] equivalentPOS = Helpers.getEquivalentPOS(opinionWord
+//					.getPosTag());
+//			if (equivalentPOS.length <= 0) {
+//				System.out.println(opinionWord.getPosTag());
+//			}
+//			double score = getScore(opinionWordValue, equivalentPOS);
+//			// either one
+//			opinionScores.put(opinionWord, score);
+//			tuple.getOpinionWord().setSentiWordScore(score);
+//		}
+//	}
 
 	public ArrayList<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data) {
 
@@ -122,9 +108,10 @@ public class Classification {
 					if (tuple.getTarget() != null)
 						tuple.getTarget().setScore(score);
 				}
-				//if the tuple already has a score, assign an average
+				// if the tuple already has a score, assign an average
 				else {
-					double score = (assignedTuple.getSource().getScore() + tuple.getSource().getScore()) / 2;
+					double score = (assignedTuple.getSource().getScore() + tuple
+							.getSource().getScore()) / 2;
 					tuple.getSource().setScore(score);
 					if (tuple.getTarget() != null)
 						tuple.getTarget().setScore(score);
@@ -184,44 +171,7 @@ public class Classification {
 		}
 		return tuples;
 	}
-
-	private ArrayList<Tuple> assignScoresByPropagation(ArrayList<Tuple> tuples) {
-		for (int i = 0; i < tuples.size() - 1; i++) {
-			for (int j = 1; j < tuples.size(); j++) {
-				Word firstTupleFeature = tuples.get(i).getSource();
-				Word firstTupleOpinion = tuples.get(i).getOpinionWord();
-				Word secondTupleFeature = tuples.get(j).getTarget();
-				Word secondTupleOpinion = tuples.get(j).getSource();
-				if (secondTupleFeature != null)
-					if (firstTupleFeature.getValue().equals(
-							secondTupleFeature.getValue())) {
-						double score1 = firstTupleFeature.getScore();
-						double score2 = secondTupleFeature.getScore();
-						double score3 = secondTupleOpinion.getScore();
-
-						if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE
-								&& score3 == DEFAULT_SCORE) {
-							secondTupleFeature.setScore(score1);
-							secondTupleOpinion.setScore(score1);
-						}
-					}
-				// if (firstWordOpinion.getValue().equals(secondWordOpinion)) {
-				// double score1 = firstWordOpinion.getScore();
-				// double score2 = secondWordOpinion.getScore();
-				// double score3 = secondWordOpinion.getScore();
-				//
-				// if (score1 > DEFAULT_SCORE && score2 == DEFAULT_SCORE
-				// && score3 == DEFAULT_SCORE) {
-				// secondWordFeature.setScore(score1);
-				// secondWordOpinion.setScore(score1);
-				// }
-				// }
-			}
-		}
-
-		return tuples;
-	}
-
+	
 	private void printResults(ArrayList<Tuple> tuples) {
 		System.out
 				.println("-------------------------------------------------------------------------------------------------------");
