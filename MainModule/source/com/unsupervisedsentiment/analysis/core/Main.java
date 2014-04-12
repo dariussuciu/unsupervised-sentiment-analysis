@@ -94,11 +94,21 @@ public class Main {
 
 			Classification classification = new Classification();
 			classification.assignScoresBasedOnSeeds(featureTuples);
-			//classification.assignSentiWordScores(featureTuples);
+			// classification.assignSentiWordScores(featureTuples);
 
 			classification = new Classification();
 			classification.assignScoresBasedOnSeeds(opinionWordTuples);
-			//classification.assignSentiWordScores(opinionWordTuples);
+			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(opinionWordTuples);
+			System.out.println("Total score for this document: "
+					+ classification.computeOverallScore(opinionWordTuplesAL));
+
+			String targetString = "camera";
+			System.out.println("Average score for target "
+					+ targetString
+					+ " is: "
+					+ classification.getAverageScoreForTarget(targetString,
+							opinionWordTuplesAL));
+			// classification.assignSentiWordScores(opinionWordTuples);
 
 			combinedTuples.addAll(featureTuples);
 			combinedTuples.addAll(opinionWordTuples);
@@ -179,11 +189,11 @@ public class Main {
 					.getPolarityThreshold(), RelationsContainer
 					.getAllEnumElementsAsString()));
 
-			List<EvaluationModel> scoreEvaluationModels = Helpers
-					.getEvaluationModels(storedEvaluationModelsDirectory,
-							input, true);
-			ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
-					combinedTuples);
+			// List<EvaluationModel> scoreEvaluationModels = Helpers
+			// .getEvaluationModels(storedEvaluationModelsDirectory,
+			// input, true);
+			// ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
+			// combinedTuples);
 
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);

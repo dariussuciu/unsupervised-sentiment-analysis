@@ -1,14 +1,11 @@
 package com.unsupervisedsentiment.analysis.classification;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import com.unsupervisedsentiment.analysis.classification.SentiWordNetService.SWNPos;
 import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
-import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 public class Classification {
@@ -25,23 +22,23 @@ public class Classification {
 		initReader();
 	}
 
-//	public void assignSentiWordScores(final Set<Tuple> tuples) {
-//		HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
-//
-//		for (Tuple tuple : tuples) {
-//			Word opinionWord = tuple.getOpinionWord();
-//			String opinionWordValue = opinionWord.getValue();
-//			String[] equivalentPOS = Helpers.getEquivalentPOS(opinionWord
-//					.getPosTag());
-//			if (equivalentPOS.length <= 0) {
-//				System.out.println(opinionWord.getPosTag());
-//			}
-//			double score = getScore(opinionWordValue, equivalentPOS);
-//			// either one
-//			opinionScores.put(opinionWord, score);
-//			tuple.getOpinionWord().setSentiWordScore(score);
-//		}
-//	}
+	// public void assignSentiWordScores(final Set<Tuple> tuples) {
+	// HashMap<Word, Double> opinionScores = new HashMap<Word, Double>();
+	//
+	// for (Tuple tuple : tuples) {
+	// Word opinionWord = tuple.getOpinionWord();
+	// String opinionWordValue = opinionWord.getValue();
+	// String[] equivalentPOS = Helpers.getEquivalentPOS(opinionWord
+	// .getPosTag());
+	// if (equivalentPOS.length <= 0) {
+	// System.out.println(opinionWord.getPosTag());
+	// }
+	// double score = getScore(opinionWordValue, equivalentPOS);
+	// // either one
+	// opinionScores.put(opinionWord, score);
+	// tuple.getOpinionWord().setSentiWordScore(score);
+	// }
+	// }
 
 	public ArrayList<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data) {
 
@@ -61,6 +58,33 @@ public class Classification {
 
 		// printResults(fullyAssignedTuples);
 		return fullyAssignedTuples;
+	}
+
+	public double computeOverallScore(List<Tuple> data) {
+		double totalScore = 0;
+		for (Tuple tuple : data) {
+			if (tuple.getSource().getScore() != DEFAULT_SCORE) {
+				totalScore += tuple.getSource().getScore();
+			}
+		}
+		double normalizedScore = Helpers.normalizeScore(totalScore);
+
+		return normalizedScore;
+	}
+
+	public double getAverageScoreForTarget(String target, List<Tuple> data) {
+		double score = 0;
+		int numberOfEntries = 0;
+		for (Tuple tuple : data) {
+			if (tuple.getTarget() != null
+					&& tuple.getTarget().getValue().toLowerCase()
+							.equals(target.toLowerCase())) {
+				score += tuple.getTarget().getScore();
+				numberOfEntries++;
+			}
+		}
+		double averageScore = score / numberOfEntries;
+		return averageScore;
 	}
 
 	private ArrayList<Tuple> assignScores(ArrayList<Tuple> data,
@@ -171,7 +195,7 @@ public class Classification {
 		}
 		return tuples;
 	}
-	
+
 	private void printResults(ArrayList<Tuple> tuples) {
 		System.out
 				.println("-------------------------------------------------------------------------------------------------------");

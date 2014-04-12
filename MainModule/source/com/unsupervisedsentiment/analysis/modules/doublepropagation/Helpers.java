@@ -547,4 +547,16 @@ public class Helpers {
 		}
 		return evaluationModels;
 	}
+	
+	public static double normalizeScore(double score){
+		if (score >= 10 && score < 100)
+			return score / 100;
+		if (score >= 100 && score < 1000)
+			return score / 1000;
+		if (score >=1000 && score < 10000)
+			return score / 10000;
+		if (score >= 10000 && score < 100000)
+			return score / 100000;
+		return score;
+	}
 }
