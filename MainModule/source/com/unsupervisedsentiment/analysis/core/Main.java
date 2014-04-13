@@ -25,8 +25,9 @@ import com.unsupervisedsentiment.analysis.modules.doublepropagation.DoublePropag
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationMetadata;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationResult;
-import com.unsupervisedsentiment.analysis.modules.evaluation.ExtractionEvaluationService;
+import com.unsupervisedsentiment.analysis.modules.evaluation.OpinionWordExtractionEvaluationService;
 import com.unsupervisedsentiment.analysis.modules.evaluation.ScoreEvaluationService;
+import com.unsupervisedsentiment.analysis.modules.evaluation.TargetExtractionEvaluationService;
 import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 public class Main {
@@ -51,19 +52,31 @@ public class Main {
 			DoublePropagationData inputData = new DoublePropagationData();
 
 			inputData.setFilename(input.getFilename());
-			// !!!!!!!! FOR EVALUTAION ONLY !!!!!!!
-			List<EvaluationModel> evaluationModels = null;
 
-			// List<EvaluationModel> evaluationModels =
-			// NLPService.getInstance().getEvaluationModels(input.getContent());
-			// outputService.WriteEvaluationModels(input.getFilename(),
-			// evaluationModels);
-
+			List<EvaluationModel> opinionWordEvaluationModels = null;
+			List<EvaluationModel> targetEvaluationModels = null;
+			
 			String storedEvaluationModelsDirectory = Initializer.getConfig()
 					.getEvaluationModelsDirectory();
-
-			evaluationModels = Helpers.getEvaluationModels(
-					storedEvaluationModelsDirectory, input, false);
+			if(Helpers.existsObjectsForFile(storedEvaluationModelsDirectory, input.getFilename(), "OpinionWordEvaluationModel"))
+			{
+				opinionWordEvaluationModels = Helpers.getStoredEvaluationModels(
+						storedEvaluationModelsDirectory, input, false, ElementType.OPINION_WORD, "OpinionWordEvaluationModel");
+			}
+			else {
+				opinionWordEvaluationModels = Helpers.getEvaluationModels(
+						storedEvaluationModelsDirectory, input, false, ElementType.OPINION_WORD, "OpinionWordEvaluationModel");
+			}
+			
+			if(Helpers.existsObjectsForFile(storedEvaluationModelsDirectory, input.getFilename(), "TargetEvaluationModel"))
+			{
+				targetEvaluationModels = Helpers.getStoredEvaluationModels(
+						storedEvaluationModelsDirectory, input, false, ElementType.FEATURE, "TargetEvaluationModel");
+			}
+			else {
+				targetEvaluationModels = Helpers.getEvaluationModels(
+						storedEvaluationModelsDirectory, input, false, ElementType.FEATURE, "TargetEvaluationModel");
+			}
 
 			inputData.setInput(input.getOriginalContent());
 			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(
@@ -110,33 +123,6 @@ public class Main {
 
 			resultTuples = combinedTuples;
 
-			// for(Tuple tuple : combinedTuples)
-			// {
-			// double count = 0;
-			// for(Word feature : tuple.getElements(ElementType.FEATURE))
-			// {
-			// for(Tuple otherTuple : combinedTuples)
-			// {
-			// if(!otherTuple.equals(tuple))
-			// {
-			// for(Word otherFeature :
-			// otherTuple.getElements(ElementType.FEATURE))
-			// {
-			// if(feature.getValue().equals(otherFeature.getValue()))
-			// {
-			// count++;
-			// }
-			// }
-			// }
-			// }
-			// }
-			//
-			// if(count / tuple.getElements(ElementType.FEATURE).size() > 7)
-			// {
-			// resultTuples.add(tuple);
-			// }
-			// }
-
 			OutputWrapper outputFile = new OutputWrapper();
 
 			outputFile.setAuthor(input.getAuthor());
@@ -145,8 +131,8 @@ public class Main {
 			outputFile.setTuples(resultTuples);
 			outputFiles.add(outputFile);
 
-			ExtractionEvaluationService extractionEvaluationService = new ExtractionEvaluationService(
-					evaluationModels, resultTuples);
+			OpinionWordExtractionEvaluationService extractionEvaluationService = new OpinionWordExtractionEvaluationService(
+					opinionWordEvaluationModels, resultTuples);
 			EvaluationResult extractionEvaluationResult = extractionEvaluationService
 					.getResults();
 			System.out.println("Precision : "
@@ -154,23 +140,17 @@ public class Main {
 			System.out.println("Recall : "
 					+ extractionEvaluationResult.getRecall());
 			System.out.println("-----------------------------------------");
-
-			// EvaluationService evaluationService = new EvaluationService(
-			// evaluationModels, opinionWordTuples);
-			// EvaluationResult evaluationResult =
-			// evaluationService.getResults();
-			// System.out
-			// .println("Precision : " + evaluationResult.getPrecision());
-			// System.out.println("Recall : " + evaluationResult.getRecall());
-			// System.out.println("-----------------------------------------");
-			//
-			// evaluationService = new EvaluationService(
-			// evaluationModels, featureTuples);
-			// evaluationResult = evaluationService.getResults();
-			// System.out
-			// .println("Precision : " + evaluationResult.getPrecision());
-			// System.out.println("Recall : " + evaluationResult.getRecall());
-			// System.out.println("-----------------------------------------");
+			
+			
+			TargetExtractionEvaluationService targetEvaluationService = new TargetExtractionEvaluationService(
+					targetEvaluationModels, resultTuples);
+			EvaluationResult targetEvaluationResult = targetEvaluationService
+					.getResults();
+			System.out.println("Target Extraction Precision : "
+					+ targetEvaluationResult.getPrecision());
+			System.out.println("Target Extraction Recall : "
+					+ targetEvaluationResult.getRecall());
+			System.out.println("-----------------------------------------");
 
 			metadataResults.add(new EvaluationMetadata(Constants.sdf
 					.format(new Date()), config.getSeedType(), input
@@ -184,7 +164,7 @@ public class Main {
 
 			List<EvaluationModel> scoreEvaluationModels = Helpers
 					.getEvaluationModels(storedEvaluationModelsDirectory,
-							input, true);
+							input, true, ElementType.OPINION_WORD, "OpinionWordEvaluationModel");
 			ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
 					combinedTuples);
 
@@ -202,27 +182,4 @@ public class Main {
 		outputFiles = new ArrayList<OutputWrapper>();
 		metadataResults = new ArrayList<EvaluationMetadata>();
 	}
-
-	// private static void PreetyPrintTuples(Set<Tuple> tuples) {
-	// for (Tuple tuple : tuples) {
-	// if (tuple.getTupleType().equals(TupleType.Pair)) {
-	// Pair pair = (Pair) tuple;
-	// System.out.println("Pair:  " + tuple.getSource().getValue()
-	// + "(" + tuple.getSource().getPosTag() + ")" + " --("
-	// + pair.getRelation() + ")--> "
-	// + tuple.getTarget().getValue() + "("
-	// + tuple.getTarget().getPosTag() + ")");
-	// } else if (tuple.getTupleType().equals(TupleType.Triple)) {
-	// Triple triple = (Triple) tuple;
-	// System.out.println("Triple:  " + tuple.getSource().getValue()
-	// + "(" + tuple.getSource().getPosTag() + ")" + " --("
-	// + triple.getRelationHOpinion() + ")--> "
-	// + triple.getH().getValue() + "("
-	// + triple.getH().getPosTag() + ")" + " --("
-	// + triple.getRelationHTarget() + ")--> "
-	// + tuple.getTarget().getValue() + "("
-	// + tuple.getTarget().getPosTag() + ")");
-	// }
-	// }
-	// }
 }

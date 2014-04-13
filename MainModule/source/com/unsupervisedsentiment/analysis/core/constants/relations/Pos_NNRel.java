@@ -5,7 +5,7 @@ public class Pos_NNRel extends GenericRelation {
 	 * Added: - PRP - she / he
 	 */
 	public enum NN {
-		NN, NNP, NNPS, NNS, PRP, FW
+		NN, NNP, NNPS, NNS, PRP
 	}
 
 	private static Pos_NNRel nnRel;

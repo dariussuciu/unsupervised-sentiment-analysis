@@ -118,7 +118,7 @@ public class OutputService {
 					file));
 
 			for (EvaluationModel evaluationModel : evaluationModels) {
-				writer.write(evaluationModel.getOpinionWord() + "["
+				writer.write(evaluationModel.getElement() + "["
 						+ evaluationModel.getSentenceIndex() + "]" + " - "
 						+ evaluationModel.getSentence());
 				writer.newLine();

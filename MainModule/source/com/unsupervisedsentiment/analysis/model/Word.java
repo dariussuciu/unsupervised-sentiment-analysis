@@ -8,6 +8,8 @@ public class Word {
 	private ElementType type;
 	private double score;
 	private double sentiWordScore;
+	private int sentenceIndex;
+	private int numberOfInstances;
 
 	public String getPosTag() {
 		return posTag;
@@ -38,6 +40,7 @@ public class Word {
 		this.posTag = posTag;
 		this.value = value;
 		this.type = type;
+		this.numberOfInstances = 0;
 	}
 
 	public Word(String posTag) {
@@ -111,5 +114,21 @@ public class Word {
 
 	public void setSentiWordScore(double sentiWordScore) {
 		this.sentiWordScore = sentiWordScore;
+	}
+
+	public int getSentenceIndex() {
+		return sentenceIndex;
+	}
+
+	public void setSentenceIndex(int sentenceIndex) {
+		this.sentenceIndex = sentenceIndex;
+	}
+
+	public int getNumberOfInstances() {
+		return numberOfInstances;
+	}
+
+	public void setNumberOfInstances(int numberOfInstances) {
+		this.numberOfInstances = numberOfInstances;
 	}
 }

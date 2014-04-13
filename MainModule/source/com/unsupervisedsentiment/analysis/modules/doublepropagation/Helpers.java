@@ -163,7 +163,9 @@ public class Helpers {
 			final Dependency dependency, final int sentenceIndex,
 			final String sentence) {
 		final Word opinion = new Word(posOpinion, valueOpinion, typeSource);
+		opinion.setSentenceIndex(sentenceIndex);
 		final Word target = new Word(posTarget, valueTarget, typeTarget);
+		target.setSentenceIndex(sentenceIndex);
 
 		return new Pair(opinion, target, dependency, TupleType.Pair, relation,
 				sentenceIndex, sentence);
@@ -177,7 +179,9 @@ public class Helpers {
 			final String relationHTarget, final Dependency dependency,
 			final int sentenceIndex, final String sentence) {
 		final Word opinion = new Word(posSource, valueSource, typeSource);
+		opinion.setSentenceIndex(sentenceIndex);
 		final Word target = new Word(posTarget, valueTarget, typeTarget);
+		target.setSentenceIndex(sentenceIndex);
 		final Word H = new Word(posH, valueH, ElementType.NONE);
 
 		return new Triple(opinion, target, H, dependency, TupleType.Triple,
@@ -332,6 +336,13 @@ public class Helpers {
 		if (!sourcePos.contains(source.getPosTag())
 				|| !targetPos.contains(target.tag()))
 			return false;
+		
+
+		if(Pos_NNRel.getInstance().contains(H.tag()) && Pos_NNRel.getInstance().contains(target.tag()))
+		return false;
+		
+		if(Pos_JJRel.getInstance().contains(H.tag()) && Pos_JJRel.getInstance().contains(target.tag()))
+		return false;
 
 		return true;
 	}
@@ -531,20 +542,21 @@ public class Helpers {
 	}
 
 	public static List<EvaluationModel> getEvaluationModels(String directory,
-			InputWrapper input, boolean forScoring) {
-		String fileDetails = forScoring ? "ScoreEvaluationModel"
-				: "EvaluationModel";
+			InputWrapper input, boolean forScoring, ElementType elementType, String storedFileName) {
 		List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
-		if (Helpers.existsObjectsForFile(directory, input.getFilename(),
-				fileDetails)) {
-			evaluationModels = Helpers.<EvaluationModel> getObjectsFromFile(
-					directory, input.getFilename(), fileDetails);
-		} else {
-			evaluationModels = NLPService.getInstance().getEvaluationModels(
-					input.getContent(), forScoring);
-			Helpers.saveObjectsToFile(evaluationModels, directory,
-					input.getFilename(), fileDetails);
-		}
+		final List<SemanticGraph> semanticGraphs = NLPService.getInstance().createSemanticGraphsListForSentances(input.getContent());
+		evaluationModels = NLPService.getInstance().getEvaluationModels(
+				semanticGraphs, forScoring, elementType);
+		Helpers.saveObjectsToFile(evaluationModels, directory,
+				input.getFilename(), storedFileName);
+		return evaluationModels;
+	}
+	
+	public static List<EvaluationModel> getStoredEvaluationModels(String directory,
+			InputWrapper input, boolean forScoring, ElementType elementType, String storedFileName) {
+		List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
+		evaluationModels = Helpers.<EvaluationModel> getObjectsFromFile(
+				directory, input.getFilename(), storedFileName);
 		return evaluationModels;
 	}
 }

@@ -163,7 +163,7 @@ public class Tuple {
 		List<Word> opinionWords = new ArrayList<Word>();
 		if(getSource().getType().equals(elementType))
 			opinionWords.add(getSource());
-		if(getTarget() != null && getTarget().getType().equals(ElementType.OPINION_WORD))
+		if(getTarget() != null && getTarget().getType().equals(elementType))
 			opinionWords.add(getTarget());
 		return opinionWords;
 	}

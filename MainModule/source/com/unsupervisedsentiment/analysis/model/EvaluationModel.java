@@ -8,21 +8,17 @@ public class EvaluationModel implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1928906304054077977L;
-	private final String opinionWord;
+	private final String element;
 	private final String sentence;
 	private final int sentenceIndex;
 	private double opinionWordScore;
 
-	public EvaluationModel(final String opinionWord, final String sentence,
+	public EvaluationModel(final String element, final String sentence,
 			final int sentenceIndex) {
 		super();
-		this.opinionWord = opinionWord;
+		this.element = element;
 		this.sentence = sentence;
 		this.sentenceIndex = sentenceIndex;
-	}
-
-	public String getOpinionWord() {
-		return opinionWord;
 	}
 
 	public int getSentenceIndex() {
@@ -41,7 +37,7 @@ public class EvaluationModel implements Serializable {
 
 	@Override
 	public String toString() {
-		return "EvaluationModel [opinionWord=" + opinionWord + ", sentence="
+		return "EvaluationModel [element=" + element + ", sentence="
 				+ sentence + ", sentenceIndex=" + sentenceIndex + "]";
 	}
 	
@@ -51,6 +47,10 @@ public class EvaluationModel implements Serializable {
 
 	public void setOpinionWordScore(double opinionWordScore) {
 		this.opinionWordScore = opinionWordScore;
+	}
+
+	public String getElement() {
+		return element;
 	}
 
 }

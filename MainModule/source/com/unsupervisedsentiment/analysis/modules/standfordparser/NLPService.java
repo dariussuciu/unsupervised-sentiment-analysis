@@ -84,31 +84,45 @@ public class NLPService {
 		return sentences;
 	}
 
-	public List<EvaluationModel> getEvaluationModels(final String text,
-			boolean forScoring) {
-		final List<SemanticGraph> semanticGraphs = createSemanticGraphsListForSentances(text);
+	public List<EvaluationModel> getEvaluationModels(final List<SemanticGraph> semanticGraphs,
+			boolean forScoring, ElementType elementType) {
 		final List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
 
 		for (int i = 0; i < semanticGraphs.size(); i++) {
 			final String sentence = semanticGraphs.get(i)
 					.toRecoveredSentenceString();
+			
+			Matcher matcher;
+			
+			if(elementType.equals(ElementType.OPINION_WORD))
+			{
+				String patternForOpinionWords = forScoring ? "### (\\w*\\@.?\\d\\.?\\d*\\b)"
+						: "### (\\w*\\b)";
+				final Pattern OPINION_WORD_PATTERN = Pattern.compile(patternForOpinionWords);
+				matcher = OPINION_WORD_PATTERN.matcher(sentence);
+			}
+			else 
+			{
+				String patternForTargets = forScoring ? "% % % (\\w*\\@.?\\d\\.?\\d*\\b)"
+						: "% % % (\\w*\\b)";
+				
+				final Pattern TARGET_PATTERN = Pattern.compile(patternForTargets);
+				matcher = TARGET_PATTERN.matcher(sentence);
+			}
+			
 			final String cleanSentence = sentence.replaceAll(
 					"(### )|(% % % )|(\\$ \\$ \\$ )|(\\@\\d\\.\\d*)", "");
-			String pattern = forScoring ? "### (\\w*\\@.?\\d\\.?\\d*\\b)"
-					: "### (\\w*\\b)";
-			final Pattern OPINION_WORD_PATTERN = Pattern.compile(pattern);
-			final Matcher m = OPINION_WORD_PATTERN.matcher(sentence);
-			while (m.find()) {
-				String opinionWord = m.group(1);
+			while (matcher.find()) {
+				String element = matcher.group(1);
 				double score = new Double(Classification.DEFAULT_SCORE);
 				if (forScoring) {
-					String numberString = opinionWord.substring(
-							opinionWord.indexOf("@") + 1, opinionWord.length());
+					String numberString = element.substring(
+							element.indexOf("@") + 1, element.length());
 					score = Double.parseDouble(numberString);
-					opinionWord = opinionWord.substring(0,
-							opinionWord.indexOf("@"));
+					element = element.substring(0,
+							element.indexOf("@"));
 				}
-				final EvaluationModel model = new EvaluationModel(opinionWord,
+				final EvaluationModel model = new EvaluationModel(element,
 						cleanSentence, i);
 				model.setOpinionWordScore(score);
 				evaluationModels.add(model);

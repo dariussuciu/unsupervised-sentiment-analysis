@@ -30,7 +30,7 @@ public class Dep_MRRel extends GenericRelation {
 	 * - det: a... <br>
 	 */
 	public enum mod {
-		acomp, amod, advmod, rcmod, npadvmod, nn, advcl
+		acomp, amod, rcmod, npadvmod, nn, advcl
 	};
 
 	public enum pmod {
@@ -59,7 +59,7 @@ public class Dep_MRRel extends GenericRelation {
 	 * - iobj: She gave me a raise. iobj(gave, me) <br>
 	 */
 	public enum obj {
-		pobj
+	
 	};
 
 	public enum obj2 {
