@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.LinkedHashSet;
 
 import com.unsupervisedsentiment.analysis.classification.Classification;
@@ -96,7 +95,6 @@ public class Main {
 				seed.setSentence(null);
 				seedWords.add(seed);
 			}
-
 			algorithm.execute(seedWords);
 			long elapsedTime = System.currentTimeMillis() - currentTime;
 			System.out.println("Elapsed time: " + elapsedTime + " ms");
@@ -110,11 +108,21 @@ public class Main {
 
 			Classification classification = new Classification();
 			classification.assignScoresBasedOnSeeds(featureTuples);
-			classification.assignSentiWordScores(featureTuples);
+			// classification.assignSentiWordScores(featureTuples);
 
 			classification = new Classification();
 			classification.assignScoresBasedOnSeeds(opinionWordTuples);
-			classification.assignSentiWordScores(opinionWordTuples);
+			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(opinionWordTuples);
+			System.out.println("Total score for this document: "
+					+ classification.computeOverallScore(opinionWordTuplesAL));
+
+			String targetString = "camera";
+			System.out.println("Average score for target "
+					+ targetString
+					+ " is: "
+					+ classification.getAverageScoreForTarget(targetString,
+							opinionWordTuplesAL));
+			// classification.assignSentiWordScores(opinionWordTuples);
 
 			combinedTuples.addAll(featureTuples);
 			combinedTuples.addAll(opinionWordTuples);
@@ -162,11 +170,11 @@ public class Main {
 					.getPolarityThreshold(), RelationsContainer
 					.getAllEnumElementsAsString()));
 
-			List<EvaluationModel> scoreEvaluationModels = Helpers
-					.getEvaluationModels(storedEvaluationModelsDirectory,
-							input, true, ElementType.OPINION_WORD, "OpinionWordEvaluationModel");
-			ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
-					combinedTuples);
+			//List<EvaluationModel> scoreEvaluationModels = Helpers
+			//		.getEvaluationModels(storedEvaluationModelsDirectory,
+			//				input, true, ElementType.OPINION_WORD, "OpinionWordEvaluationModel");
+			//ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
+			//		combinedTuples);
 
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);

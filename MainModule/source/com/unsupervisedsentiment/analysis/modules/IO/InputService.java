@@ -137,7 +137,7 @@ public class InputService {
 		iWrapper.setContent(content.toString());
 	}
 
-	private List<String> getSeedWords(final Scanner in) {
+	public List<String> getSeedWords(final Scanner in) {
 		final List<String> seedWords = new ArrayList<String>();
 		while (in.hasNextLine()) {
 			seedWords.add(in.nextLine());

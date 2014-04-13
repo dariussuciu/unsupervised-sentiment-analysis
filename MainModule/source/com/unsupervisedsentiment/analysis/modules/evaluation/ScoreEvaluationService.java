@@ -11,7 +11,7 @@ import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
 
 public class ScoreEvaluationService extends EvaluationService {
-	private final double ACCEPTABLE_ERROR = 0.5;
+	private final double ACCEPTABLE_ERROR = 0.3;
 
 	public ScoreEvaluationService(List<EvaluationModel> evaluationModels,
 			Set<Tuple> tuples) {
@@ -48,6 +48,9 @@ public class ScoreEvaluationService extends EvaluationService {
 				}
 
 				if (!found) {
+					 System.out.println(tuple.getElements(ElementType.OPINION_WORD).get(0).getValue()+ " - "+
+					 tuple.getSentence());
+					
 					falsePositive++;
 				}
 			}
@@ -74,6 +77,8 @@ public class ScoreEvaluationService extends EvaluationService {
 			}
 
 			if (!found)
+//				System.out.println(model.getOpinionWord() + " (" + model.getSentenceIndex() + ") " + " - "
+//						+ model.getCleanSentence());
 				falseNegative++;
 		}
 	}
