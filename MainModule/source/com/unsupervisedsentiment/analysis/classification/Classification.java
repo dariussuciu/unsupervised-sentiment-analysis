@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
+import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 public class Classification {
@@ -76,11 +77,14 @@ public class Classification {
 		double score = 0;
 		int numberOfEntries = 0;
 		for (Tuple tuple : data) {
-			if (tuple.getTarget() != null
-					&& tuple.getTarget().getValue().toLowerCase()
-							.equals(target.toLowerCase())) {
-				score += tuple.getTarget().getScore();
-				numberOfEntries++;
+			if (!tuple.getTupleType().equals(TupleType.Seed) && tuple.getTarget() != null) {
+				String targetString = tuple.getTarget().getValue();
+				if (targetString.toLowerCase()
+							.equals(target.toLowerCase())){
+					score += tuple.getTarget().getScore();
+					numberOfEntries++;
+				}
+				
 			}
 		}
 		double averageScore = score / numberOfEntries;
