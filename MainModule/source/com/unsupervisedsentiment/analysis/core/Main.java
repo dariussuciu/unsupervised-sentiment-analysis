@@ -43,6 +43,22 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		initialize();
+		
+		HashSet<Tuple> seedWords = new HashSet<Tuple>();
+
+		config.setSeedWords(inputService.getSeedWordsFromFile());
+
+		for (String seedString : config.getSeedWords()) {
+			Tuple seed = new Tuple();
+			Word word = new Word("JJ", seedString.trim(),
+					ElementType.OPINION_WORD);
+			seed.setSource(word);
+			seed.setTupleType(TupleType.Seed);
+			seed.setSentenceIndex(-1);
+			seed.setSentence(null);
+			seedWords.add(seed);
+		}
+		
 		for (InputWrapper input : inputFiles) {
 			System.out.println("-----------------------------------------");
 			System.out.println("-------------NEW FILE-----------");
@@ -81,20 +97,6 @@ public class Main {
 			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(
 					inputData);
 
-			HashSet<Tuple> seedWords = new HashSet<Tuple>();
-
-			config.setSeedWords(inputService.getSeedWordsFromFile());
-
-			for (String seedString : config.getSeedWords()) {
-				Tuple seed = new Tuple();
-				Word word = new Word("JJ", seedString.trim(),
-						ElementType.OPINION_WORD);
-				seed.setSource(word);
-				seed.setTupleType(TupleType.Seed);
-				seed.setSentenceIndex(-1);
-				seed.setSentence(null);
-				seedWords.add(seed);
-			}
 			algorithm.execute(seedWords);
 			long elapsedTime = System.currentTimeMillis() - currentTime;
 			System.out.println("Elapsed time: " + elapsedTime + " ms");
@@ -176,6 +178,16 @@ public class Main {
 			//ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
 			//		combinedTuples);
 
+//			List<Word> foundOpinionWords = Helpers.ExtractElements(resultTuples, ElementType.OPINION_WORD);
+//			for(Word foundOpinionWord : foundOpinionWords)
+//			{
+//				Tuple seed = new Tuple();
+//				seed.setSource(foundOpinionWord);
+//				seed.setTupleType(TupleType.Seed);
+//				seed.setSentenceIndex(-1);
+//				seed.setSentence(null);
+//				seedWords.add(seed);
+//			}		
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);
 		outputService.writeOutput(outputFiles);
