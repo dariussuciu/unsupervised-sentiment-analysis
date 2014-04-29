@@ -1,7 +1,10 @@
 package com.unsupervisedsentiment.analysis.classification;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
@@ -71,6 +74,28 @@ public class Classification {
 		double normalizedScore = Helpers.normalizeScore(totalScore);
 
 		return normalizedScore;
+	}
+	
+	public HashMap computeScoreDistribution(List<Tuple> data){
+		HashMap<Double,Integer> myMap = new HashMap<Double,Integer>();
+		for (Tuple tuple : data){
+			if (tuple.getSource().getScore() != DEFAULT_SCORE) {
+				DecimalFormat df = new DecimalFormat("#.#");
+				String formatted = df.format(tuple.getSource().getScore());
+				double value = Double.parseDouble(formatted);
+				if (myMap.containsKey(value)){
+					myMap.put(value, myMap.get(value) + 1);
+				}
+				else{
+					myMap.put(value, 1);
+				}
+				
+			}
+			
+		}
+		
+		
+		return myMap;
 	}
 
 	public double getAverageScoreForTarget(String target, List<Tuple> data) {
