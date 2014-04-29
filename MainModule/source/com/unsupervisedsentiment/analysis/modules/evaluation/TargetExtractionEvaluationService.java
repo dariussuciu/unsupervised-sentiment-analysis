@@ -9,6 +9,7 @@ import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
+import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 public class TargetExtractionEvaluationService extends EvaluationService {
 
@@ -22,7 +23,7 @@ public class TargetExtractionEvaluationService extends EvaluationService {
 		truePositive = 0;
 		falsePositive = 0;
 		falseNegative = 0;
-		List<Word> targets = ExtractElements(tuples, ElementType.FEATURE);
+		List<Word> targets = Helpers.ExtractElements(tuples, ElementType.FEATURE);
 		List<Word> filteredTargets = GetFilteredTargets(targets);
 		for (final Word target : filteredTargets) {
 			boolean found = false;
@@ -42,9 +43,9 @@ public class TargetExtractionEvaluationService extends EvaluationService {
 				{
 					if(tuple.getSentenceIndex() == target.getSentenceIndex())
 					{
-						// System.out.println(target.getValue() +
-						//		 target.getPosTag() + " - " +
-						//		 target.getSentenceIndex() + " - " + tuple.getSentence());
+						 System.out.println(target.getValue() +
+								 target.getPosTag() + " - " +
+								 target.getSentenceIndex() + " - " + tuple.getSentence());
 						 break;
 					}
 				}
@@ -69,53 +70,11 @@ public class TargetExtractionEvaluationService extends EvaluationService {
 		}
 	}
 	
-	private List<Word> ExtractElements(Set<Tuple> tuples, ElementType elementType) {
-		List<Word> elements = new ArrayList<Word>();
-		
-		for(Tuple tuple : tuples) {
-			if (tuple.getTupleType().equals(TupleType.Seed)
-					|| tuple.getElements(elementType).size() <= 0)
-				continue;
-			
-			for(Word foundElement : tuple.getElements(elementType))
-			{
-				int numberOfInstances = 1;
-				boolean isDuplicate = false;
-				for(Word existingElement : elements) {
-					if(existingElement.equals(foundElement) && existingElement.getSentenceIndex() == foundElement.getSentenceIndex())
-					{
-						isDuplicate = true;
-					}
-				}
-				for(Tuple otherTuple : tuples) {
-					for(Word otherElement : otherTuple.getElements(elementType)) {
-						if(otherElement.equals(foundElement))
-						{
-							numberOfInstances++;
-						}
-					}
-				}
-				
-				if(!isDuplicate)
-				{
-					foundElement.setNumberOfInstances(numberOfInstances);
-					elements.add(foundElement);
-				}
-				else 
-				{
-					//System.out.println("Duplicate: " + foundOpinionWord.getValue() + " - " + foundOpinionWord.getSentenceIndex() );
-				}
-			}
-		}
-		
-		return elements;
-	}
-	
 	private List<Word> GetFilteredTargets(List<Word> targets) {
 		List<Word> filteredTargets = new ArrayList<Word>();
 		for(Word word : targets) 
 		{
-			if(word.getNumberOfInstances() > 0)
+			if(word.getNumberOfInstances() > 1)
 				filteredTargets.add(word);
 		}
 		return filteredTargets;

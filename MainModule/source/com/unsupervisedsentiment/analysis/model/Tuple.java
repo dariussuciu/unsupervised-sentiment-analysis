@@ -160,12 +160,12 @@ public class Tuple {
 	}
 
 	public List<Word> getElements(ElementType elementType){
-		List<Word> opinionWords = new ArrayList<Word>();
+		List<Word> elements = new ArrayList<Word>();
 		if(getSource().getType().equals(elementType))
-			opinionWords.add(getSource());
+			elements.add(getSource());
 		if(getTarget() != null && getTarget().getType().equals(elementType))
-			opinionWords.add(getTarget());
-		return opinionWords;
+			elements.add(getTarget());
+		return elements;
 	}
 	
 //	public Word getOpinionWord(){

@@ -10,6 +10,7 @@ import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
+import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 public class OpinionWordExtractionEvaluationService extends EvaluationService {
 
@@ -23,8 +24,7 @@ public class OpinionWordExtractionEvaluationService extends EvaluationService {
 		truePositive = 0;
 		falsePositive = 0;
 		falseNegative = 0;
-		List<Word> opinionWords = ExtractElements(tuples, ElementType.OPINION_WORD);
-		List<Word> targets = ExtractElements(tuples, ElementType.FEATURE);
+		List<Word> opinionWords = Helpers.ExtractElements(tuples, ElementType.OPINION_WORD);
 		for (final Word opinionWord : opinionWords) {
 			boolean found = false;
 			for (final EvaluationModel model : evaluationModels) {
@@ -89,31 +89,5 @@ public class OpinionWordExtractionEvaluationService extends EvaluationService {
 //				//falsePositive++;
 //			}
 //		}
-	}
-	
-	private List<Word> ExtractElements(Set<Tuple> tuples, ElementType elementType) {
-		List<Word> opinionWords = new ArrayList<Word>();
-		
-		for(Tuple tuple : tuples) {
-			if (tuple.getTupleType().equals(TupleType.Seed)
-					|| tuple.getElements(elementType).size() <= 0)
-				continue;
-			
-			for(Word foundOpinionWord : tuple.getElements(elementType))
-			{
-				boolean isDuplicate = false;
-				for(Word existingOpinionWord : opinionWords) {
-					if(existingOpinionWord.equals(foundOpinionWord) && existingOpinionWord.getSentenceIndex() == foundOpinionWord.getSentenceIndex())
-						isDuplicate = true;
-				}
-				if(!isDuplicate)
-					opinionWords.add(foundOpinionWord);
-				else {
-					//System.out.println("Duplicate: " + foundOpinionWord.getValue() + " - " + foundOpinionWord.getSentenceIndex() );
-				}
-			}
-		}
-		
-		return opinionWords;
 	}
 }

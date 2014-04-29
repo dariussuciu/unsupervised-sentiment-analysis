@@ -37,11 +37,11 @@ public class TargetExtractorService implements ITargetExtractorService {
 			final Set<Word> features, final Set<Tuple> existingFeatures,
 			final int semanticGraphIndex) {
 		final Set<Tuple> foundTargets = new HashSet<Tuple>();
-
-		foundTargets.addAll(extractTargetsUsingR31(semanticGraph, features,
-				existingFeatures, ElementType.FEATURE, semanticGraphIndex));
-		foundTargets.addAll(extractTargetsUsingR32(semanticGraph, features,
-				existingFeatures, ElementType.FEATURE, semanticGraphIndex));
+		//Removed due to better results without
+		//foundTargets.addAll(extractTargetsUsingR31(semanticGraph, features,
+		//		existingFeatures, ElementType.FEATURE, semanticGraphIndex));
+		//foundTargets.addAll(extractTargetsUsingR32(semanticGraph, features,
+		//		existingFeatures, ElementType.FEATURE, semanticGraphIndex));
 		return foundTargets;
 	}
 
