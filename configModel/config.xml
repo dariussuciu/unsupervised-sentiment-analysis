@@ -32,6 +32,9 @@
 	<polarityThreshold>
 		0.01
 	</polarityThreshold>
+	<scoringThreshold>
+	0.3
+	</scoringThreshold>
 	<seedWords>
 		<seedWord>
 			good

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.classification.Classification;
+import com.unsupervisedsentiment.analysis.core.Config;
+import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
@@ -11,11 +13,12 @@ import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
 
 public class ScoreEvaluationService extends EvaluationService {
-	private final double ACCEPTABLE_ERROR = 0.3;
+	private double ACCEPTABLE_ERROR = 0.3;
 
 	public ScoreEvaluationService(List<EvaluationModel> evaluationModels,
-			Set<Tuple> tuples) {
+			Set<Tuple> tuples,double acceptableError) {
 		super(evaluationModels, tuples);
+		ACCEPTABLE_ERROR = acceptableError;
 	}
 
 	@Override
@@ -85,7 +88,9 @@ public class ScoreEvaluationService extends EvaluationService {
 
 	public static void performEvaluation(List<EvaluationModel> evaluationModels,
 			Set<Tuple> tuples) {
-		ScoreEvaluationService scoreEvaluationService = new ScoreEvaluationService(evaluationModels, tuples);
+		Config config = Initializer.getConfig();
+		double acceptableError = Double.parseDouble(config.getScoringThreshold());
+		ScoreEvaluationService scoreEvaluationService = new ScoreEvaluationService(evaluationModels, tuples, acceptableError);
 		EvaluationResult scoreEvaluationResult = scoreEvaluationService.getResults();
 		System.out.println("Score Precision : "
 				+ scoreEvaluationResult.getPrecision());

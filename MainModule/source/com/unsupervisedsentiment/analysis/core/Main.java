@@ -2,10 +2,11 @@ package com.unsupervisedsentiment.analysis.core;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.LinkedHashSet;
 
 import com.unsupervisedsentiment.analysis.classification.Classification;
 import com.unsupervisedsentiment.analysis.core.constants.Constants;
@@ -27,7 +28,6 @@ import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationResult;
 import com.unsupervisedsentiment.analysis.modules.evaluation.OpinionWordExtractionEvaluationService;
 import com.unsupervisedsentiment.analysis.modules.evaluation.ScoreEvaluationService;
 import com.unsupervisedsentiment.analysis.modules.evaluation.TargetExtractionEvaluationService;
-import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 public class Main {
 
@@ -54,27 +54,31 @@ public class Main {
 
 			List<EvaluationModel> opinionWordEvaluationModels = null;
 			List<EvaluationModel> targetEvaluationModels = null;
-			
+
 			String storedEvaluationModelsDirectory = Initializer.getConfig()
 					.getEvaluationModelsDirectory();
-			if(Helpers.existsObjectsForFile(storedEvaluationModelsDirectory, input.getFilename(), "OpinionWordEvaluationModel"))
-			{
-				opinionWordEvaluationModels = Helpers.getStoredEvaluationModels(
-						storedEvaluationModelsDirectory, input, false, ElementType.OPINION_WORD, "OpinionWordEvaluationModel");
-			}
-			else {
+			if (Helpers.existsObjectsForFile(storedEvaluationModelsDirectory,
+					input.getFilename(), "OpinionWordEvaluationModel")) {
+				opinionWordEvaluationModels = Helpers
+						.getStoredEvaluationModels(
+								storedEvaluationModelsDirectory, input, false,
+								ElementType.OPINION_WORD,
+								"OpinionWordEvaluationModel");
+			} else {
 				opinionWordEvaluationModels = Helpers.getEvaluationModels(
-						storedEvaluationModelsDirectory, input, false, ElementType.OPINION_WORD, "OpinionWordEvaluationModel");
+						storedEvaluationModelsDirectory, input, false,
+						ElementType.OPINION_WORD, "OpinionWordEvaluationModel");
 			}
-			
-			if(Helpers.existsObjectsForFile(storedEvaluationModelsDirectory, input.getFilename(), "TargetEvaluationModel"))
-			{
+
+			if (Helpers.existsObjectsForFile(storedEvaluationModelsDirectory,
+					input.getFilename(), "TargetEvaluationModel")) {
 				targetEvaluationModels = Helpers.getStoredEvaluationModels(
-						storedEvaluationModelsDirectory, input, false, ElementType.FEATURE, "TargetEvaluationModel");
-			}
-			else {
+						storedEvaluationModelsDirectory, input, false,
+						ElementType.FEATURE, "TargetEvaluationModel");
+			} else {
 				targetEvaluationModels = Helpers.getEvaluationModels(
-						storedEvaluationModelsDirectory, input, false, ElementType.FEATURE, "TargetEvaluationModel");
+						storedEvaluationModelsDirectory, input, false,
+						ElementType.FEATURE, "TargetEvaluationModel");
 			}
 
 			inputData.setInput(input.getOriginalContent());
@@ -112,17 +116,6 @@ public class Main {
 
 			classification = new Classification();
 			classification.assignScoresBasedOnSeeds(opinionWordTuples);
-			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(opinionWordTuples);
-			System.out.println("Total score for this document: "
-					+ classification.computeOverallScore(opinionWordTuplesAL));
-
-			String targetString = "camera";
-			System.out.println("Average score for target "
-					+ targetString
-					+ " is: "
-					+ classification.getAverageScoreForTarget(targetString,
-							opinionWordTuplesAL));
-			// classification.assignSentiWordScores(opinionWordTuples);
 
 			combinedTuples.addAll(featureTuples);
 			combinedTuples.addAll(opinionWordTuples);
@@ -148,8 +141,7 @@ public class Main {
 			System.out.println("Recall : "
 					+ extractionEvaluationResult.getRecall());
 			System.out.println("-----------------------------------------");
-			
-			
+
 			TargetExtractionEvaluationService targetEvaluationService = new TargetExtractionEvaluationService(
 					targetEvaluationModels, resultTuples);
 			EvaluationResult targetEvaluationResult = targetEvaluationService
@@ -170,12 +162,28 @@ public class Main {
 					.getPolarityThreshold(), RelationsContainer
 					.getAllEnumElementsAsString()));
 
-			//List<EvaluationModel> scoreEvaluationModels = Helpers
-			//		.getEvaluationModels(storedEvaluationModelsDirectory,
-			//				input, true, ElementType.OPINION_WORD, "OpinionWordEvaluationModel");
-			//ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
-			//		combinedTuples);
+//			List<EvaluationModel> scoreEvaluationModels = Helpers
+//					.getEvaluationModels(storedEvaluationModelsDirectory,
+//							input, true, ElementType.OPINION_WORD,
+//							"OpinionWordEvaluationModel");
+//			
+//			ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
+//					combinedTuples);
 
+			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(
+					featureTuples);
+			// System.out.println("Total score for this document: "
+			// + classification.computeOverallScore(opinionWordTuplesAL));
+
+			// String targetString = "camera";
+			// System.out.println("Average score for target "
+			// + targetString
+			// + " is: "
+			// + classification.getAverageScoreForTarget(targetString,
+			// opinionWordTuplesAL));
+
+			HashMap<Double, Integer> distribution = classification.computeScoreDistribution(opinionWordTuplesAL);
+			// classification.assignSentiWordScores(opinionWordTuples);
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);
 		outputService.writeOutput(outputFiles);
