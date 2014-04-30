@@ -341,14 +341,14 @@ public class Helpers {
 		if(Pos_NNRel.getInstance().contains(H.tag()) && Pos_NNRel.getInstance().contains(target.tag()))
 		return false;
 		
-		//if(Pos_NNRel.getInstance().contains(H.tag()) && Pos_NNRel.getInstance().contains(source.getPosTag()))
-		//return false;
+		if(Pos_NNRel.getInstance().contains(H.tag()) && Pos_NNRel.getInstance().contains(source.getPosTag()))
+		return false;
 		
 		if(Pos_JJRel.getInstance().contains(H.tag()) && Pos_JJRel.getInstance().contains(target.tag()))
 		return false;
 		
-		//if(Pos_JJRel.getInstance().contains(H.tag()) && Pos_JJRel.getInstance().contains(source.getPosTag()))
-		//return false;
+		if(Pos_JJRel.getInstance().contains(H.tag()) && Pos_JJRel.getInstance().contains(source.getPosTag()))
+		return false;
 
 		return true;
 	}
