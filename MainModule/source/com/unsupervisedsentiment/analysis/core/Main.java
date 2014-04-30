@@ -14,6 +14,7 @@ import com.unsupervisedsentiment.analysis.core.constants.relations.RelationsCont
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
+import com.unsupervisedsentiment.analysis.model.ResultPrecRecall;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
@@ -43,7 +44,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		initialize();
-		
+
 		HashSet<Tuple> seedWords = new HashSet<Tuple>();
 
 		config.setSeedWords(inputService.getSeedWordsFromFile());
@@ -58,7 +59,7 @@ public class Main {
 			seed.setSentence(null);
 			seedWords.add(seed);
 		}
-		
+
 		for (InputWrapper input : inputFiles) {
 			System.out.println("-----------------------------------------");
 			System.out.println("-------------NEW FILE-----------");
@@ -158,30 +159,36 @@ public class Main {
 					.format(new Date()), config.getSeedType(), input
 					.getFilename(), String.valueOf(seedWords.size()), String
 					.valueOf(algorithm.getNumberOfIterations()), String
-					.valueOf(elapsedTime), String
+					.valueOf(elapsedTime), new ResultPrecRecall(String
 					.valueOf(extractionEvaluationResult.getPrecision()), String
-					.valueOf(extractionEvaluationResult.getRecall()), config
-					.getPolarityThreshold(), RelationsContainer
-					.getAllEnumElementsAsString()));
+					.valueOf(extractionEvaluationResult.getRecall())),
+					new ResultPrecRecall(
+							String.valueOf(extractionEvaluationResult
+									.getPrecision()), String
+									.valueOf(extractionEvaluationResult
+											.getRecall())), config
+							.getPolarityThreshold(), RelationsContainer
+							.getAllEnumElementsAsString()));
 
-//			List<EvaluationModel> scoreEvaluationModels = Helpers
-//					.getEvaluationModels(storedEvaluationModelsDirectory,
-//							input, true, ElementType.OPINION_WORD,
-//							"OpinionWordEvaluationModel");
-//			
-//			ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
-//					combinedTuples);
+			// List<EvaluationModel> scoreEvaluationModels = Helpers
+			// .getEvaluationModels(storedEvaluationModelsDirectory,
+			// input, true, ElementType.OPINION_WORD,
+			// "OpinionWordEvaluationModel");
+			//
+			// ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
+			// combinedTuples);
 
-//			List<Word> foundOpinionWords = Helpers.ExtractElements(resultTuples, ElementType.OPINION_WORD);
-//			for(Word foundOpinionWord : foundOpinionWords)
-//			{
-//				Tuple seed = new Tuple();
-//				seed.setSource(foundOpinionWord);
-//				seed.setTupleType(TupleType.Seed);
-//				seed.setSentenceIndex(-1);
-//				seed.setSentence(null);
-//				seedWords.add(seed);
-//			}		
+			// List<Word> foundOpinionWords =
+			// Helpers.ExtractElements(resultTuples, ElementType.OPINION_WORD);
+			// for(Word foundOpinionWord : foundOpinionWords)
+			// {
+			// Tuple seed = new Tuple();
+			// seed.setSource(foundOpinionWord);
+			// seed.setTupleType(TupleType.Seed);
+			// seed.setSentenceIndex(-1);
+			// seed.setSentence(null);
+			// seedWords.add(seed);
+			// }
 			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(
 					featureTuples);
 			// System.out.println("Total score for this document: "
@@ -194,7 +201,8 @@ public class Main {
 			// + classification.getAverageScoreForTarget(targetString,
 			// opinionWordTuplesAL));
 
-			HashMap<Double, Integer> distribution = classification.computeScoreDistribution(opinionWordTuplesAL);
+			HashMap<Double, Integer> distribution = classification
+					.computeScoreDistribution(opinionWordTuplesAL);
 			// classification.assignSentiWordScores(opinionWordTuples);
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);
