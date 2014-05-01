@@ -13,18 +13,12 @@ public class Main {
 		Integer targetThreshold = Integer.valueOf(config.getTargetFrequencyThreshold());
 		Double polarityThreshold = Double.valueOf(config.getPolarityThreshold());
 
-		for (double d = polarityThreshold; d < 0.5; d += 0.01) {
-			if (polarityThreshold > 0.01) {
-				polarityThreshold += 0.1;
+		for (double d = polarityThreshold; d < 0.21; d += 0.01) {
+			if (d > 0.01) {
+				d += 0.05;
 			}
 
-			for (int i = 0, t = targetThreshold; i < 5; i++) {
-
-				if (i < 3)
-					t++;
-				else {
-					t += 3;
-				}
+			for (int t = targetThreshold; t < 4; t++) {
 
 				algorithmRunner.runAlgorithm();
 				config.setTargetFrequencyThreshold(String.valueOf(t));
