@@ -27,7 +27,6 @@ public class AlgorithmRunner {
 	private InputService inputService;
 	private Config config;
 	private OutputService outputService;
-	private CacheService cacheService;
 
 	private List<InputWrapper> inputFiles;
 	private List<OutputWrapper> outputFiles;
@@ -51,9 +50,12 @@ public class AlgorithmRunner {
 			seedWords.add(seed);
 		}
 
+		Initializer.setConfig(config);
 	}
 
 	public void runAlgorithm() {
+		initialize();
+
 		for (InputWrapper input : inputFiles) {
 			System.out.println("-----------------------------------------");
 			System.out.println("-------------NEW FILE-----------");
@@ -139,7 +141,6 @@ public class AlgorithmRunner {
 
 		inputService = InputService.getInstance(config);
 		outputService = OutputService.getInstance(config);
-		cacheService = CacheService.getInstance();
 
 		inputFiles = inputService.getTextFromFile();
 		outputFiles = new ArrayList<OutputWrapper>();

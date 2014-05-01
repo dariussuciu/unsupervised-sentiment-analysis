@@ -155,7 +155,7 @@ public class OutputService {
 		}
 	}
 
-	public void writeMapToDetailedReportsFile(List<LinkedHashMap<String, String>> detailedReportsMaps) {
+	public void writeMapToDetailedReportsFile(String filename, List<LinkedHashMap<String, String>> detailedReportsMaps) {
 		try {
 			final File file = new File(config.getDetailedEvaluationMetadataFile());
 			if (!file.exists()) {
@@ -164,11 +164,11 @@ public class OutputService {
 
 			final BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
 
-			writer.append("Number of seeds: " + detailedReportsMaps.get(0).get("Number of Seeds")
-					+ " Target Threshold: " + detailedReportsMaps.get(0).get("Target Frequency Threshold")
-					+ " Polarity Threshold: " + detailedReportsMaps.get(0).get("Polarity Threshold")
-					+ " All relations: " + RelationsContainer.getAllEnumElementsAsString() 
-					+ " Custom Text " + "\n");
+			writer.append("Filename: " + filename + " Number of seeds: "
+					+ detailedReportsMaps.get(0).get("Number of Seeds") + " Target Threshold: "
+					+ detailedReportsMaps.get(0).get("Target Frequency Threshold") + " Polarity Threshold: "
+					+ detailedReportsMaps.get(0).get("Polarity Threshold") + " All relations: "
+					+ RelationsContainer.getAllEnumElementsAsString() + " Custom Text " + "\n");
 
 			for (HashMap<String, String> map : detailedReportsMaps) {
 				System.out.println(map.toString());

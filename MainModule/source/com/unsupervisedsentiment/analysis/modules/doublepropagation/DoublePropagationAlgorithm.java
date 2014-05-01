@@ -59,7 +59,7 @@ public class DoublePropagationAlgorithm {
 			setNumberOfIterations(getNumberOfIterations() + 1);
 		} while (featuresIteration1.size() > 0 && opinionWordsIteration1.size() > 0);
 
-		reportingService.outputDetailedReportMaps();
+		reportingService.outputDetailedReportMaps(data.getFilename());
 		return data;
 	}
 

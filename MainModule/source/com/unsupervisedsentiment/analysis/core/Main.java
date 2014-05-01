@@ -8,16 +8,30 @@ public class Main {
 	public static void main(String[] args) {
 		AlgorithmRunner algorithmRunner = new AlgorithmRunner();
 
-		Double targetThreshold = Double.valueOf(Initializer.getConfig().getTargetFrequencyThreshold());
-		Integer polarityThreshold = Integer.valueOf(Initializer.getConfig().getPolarityThreshold());
+		Config config = Initializer.getConfig();
+		
+		Integer targetThreshold = Integer.valueOf(config.getTargetFrequencyThreshold());
+		Double polarityThreshold = Double.valueOf(config.getPolarityThreshold());
 
-		for (double d = polarityThreshold; d < 1; d += 0.1) {
-			for (double t = targetThreshold; t < 10; t++) {
-				algorithmRunner.runAlgorithm();
-				Initializer.getConfig().setTargetFrequencyThreshold(String.valueOf(t));
+		for (double d = polarityThreshold; d < 0.5; d += 0.01) {
+			if (polarityThreshold > 0.01) {
+				polarityThreshold += 0.1;
 			}
-			Initializer.getConfig().setPolarityThreshold(String.valueOf(d));
+
+			for (int i = 0, t = targetThreshold; i < 5; i++) {
+
+				if (i < 3)
+					t++;
+				else {
+					t += 3;
+				}
+
+				algorithmRunner.runAlgorithm();
+				config.setTargetFrequencyThreshold(String.valueOf(t));
+				Initializer.setConfig(config);
+			}
+			config.setPolarityThreshold(String.valueOf(d));
+			Initializer.setConfig(config);
 		}
 	}
-
 }

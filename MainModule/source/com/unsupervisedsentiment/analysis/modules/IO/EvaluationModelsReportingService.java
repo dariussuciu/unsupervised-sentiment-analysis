@@ -110,7 +110,7 @@ public class EvaluationModelsReportingService {
 			String allRelations, long elapsedTime) {
 
 		LinkedHashMap<String, String> detailedReportMap = new LinkedHashMap<String, String>();
-
+		
 		detailedReportMap.put("Iteration Number", String.valueOf(iterationNumber));
 		detailedReportMap.put("Number of Seeds", String.valueOf(numberOfSeedWords));
 		detailedReportMap.put("Target Frequency Threshold", targetFrequencyThreshold);
@@ -132,8 +132,8 @@ public class EvaluationModelsReportingService {
 		return targetEvaluationModels;
 	}
 
-	public void outputDetailedReportMaps() {
-		outputService.writeMapToDetailedReportsFile(detailedReportMaps);
+	public void outputDetailedReportMaps(String filename) {
+		outputService.writeMapToDetailedReportsFile(filename, detailedReportMaps);
 	}
 
 }

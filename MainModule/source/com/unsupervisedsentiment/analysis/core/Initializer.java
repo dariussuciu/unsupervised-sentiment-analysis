@@ -8,17 +8,24 @@ import javax.xml.bind.Unmarshaller;
 
 public class Initializer {
 
+	private static Config configInstance;
+
 	public static Config getConfig() {
-		JAXBContext jaxbContext;
-		try 
-		{
-			jaxbContext = JAXBContext.newInstance(Config.class);
-			final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			return (Config) jaxbUnmarshaller.unmarshal(new File("config.xml"));
-		}
-		catch (JAXBException e) {
-			e.printStackTrace();
-			return null;
-		}
+		if (configInstance == null) {
+			JAXBContext jaxbContext;
+			try {
+				jaxbContext = JAXBContext.newInstance(Config.class);
+				final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+				return (Config) jaxbUnmarshaller.unmarshal(new File("config.xml"));
+			} catch (JAXBException e) {
+				e.printStackTrace();
+				return null;
+			}
+		} else
+			return configInstance;
+	}
+
+	public static void setConfig(Config config) {
+		configInstance = config;
 	}
 }
