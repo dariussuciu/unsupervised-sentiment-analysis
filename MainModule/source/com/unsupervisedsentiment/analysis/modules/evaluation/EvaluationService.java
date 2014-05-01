@@ -17,8 +17,7 @@ public abstract class EvaluationService {
 	// correct
 	protected double falseNegative;
 
-	public EvaluationService(List<EvaluationModel> evaluationModels,
-			Set<Tuple> tuples) {
+	public EvaluationService(List<EvaluationModel> evaluationModels, Set<Tuple> tuples) {
 		this.evaluationModels = evaluationModels;
 		this.tuples = tuples;
 	}

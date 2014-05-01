@@ -17,12 +17,9 @@ public class EvaluationMetadata {
 	private final String threshold;
 	private final String totalRelationsUsed;
 
-	public EvaluationMetadata(String date, final String seedType,
-			final String filename, final String numberOfSeeds,
-			final String numberOfIterations, final String durationMilliseconds,
-			final ResultPrecRecall targetsResult,
-			final ResultPrecRecall opinionWordsResult, final String threshold,
-			final String totalRelationsUsed) {
+	public EvaluationMetadata(String date, final String seedType, final String filename, final String numberOfSeeds,
+			final String numberOfIterations, final String durationMilliseconds, final ResultPrecRecall targetsResult,
+			final ResultPrecRecall opinionWordsResult, final String threshold, final String totalRelationsUsed) {
 		this.date = date;
 		this.seedType = seedType;
 		this.filename = filename;
@@ -102,15 +99,11 @@ public class EvaluationMetadata {
 
 	@Override
 	public String toString() {
-		return Constants.sdf.format(date) + "," + seedType + "," + filename
-				+ "," + String.valueOf(numberOfSeeds) + ","
-				+ String.valueOf(numberOfIterations) + ","
-				+ String.valueOf(durationMilliseconds) + ","
+		return Constants.sdf.format(date) + "," + seedType + "," + filename + "," + String.valueOf(numberOfSeeds) + ","
+				+ String.valueOf(numberOfIterations) + "," + String.valueOf(durationMilliseconds) + ","
 				+ String.valueOf(opinionWordsResult.getPrecision()) + ","
-				+ String.valueOf(opinionWordsResult.getRecall())
-				+ String.valueOf(targetsResult.getPrecision()) + ","
-				+ String.valueOf(targetsResult.getRecall()) + ","
-				+ totalRelationsUsed;
+				+ String.valueOf(opinionWordsResult.getRecall()) + String.valueOf(targetsResult.getPrecision()) + ","
+				+ String.valueOf(targetsResult.getRecall()) + "," + totalRelationsUsed;
 	}
 
 }

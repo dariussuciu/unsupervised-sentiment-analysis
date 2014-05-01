@@ -18,16 +18,15 @@ import com.unsupervisedsentiment.analysis.model.ResultPrecRecall;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
+import com.unsupervisedsentiment.analysis.modules.IO.CacheService;
 import com.unsupervisedsentiment.analysis.modules.IO.InputService;
 import com.unsupervisedsentiment.analysis.modules.IO.InputWrapper;
 import com.unsupervisedsentiment.analysis.modules.IO.OutputService;
 import com.unsupervisedsentiment.analysis.modules.IO.OutputWrapper;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.DoublePropagationAlgorithm;
-import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationMetadata;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationResult;
 import com.unsupervisedsentiment.analysis.modules.evaluation.OpinionWordExtractionEvaluationService;
-import com.unsupervisedsentiment.analysis.modules.evaluation.ScoreEvaluationService;
 import com.unsupervisedsentiment.analysis.modules.evaluation.TargetExtractionEvaluationService;
 
 public class Main {
@@ -35,6 +34,8 @@ public class Main {
 	private static InputService inputService;
 	private static Config config;
 	private static OutputService outputService;
+	private static CacheService cacheService;
+
 	private static List<InputWrapper> inputFiles;
 	private static List<OutputWrapper> outputFiles;
 	private static List<EvaluationMetadata> metadataResults;
@@ -51,8 +52,8 @@ public class Main {
 
 		for (String seedString : config.getSeedWords()) {
 			Tuple seed = new Tuple();
-			Word word = new Word("JJ", seedString.trim(),
-					ElementType.OPINION_WORD);
+			// TODO: not always JJ? what if adverbs
+			Word word = new Word("JJ", seedString.trim(), ElementType.OPINION_WORD);
 			seed.setSource(word);
 			seed.setTupleType(TupleType.Seed);
 			seed.setSentenceIndex(-1);
@@ -72,35 +73,17 @@ public class Main {
 			List<EvaluationModel> opinionWordEvaluationModels = null;
 			List<EvaluationModel> targetEvaluationModels = null;
 
-			String storedEvaluationModelsDirectory = Initializer.getConfig()
-					.getEvaluationModelsDirectory();
-			if (Helpers.existsObjectsForFile(storedEvaluationModelsDirectory,
-					input.getFilename(), "OpinionWordEvaluationModel")) {
-				opinionWordEvaluationModels = Helpers
-						.getStoredEvaluationModels(
-								storedEvaluationModelsDirectory, input, false,
-								ElementType.OPINION_WORD,
-								"OpinionWordEvaluationModel");
-			} else {
-				opinionWordEvaluationModels = Helpers.getEvaluationModels(
-						storedEvaluationModelsDirectory, input, false,
-						ElementType.OPINION_WORD, "OpinionWordEvaluationModel");
-			}
+			// check if already created OW and Target eval. models
+			String storedEvaluationModelsDirectory = Initializer.getConfig().getEvaluationModelsDirectory();
 
-			if (Helpers.existsObjectsForFile(storedEvaluationModelsDirectory,
-					input.getFilename(), "TargetEvaluationModel")) {
-				targetEvaluationModels = Helpers.getStoredEvaluationModels(
-						storedEvaluationModelsDirectory, input, false,
-						ElementType.FEATURE, "TargetEvaluationModel");
-			} else {
-				targetEvaluationModels = Helpers.getEvaluationModels(
-						storedEvaluationModelsDirectory, input, false,
-						ElementType.FEATURE, "TargetEvaluationModel");
-			}
+			opinionWordEvaluationModels = cacheService.getStoredOrCreateNewEvaluationModel(
+					storedEvaluationModelsDirectory, input, false, ElementType.OPINION_WORD,
+					Constants.OPINION_WORD_EVAL_MODEL);
+			targetEvaluationModels = cacheService.getStoredOrCreateNewEvaluationModel(storedEvaluationModelsDirectory,
+					input, false, ElementType.FEATURE, Constants.TARGET_EVAL_MODEL);
 
 			inputData.setInput(input.getOriginalContent());
-			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(
-					inputData);
+			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
 
 			algorithm.execute(seedWords);
 			long elapsedTime = System.currentTimeMillis() - currentTime;
@@ -108,8 +91,7 @@ public class Main {
 
 			Set<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
 
-			Set<Tuple> opinionWordTuples = algorithm.getData()
-					.getExpandedOpinionWordsTuples();
+			Set<Tuple> opinionWordTuples = algorithm.getData().getExpandedOpinionWordsTuples();
 
 			LinkedHashSet<Tuple> combinedTuples = new LinkedHashSet<Tuple>();
 
@@ -137,38 +119,26 @@ public class Main {
 
 			OpinionWordExtractionEvaluationService extractionEvaluationService = new OpinionWordExtractionEvaluationService(
 					opinionWordEvaluationModels, resultTuples);
-			EvaluationResult extractionEvaluationResult = extractionEvaluationService
-					.getResults();
-			System.out.println("Precision : "
-					+ extractionEvaluationResult.getPrecision());
-			System.out.println("Recall : "
-					+ extractionEvaluationResult.getRecall());
+			EvaluationResult extractionEvaluationResult = extractionEvaluationService.getResults();
+			System.out.println("Precision : " + extractionEvaluationResult.getPrecision());
+			System.out.println("Recall : " + extractionEvaluationResult.getRecall());
 			System.out.println("-----------------------------------------");
 
 			TargetExtractionEvaluationService targetEvaluationService = new TargetExtractionEvaluationService(
 					targetEvaluationModels, resultTuples);
-			EvaluationResult targetEvaluationResult = targetEvaluationService
-					.getResults();
-			System.out.println("Target Extraction Precision : "
-					+ targetEvaluationResult.getPrecision());
-			System.out.println("Target Extraction Recall : "
-					+ targetEvaluationResult.getRecall());
+			EvaluationResult targetEvaluationResult = targetEvaluationService.getResults();
+			System.out.println("Target Extraction Precision : " + targetEvaluationResult.getPrecision());
+			System.out.println("Target Extraction Recall : " + targetEvaluationResult.getRecall());
 			System.out.println("-----------------------------------------");
 
-			metadataResults.add(new EvaluationMetadata(Constants.sdf
-					.format(new Date()), config.getSeedType(), input
-					.getFilename(), String.valueOf(seedWords.size()), String
-					.valueOf(algorithm.getNumberOfIterations()), String
-					.valueOf(elapsedTime), new ResultPrecRecall(String
-					.valueOf(extractionEvaluationResult.getPrecision()), String
-					.valueOf(extractionEvaluationResult.getRecall())),
-					new ResultPrecRecall(
-							String.valueOf(extractionEvaluationResult
-									.getPrecision()), String
-									.valueOf(extractionEvaluationResult
-											.getRecall())), config
-							.getPolarityThreshold(), RelationsContainer
-							.getAllEnumElementsAsString()));
+			metadataResults.add(new EvaluationMetadata(Constants.sdf.format(new Date()), config.getSeedType(), input
+					.getFilename(), String.valueOf(seedWords.size()),
+					String.valueOf(algorithm.getNumberOfIterations()), String.valueOf(elapsedTime),
+					new ResultPrecRecall(String.valueOf(extractionEvaluationResult.getPrecision()), String
+							.valueOf(extractionEvaluationResult.getRecall())), new ResultPrecRecall(String
+							.valueOf(extractionEvaluationResult.getPrecision()), String
+							.valueOf(extractionEvaluationResult.getRecall())), config.getPolarityThreshold(),
+					RelationsContainer.getAllEnumElementsAsString()));
 
 			// List<EvaluationModel> scoreEvaluationModels = Helpers
 			// .getEvaluationModels(storedEvaluationModelsDirectory,
@@ -189,8 +159,7 @@ public class Main {
 			// seed.setSentence(null);
 			// seedWords.add(seed);
 			// }
-			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(
-					featureTuples);
+			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(featureTuples);
 			// System.out.println("Total score for this document: "
 			// + classification.computeOverallScore(opinionWordTuplesAL));
 
@@ -201,8 +170,7 @@ public class Main {
 			// + classification.getAverageScoreForTarget(targetString,
 			// opinionWordTuplesAL));
 
-			HashMap<Double, Integer> distribution = classification
-					.computeScoreDistribution(opinionWordTuplesAL);
+			HashMap<Double, Integer> distribution = classification.computeScoreDistribution(opinionWordTuplesAL);
 			// classification.assignSentiWordScores(opinionWordTuples);
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);
@@ -214,6 +182,8 @@ public class Main {
 
 		inputService = InputService.getInstance(config);
 		outputService = OutputService.getInstance(config);
+		cacheService = CacheService.getInstance();
+
 		inputFiles = inputService.getTextFromFile();
 		outputFiles = new ArrayList<OutputWrapper>();
 		metadataResults = new ArrayList<EvaluationMetadata>();

@@ -39,6 +39,10 @@ public class FileWrapper {
 		return content;
 	}
 
+	/**
+	 * 
+	 * @return the un-annotated text
+	 */
 	public String getOriginalContent() {
 		String cleanContent = content.replaceAll("(###)|(%%%)|(\\$\\$\\$)", "");
 		return cleanContent;
