@@ -4,12 +4,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.unsupervisedsentiment.analysis.core.Config;
+import com.unsupervisedsentiment.analysis.core.constants.relations.RelationsContainer;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Triple;
@@ -30,6 +34,16 @@ public class OutputService {
 
 	private OutputService(Config config) {
 		this.config = config;
+	}
+
+	public OutputWrapper createOutputWrapperFromInput(InputWrapper input, LinkedHashSet<Tuple> resultTuples) {
+		OutputWrapper outputFile = new OutputWrapper();
+		outputFile.setAuthor(input.getAuthor());
+		outputFile.setFilename(input.getFilename());
+		outputFile.setSource(input.getSource());
+		outputFile.setTuples(resultTuples);
+
+		return outputFile;
 	}
 
 	public void writeOutput(final List<OutputWrapper> outputWrappers) {
@@ -58,7 +72,7 @@ public class OutputService {
 				writer.write("----------------------");
 				writer.newLine();
 
-				WriteTuples(writer, outputWrapper.getTuples());
+				writeTuples(writer, outputWrapper.getTuples());
 				writer.flush();
 				writer.close();
 			}
@@ -67,59 +81,43 @@ public class OutputService {
 		}
 	}
 
-	private static void WriteTuples(final BufferedWriter writer,
-			final Set<Tuple> tuples) throws IOException {
+	private static void writeTuples(final BufferedWriter writer, final Set<Tuple> tuples) throws IOException {
 		for (final Tuple tuple : tuples) {
 			if (tuple.getTupleType().equals(TupleType.Pair)) {
 				final Pair pair = (Pair) tuple;
 
-				writer.write("Pair:  " + tuple.getSource().getValue() + "["
-						+ tuple.getSource().getScore() + "]" + "{"
-						+ tuple.getSource().getSentiWordScore() + "}" + "("
-						+ tuple.getSource().getPosTag() + ")" + " --("
-						+ pair.getRelation() + ")--> "
-						+ tuple.getTarget().getValue() + "["
-						+ tuple.getTarget().getScore() + "]" + "{"
-						+ tuple.getTarget().getSentiWordScore() + "}" + "("
-						+ tuple.getTarget().getPosTag() + ")"
-						+ "   - sentence: " + tuple.getSentence() + "("
+				writer.write("Pair:  " + tuple.getSource().getValue() + "[" + tuple.getSource().getScore() + "]" + "{"
+						+ tuple.getSource().getSentiWordScore() + "}" + "(" + tuple.getSource().getPosTag() + ")"
+						+ " --(" + pair.getRelation() + ")--> " + tuple.getTarget().getValue() + "["
+						+ tuple.getTarget().getScore() + "]" + "{" + tuple.getTarget().getSentiWordScore() + "}" + "("
+						+ tuple.getTarget().getPosTag() + ")" + "   - sentence: " + tuple.getSentence() + "("
 						+ tuple.getSentenceIndex() + ")");
 				writer.newLine();
 			} else if (tuple.getTupleType().equals(TupleType.Triple)) {
 				final Triple triple = (Triple) tuple;
-				writer.write("Triple:  " + tuple.getSource().getValue() + "["
-						+ tuple.getSource().getScore() + "]" + "{"
-						+ tuple.getSource().getSentiWordScore() + "}" + "("
-						+ tuple.getSource().getPosTag() + ")" + " --("
-						+ triple.getRelationHOpinion() + ")--> "
-						+ triple.getH().getValue() + "("
-						+ triple.getH().getPosTag() + ")" + " --("
-						+ triple.getRelationHTarget() + ")--> "
-						+ tuple.getTarget().getValue() + "(" + "["
-						+ tuple.getTarget().getScore() + "]" + "{"
-						+ tuple.getTarget().getSentiWordScore() + "}" + "("
-						+ tuple.getTarget().getPosTag() + ")"
-						+ "   - sentence: " + tuple.getSentence() + "("
-						+ tuple.getSentenceIndex() + ")");
+				writer.write("Triple:  " + tuple.getSource().getValue() + "[" + tuple.getSource().getScore() + "]"
+						+ "{" + tuple.getSource().getSentiWordScore() + "}" + "(" + tuple.getSource().getPosTag() + ")"
+						+ " --(" + triple.getRelationHOpinion() + ")--> " + triple.getH().getValue() + "("
+						+ triple.getH().getPosTag() + ")" + " --(" + triple.getRelationHTarget() + ")--> "
+						+ tuple.getTarget().getValue() + "(" + "[" + tuple.getTarget().getScore() + "]" + "{"
+						+ tuple.getTarget().getSentiWordScore() + "}" + "(" + tuple.getTarget().getPosTag() + ")"
+						+ "   - sentence: " + tuple.getSentence() + "(" + tuple.getSentenceIndex() + ")");
 				writer.newLine();
 			}
 		}
 	}
 
-	public void WriteEvaluationModels(final String fileName,
-			final List<EvaluationModel> evaluationModels) {
+	public void writeEvaluationModels(final String fileName, final List<EvaluationModel> evaluationModels) {
 		try {
 			final File folder = new File(config.getEvaluationModelsDirectory());
 
 			final File file = new File(folder, fileName);
 			file.createNewFile();
 
-			final BufferedWriter writer = new BufferedWriter(new FileWriter(
-					file));
+			final BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
 			for (EvaluationModel evaluationModel : evaluationModels) {
-				writer.write(evaluationModel.getElement() + "["
-						+ evaluationModel.getSentenceIndex() + "]" + " - "
+				writer.write(evaluationModel.getElement() + "[" + evaluationModel.getSentenceIndex() + "]" + " - "
 						+ evaluationModel.getSentence());
 				writer.newLine();
 			}
@@ -132,13 +130,11 @@ public class OutputService {
 		}
 	}
 
-	public void writeToEvaluationMetadataCsv(
-			List<EvaluationMetadata> metadataResults) {
+	public void writeToEvaluationMetadataCsv(List<EvaluationMetadata> metadataResults) {
 
 		CSVWriter writer = null;
 		try {
-			writer = new CSVWriter(new FileWriter(
-					config.getEvaluationMetadataFile(), true));
+			writer = new CSVWriter(new FileWriter(config.getEvaluationMetadataFile(), true));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -155,6 +151,36 @@ public class OutputService {
 			writer.writeNext(new String[0]);
 			writer.close();
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void writeMapToDetailedReportsFile(List<LinkedHashMap<String, String>> detailedReportsMaps) {
+		try {
+			final File file = new File(config.getDetailedEvaluationMetadataFile());
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+
+			final BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
+
+			writer.append("Number of seeds: " + detailedReportsMaps.get(0).get("Number of Seeds")
+					+ " Target Threshold: " + detailedReportsMaps.get(0).get("Target Frequency Threshold")
+					+ " Polarity Threshold: " + detailedReportsMaps.get(0).get("Polarity Threshold")
+					+ " All relations: " + RelationsContainer.getAllEnumElementsAsString() 
+					+ " Custom Text " + "\n");
+
+			for (HashMap<String, String> map : detailedReportsMaps) {
+				System.out.println(map.toString());
+				writer.append(map.toString() + "\n");
+			}
+			writer.newLine();
+
+			writer.flush();
+			writer.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

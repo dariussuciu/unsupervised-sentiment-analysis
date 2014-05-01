@@ -43,9 +43,9 @@ public class OpinionWordExtractionEvaluationService extends EvaluationService {
 				{
 					if(tuple.getSentenceIndex() == opinionWord.getSentenceIndex())
 					{
-						 System.out.println(opinionWord.getValue() +
-								 opinionWord.getPosTag() + " - " +
-								 opinionWord.getSentenceIndex() + " - " + tuple.getSentence());
+//						 System.out.println(opinionWord.getValue() +
+//								 opinionWord.getPosTag() + " - " +
+//								 opinionWord.getSentenceIndex() + " - " + tuple.getSentence());
 						 break;
 					}
 				}

@@ -19,6 +19,7 @@ import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.modules.IO.CacheService;
+import com.unsupervisedsentiment.analysis.modules.IO.EvaluationModelsReportingService;
 import com.unsupervisedsentiment.analysis.modules.IO.InputService;
 import com.unsupervisedsentiment.analysis.modules.IO.InputWrapper;
 import com.unsupervisedsentiment.analysis.modules.IO.OutputService;
@@ -70,75 +71,39 @@ public class Main {
 
 			inputData.setFilename(input.getFilename());
 
-			List<EvaluationModel> opinionWordEvaluationModels = null;
-			List<EvaluationModel> targetEvaluationModels = null;
-
-			// check if already created OW and Target eval. models
-			String storedEvaluationModelsDirectory = Initializer.getConfig().getEvaluationModelsDirectory();
-
-			opinionWordEvaluationModels = cacheService.getStoredOrCreateNewEvaluationModel(
-					storedEvaluationModelsDirectory, input, false, ElementType.OPINION_WORD,
-					Constants.OPINION_WORD_EVAL_MODEL);
-			targetEvaluationModels = cacheService.getStoredOrCreateNewEvaluationModel(storedEvaluationModelsDirectory,
-					input, false, ElementType.FEATURE, Constants.TARGET_EVAL_MODEL);
-
 			inputData.setInput(input.getOriginalContent());
 			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
 
-			algorithm.execute(seedWords);
+			// the evaluation models are retrieved or created in the
+			// reportingService
+			EvaluationModelsReportingService reportingService = new EvaluationModelsReportingService(config, input);
+
+			algorithm.execute(seedWords, reportingService);
+			// alg is done
 			long elapsedTime = System.currentTimeMillis() - currentTime;
 			System.out.println("Elapsed time: " + elapsedTime + " ms");
 
 			Set<Tuple> featureTuples = algorithm.getData().getFeatureTuples();
-
 			Set<Tuple> opinionWordTuples = algorithm.getData().getExpandedOpinionWordsTuples();
 
-			LinkedHashSet<Tuple> combinedTuples = new LinkedHashSet<Tuple>();
+			LinkedHashSet<Tuple> resultTuples = new LinkedHashSet<Tuple>();
+			resultTuples.addAll(featureTuples);
+			resultTuples.addAll(opinionWordTuples);
 
+			// this output should only be written once per file
+			outputFiles.add(outputService.createOutputWrapperFromInput(input, resultTuples));
+			metadataResults.add(reportingService.outputAndGetEvaluationMetadataResults(resultTuples, seedWords.size(),
+					algorithm.getNumberOfIterations(), elapsedTime));
+
+			/*
+			 * Vlad's part
+			 */
 			Classification classification = new Classification();
 			classification.assignScoresBasedOnSeeds(featureTuples);
 			// classification.assignSentiWordScores(featureTuples);
 
 			classification = new Classification();
 			classification.assignScoresBasedOnSeeds(opinionWordTuples);
-
-			combinedTuples.addAll(featureTuples);
-			combinedTuples.addAll(opinionWordTuples);
-
-			LinkedHashSet<Tuple> resultTuples = new LinkedHashSet<Tuple>();
-
-			resultTuples = combinedTuples;
-
-			OutputWrapper outputFile = new OutputWrapper();
-
-			outputFile.setAuthor(input.getAuthor());
-			outputFile.setFilename(input.getFilename());
-			outputFile.setSource(input.getSource());
-			outputFile.setTuples(resultTuples);
-			outputFiles.add(outputFile);
-
-			OpinionWordExtractionEvaluationService extractionEvaluationService = new OpinionWordExtractionEvaluationService(
-					opinionWordEvaluationModels, resultTuples);
-			EvaluationResult extractionEvaluationResult = extractionEvaluationService.getResults();
-			System.out.println("Precision : " + extractionEvaluationResult.getPrecision());
-			System.out.println("Recall : " + extractionEvaluationResult.getRecall());
-			System.out.println("-----------------------------------------");
-
-			TargetExtractionEvaluationService targetEvaluationService = new TargetExtractionEvaluationService(
-					targetEvaluationModels, resultTuples);
-			EvaluationResult targetEvaluationResult = targetEvaluationService.getResults();
-			System.out.println("Target Extraction Precision : " + targetEvaluationResult.getPrecision());
-			System.out.println("Target Extraction Recall : " + targetEvaluationResult.getRecall());
-			System.out.println("-----------------------------------------");
-
-			metadataResults.add(new EvaluationMetadata(Constants.sdf.format(new Date()), config.getSeedType(), input
-					.getFilename(), String.valueOf(seedWords.size()),
-					String.valueOf(algorithm.getNumberOfIterations()), String.valueOf(elapsedTime),
-					new ResultPrecRecall(String.valueOf(extractionEvaluationResult.getPrecision()), String
-							.valueOf(extractionEvaluationResult.getRecall())), new ResultPrecRecall(String
-							.valueOf(extractionEvaluationResult.getPrecision()), String
-							.valueOf(extractionEvaluationResult.getRecall())), config.getPolarityThreshold(),
-					RelationsContainer.getAllEnumElementsAsString()));
 
 			// List<EvaluationModel> scoreEvaluationModels = Helpers
 			// .getEvaluationModels(storedEvaluationModelsDirectory,

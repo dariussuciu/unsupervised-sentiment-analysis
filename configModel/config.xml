@@ -23,6 +23,9 @@
 	<evaluationMetadataFile>
 		C:\Users\Alex\Desktop\Research\Project\Output\EvaluationMetadata.csv
 	</evaluationMetadataFile>
+	<detailedEvaluationMetadataFile>
+		C:\Users\Alex\Desktop\Research\Project\Output\DetailedEvaluationMetadata.txt
+	</detailedEvaluationMetadataFile>
 	<numberOfSeeds>
 		MAX
 	</numberOfSeeds>
@@ -35,6 +38,9 @@
 	<scoringThreshold>
 	0.3
 	</scoringThreshold>
+	<targetFrequencyThreshold>
+		2
+	</targetFrequencyThreshold>
 	<seedWords>
 		<seedWord>
 			good

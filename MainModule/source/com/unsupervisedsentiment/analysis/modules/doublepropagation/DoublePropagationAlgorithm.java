@@ -9,6 +9,7 @@ import com.unsupervisedsentiment.analysis.core.constants.Constants;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.modules.IO.CacheService;
+import com.unsupervisedsentiment.analysis.modules.IO.EvaluationModelsReportingService;
 import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 import com.unsupervisedsentiment.analysis.modules.targetextraction.IOpinionWordExtractorService;
 import com.unsupervisedsentiment.analysis.modules.targetextraction.ITargetExtractorService;
@@ -43,12 +44,22 @@ public class DoublePropagationAlgorithm {
 		setNumberOfIterations(1);
 	}
 
-	public DoublePropagationData execute(final HashSet<Tuple> seedWords) {
+	public DoublePropagationData execute(final HashSet<Tuple> seedWords,
+			EvaluationModelsReportingService reportingService) {
 		initialize(seedWords);
 		do {
+
+			long elapsedTime = System.currentTimeMillis();
 			executeStep();
+			elapsedTime = System.currentTimeMillis() - elapsedTime;
+
+			reportingService.addToDetailedReportingMaps(getResultTuplesForCurrentIteration(), getNumberOfIterations(),
+					elapsedTime);
+
+			setNumberOfIterations(getNumberOfIterations() + 1);
 		} while (featuresIteration1.size() > 0 && opinionWordsIteration1.size() > 0);
 
+		reportingService.outputDetailedReportMaps();
 		return data;
 	}
 
@@ -73,7 +84,6 @@ public class DoublePropagationAlgorithm {
 
 	private void executeStep() {
 		System.out.println("Iteration: " + getNumberOfIterations());
-		setNumberOfIterations(getNumberOfIterations() + 1);
 		resetIterationFeaturesAndOpinionWords();
 
 		for (int i = 0; i < data.getSentancesSemanticGraphs().size(); i++) {
@@ -106,6 +116,14 @@ public class DoublePropagationAlgorithm {
 		opinionWordsIteration1 = new LinkedHashSet<Tuple>();
 		featuresIteration2 = new LinkedHashSet<Tuple>();
 		opinionWordsIteration2 = new LinkedHashSet<Tuple>();
+	}
+
+	private LinkedHashSet<Tuple> getResultTuplesForCurrentIteration() {
+		LinkedHashSet<Tuple> resultTuples = new LinkedHashSet<Tuple>();
+
+		resultTuples.addAll(data.getFeatureTuples());
+		resultTuples.addAll(data.getExpandedOpinionWordsTuples());
+		return resultTuples;
 	}
 
 	public int getNumberOfIterations() {
