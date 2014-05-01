@@ -27,6 +27,9 @@ public abstract class EvaluationService {
 		EvaluationResult result = new EvaluationResult();
 		result.setPrecision(getPrecision());
 		result.setRecall(getRecall());
+		result.setTruePositive((int) truePositive);
+		result.setFalseNegative((int) falseNegative);
+		result.setFalsePositive((int) falsePositive);
 		return result;
 	}
 

@@ -95,7 +95,8 @@ public class EvaluationModelsReportingService {
 				config.getSeedWords().size(), config.getTargetFrequencyThreshold(), config.getPolarityThreshold(),
 				extractionEvaluationResult.getPrecision(), extractionEvaluationResult.getRecall(),
 				targetEvaluationResult.getPrecision(), targetEvaluationResult.getRecall(),
-				RelationsContainer.getAllEnumElementsAsString(), elapsedTime);
+				RelationsContainer.getAllEnumElementsAsString(), extractionEvaluationResult, targetEvaluationResult,
+				elapsedTime);
 
 		detailedReportMaps.add(detailedResultHashMap);
 	}
@@ -107,10 +108,11 @@ public class EvaluationModelsReportingService {
 	private LinkedHashMap<String, String> createValueMapForDetailedReporting(int iterationNumber,
 			int numberOfSeedWords, String targetFrequencyThreshold, String polarityThreshold,
 			double opinionWordPrecision, double opinionWordRecall, double targetPrecision, double targetRecall,
-			String allRelations, long elapsedTime) {
+			String allRelations, EvaluationResult extractionEvaluationResult, EvaluationResult targetEvaluationResult,
+			long elapsedTime) {
 
 		LinkedHashMap<String, String> detailedReportMap = new LinkedHashMap<String, String>();
-		
+
 		detailedReportMap.put("Iteration Number", String.valueOf(iterationNumber));
 		detailedReportMap.put("Number of Seeds", String.valueOf(numberOfSeedWords));
 		detailedReportMap.put("Target Frequency Threshold", targetFrequencyThreshold);
@@ -119,6 +121,15 @@ public class EvaluationModelsReportingService {
 		detailedReportMap.put("Opinion Word Recall", String.valueOf(opinionWordRecall));
 		detailedReportMap.put("Target Precision", String.valueOf(targetPrecision));
 		detailedReportMap.put("Target Recall", String.valueOf(targetRecall));
+
+		detailedReportMap.put("OW True Positive", String.valueOf(extractionEvaluationResult.getTruePositive()));
+		detailedReportMap.put("OW False Negative", String.valueOf(extractionEvaluationResult.getFalseNegative()));
+		detailedReportMap.put("OW False Positive", String.valueOf(extractionEvaluationResult.getFalsePositive()));
+
+		detailedReportMap.put("Target True Positive", String.valueOf(targetEvaluationResult.getTruePositive()));
+		detailedReportMap.put("Target False Negative", String.valueOf(targetEvaluationResult.getFalseNegative()));
+		detailedReportMap.put("Target False Positive", String.valueOf(targetEvaluationResult.getFalsePositive()));
+
 		detailedReportMap.put("Elapsed Time", String.valueOf(elapsedTime));
 
 		return detailedReportMap;
