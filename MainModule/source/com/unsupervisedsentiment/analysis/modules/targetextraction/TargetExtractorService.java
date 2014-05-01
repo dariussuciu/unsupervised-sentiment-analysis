@@ -19,6 +19,18 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 
 public class TargetExtractorService implements ITargetExtractorService {
 
+	private static ITargetExtractorService instance;
+
+	public static ITargetExtractorService getInstance() {
+		if (instance == null)
+			instance = new TargetExtractorService();
+
+		return instance;
+	}
+
+	private TargetExtractorService() {
+	}
+
 	@Override
 	public Set<Tuple> extractTargetsUsingR1(final SemanticGraph semanticGraph,
 			final Set<Word> opinionWords, final Set<Tuple> existingFeatures,
@@ -37,11 +49,11 @@ public class TargetExtractorService implements ITargetExtractorService {
 			final Set<Word> features, final Set<Tuple> existingFeatures,
 			final int semanticGraphIndex) {
 		final Set<Tuple> foundTargets = new HashSet<Tuple>();
-		//Removed due to better results without
-		//foundTargets.addAll(extractTargetsUsingR31(semanticGraph, features,
-		//		existingFeatures, ElementType.FEATURE, semanticGraphIndex));
-		//foundTargets.addAll(extractTargetsUsingR32(semanticGraph, features,
-		//		existingFeatures, ElementType.FEATURE, semanticGraphIndex));
+		// Removed due to better results without
+		// foundTargets.addAll(extractTargetsUsingR31(semanticGraph, features,
+		// existingFeatures, ElementType.FEATURE, semanticGraphIndex));
+		// foundTargets.addAll(extractTargetsUsingR32(semanticGraph, features,
+		// existingFeatures, ElementType.FEATURE, semanticGraphIndex));
 		return foundTargets;
 	}
 
@@ -49,8 +61,8 @@ public class TargetExtractorService implements ITargetExtractorService {
 			Set<Word> opinionWords, Set<Tuple> existingFeatures,
 			ElementType targetType, int semanticGraphIndex) {
 		Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph,
-				opinionWords, Dep_MRRel.getInstance(), Pos_JJRel.getInstance(), Pos_NNRel.getInstance(),
-				targetType, semanticGraphIndex);
+				opinionWords, Dep_MRRel.getInstance(), Pos_JJRel.getInstance(),
+				Pos_NNRel.getInstance(), targetType, semanticGraphIndex);
 		return Helpers.getNewTuples(foundTargets, existingFeatures);
 	}
 
@@ -114,8 +126,8 @@ public class TargetExtractorService implements ITargetExtractorService {
 			final Set<Word> features, final Set<Tuple> existingFeatures,
 			final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph,
-				features, Dep_ConjRel.getInstance(), Pos_NNRel.getInstance(), Pos_NNRel.getInstance(),
-				targetType, semanticGraphIndex);
+				features, Dep_ConjRel.getInstance(), Pos_NNRel.getInstance(),
+				Pos_NNRel.getInstance(), targetType, semanticGraphIndex);
 		return Helpers.getNewTuples(foundTargets, existingFeatures);
 	}
 
@@ -135,7 +147,9 @@ public class TargetExtractorService implements ITargetExtractorService {
 					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToHOnEquivalency(semanticGraph,
 									feature, edgeWithH, edgeWithH.getTarget(),
-									true, Dep_ConjRel.getInstance(), Pos_NNRel.getInstance(), Pos_NNRel.getInstance(), targetType,
+									true, Dep_ConjRel.getInstance(),
+									Pos_NNRel.getInstance(),
+									Pos_NNRel.getInstance(), targetType,
 									semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets,
 							existingFeatures));
@@ -153,7 +167,9 @@ public class TargetExtractorService implements ITargetExtractorService {
 					final Set<Tuple> foundTargets = Helpers
 							.getTriplesRelativeToHOnEquivalency(semanticGraph,
 									feature, edgeWithH, edgeWithH.getSource(),
-									false, Dep_ConjRel.getInstance(), Pos_NNRel.getInstance(), Pos_NNRel.getInstance(), targetType,
+									false, Dep_ConjRel.getInstance(),
+									Pos_NNRel.getInstance(),
+									Pos_NNRel.getInstance(), targetType,
 									semanticGraphIndex);
 					targets.addAll(Helpers.getNewTuples(foundTargets,
 							existingFeatures));

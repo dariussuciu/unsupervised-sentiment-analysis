@@ -19,30 +19,42 @@ public class DoublePropagationAlgorithm {
 
 	private IOpinionWordExtractorService opinionWordExtractorService;
 	private ITargetExtractorService targetExtractorService;
-	private DoublePropagationData data;
-	private int numberOfIterations;
+	private NLPService nlpService;
 
-	public DoublePropagationData getData() {
-		return data;
-	}
+	private final DoublePropagationData data;
+	private int numberOfIterations;
 
 	private LinkedHashSet<Tuple> featuresIteration1;
 	private LinkedHashSet<Tuple> opinionWordsIteration1;
 	private LinkedHashSet<Tuple> featuresIteration2;
 	private LinkedHashSet<Tuple> opinionWordsIteration2;
-	private NLPService nlpService;
 
-	public DoublePropagationAlgorithm(DoublePropagationData data) {
-		opinionWordExtractorService = new OpinionWordExtractorService();
-		targetExtractorService = new TargetExtractorService();
-		this.data = data;
+	public DoublePropagationAlgorithm(final DoublePropagationData data) {
+		opinionWordExtractorService = OpinionWordExtractorService.getInstance();
+		targetExtractorService = TargetExtractorService.getInstance();
 		nlpService = NLPService.getInstance();
+
+		this.data = data;
+
+		setNumberOfIterations(1);
+	}
+
+	public DoublePropagationData execute(final HashSet<Tuple> seedWords) {
+		initialize(seedWords);
+		do {
+			executeStep();
+		} while (featuresIteration1.size() > 0
+				&& opinionWordsIteration1.size() > 0);
+
+		return data;
 	}
 
 	private void initialize(HashSet<Tuple> seedWords) {
 		data.setExpandedOpinionWords(new LinkedHashSet<Tuple>());
+
 		String storedSemanticGraphsDirectory = Initializer.getConfig()
 				.getStoredSemanticGraphsDirectory();
+
 		if (Helpers.existsObjectsForFile(storedSemanticGraphsDirectory,
 				data.getFilename(), "SemanticGraph")) {
 			data.setSentancesSemanticGraphs(Helpers
@@ -58,16 +70,6 @@ public class DoublePropagationAlgorithm {
 			data.setSentancesSemanticGraphs(semanticGraphsListForSentances);
 		}
 		data.setExpandedOpinionWords(new LinkedHashSet<Tuple>(seedWords));
-	}
-
-	public DoublePropagationData execute(final HashSet<Tuple> seedWords) {
-		initialize(seedWords);
-		do {
-			executeStep();
-		} while (featuresIteration1.size() > 0
-				&& opinionWordsIteration1.size() > 0);
-
-		return data;
 	}
 
 	private void executeStep() {
@@ -109,7 +111,7 @@ public class DoublePropagationAlgorithm {
 		data.getExpandedOpinionWordsTuples().addAll(opinionWordsIteration2);
 	}
 
-	void resetIterationFeaturesAndOpinionWords() {
+	private void resetIterationFeaturesAndOpinionWords() {
 		featuresIteration1 = new LinkedHashSet<Tuple>();
 		opinionWordsIteration1 = new LinkedHashSet<Tuple>();
 		featuresIteration2 = new LinkedHashSet<Tuple>();
@@ -123,4 +125,9 @@ public class DoublePropagationAlgorithm {
 	private void setNumberOfIterations(int numberOfIterations) {
 		this.numberOfIterations = numberOfIterations;
 	}
+
+	public DoublePropagationData getData() {
+		return data;
+	}
+
 }
