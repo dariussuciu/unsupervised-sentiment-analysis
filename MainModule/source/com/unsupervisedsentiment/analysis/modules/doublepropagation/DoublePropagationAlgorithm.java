@@ -68,17 +68,10 @@ public class DoublePropagationAlgorithm {
 
 		String storedSemanticGraphsDirectory = Initializer.getConfig().getStoredSemanticGraphsDirectory();
 
-		if (cacheService.existsObjectsForFile(storedSemanticGraphsDirectory, data.getFilename(),
-				Constants.SEMANTIC_GRAPH)) {
-			data.setSentancesSemanticGraphs(cacheService.<SemanticGraph> getObjectsFromFile(
-					storedSemanticGraphsDirectory, data.getFilename(), Constants.SEMANTIC_GRAPH));
-		} else {
-			List<SemanticGraph> semanticGraphsListForSentances = nlpService.createSemanticGraphsListForSentances(data
-					.getInput());
-			cacheService.saveObjectsToFile(semanticGraphsListForSentances, storedSemanticGraphsDirectory,
-					data.getFilename(), Constants.SEMANTIC_GRAPH);
-			data.setSentancesSemanticGraphs(semanticGraphsListForSentances);
-		}
+		List<SemanticGraph> cachedObjects = cacheService.getOrCreateSemanticGraphForFile(storedSemanticGraphsDirectory,
+				data.getFilename(), data.getInput());
+
+		data.setSentancesSemanticGraphs(cachedObjects);
 		data.setExpandedOpinionWords(new LinkedHashSet<Tuple>(seedWords));
 	}
 
