@@ -58,8 +58,8 @@ public class CacheService {
 			InputWrapper input, boolean forScoring, ElementType elementType, String evaluationModelType) {
 
 		if (existsObjectsForFile(storedEvaluationModelsDirectory, input.getFilename(), evaluationModelType)) {
-			return getStoredEvaluationModels(storedEvaluationModelsDirectory, input.getFilename(), forScoring,
-					elementType, evaluationModelType);
+			return this.<EvaluationModel> getObjectsFromFile(storedEvaluationModelsDirectory, input.getFilename(),
+					evaluationModelType);
 		} else {
 			return createNewEvaluationModel(storedEvaluationModelsDirectory, input, forScoring, elementType,
 					evaluationModelType);
@@ -153,13 +153,6 @@ public class CacheService {
 				input.getContent());
 		evaluationModels = NLPService.getInstance().getEvaluationModels(semanticGraphs, forScoring, elementType);
 		saveObjectsToFile(evaluationModels, directory, input.getFilename(), storedFileName);
-		return evaluationModels;
-	}
-
-	private List<EvaluationModel> getStoredEvaluationModels(String directory, String filename, boolean forScoring,
-			ElementType elementType, String storedFileName) {
-		List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
-		evaluationModels = this.<EvaluationModel> getObjectsFromFile(directory, filename, storedFileName);
 		return evaluationModels;
 	}
 
