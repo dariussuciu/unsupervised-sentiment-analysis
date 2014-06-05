@@ -36,7 +36,7 @@
 		0.01
 	</polarityThreshold>
 	<scoringThreshold>
-	0.3
+		0.3
 	</scoringThreshold>
 	<targetFrequencyThreshold>
 		2

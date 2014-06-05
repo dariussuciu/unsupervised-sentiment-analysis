@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.unsupervisedsentiment.analysis.core.Config;
 import com.unsupervisedsentiment.analysis.core.constants.Constants;
-import com.unsupervisedsentiment.analysis.core.constants.relations.RelationsContainer;
+import com.unsupervisedsentiment.analysis.core.constants.relations.GeneralPosRelationContainer;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.ResultPrecRecall;
@@ -78,7 +78,7 @@ public class EvaluationModelsReportingService {
 						.getPrecision()), String.valueOf(extractionEvaluationResult.getRecall())),
 				new ResultPrecRecall(String.valueOf(targetEvaluationResult.getPrecision()), String
 						.valueOf(targetEvaluationResult.getRecall())), config.getPolarityThreshold(),
-				RelationsContainer.getAllEnumElementsAsString());
+				GeneralPosRelationContainer.getAllEnumElementsAsString());
 		return metadata;
 	};
 
@@ -95,7 +95,7 @@ public class EvaluationModelsReportingService {
 				config.getSeedWords().size(), config.getTargetFrequencyThreshold(), config.getPolarityThreshold(),
 				extractionEvaluationResult.getPrecision(), extractionEvaluationResult.getRecall(),
 				targetEvaluationResult.getPrecision(), targetEvaluationResult.getRecall(),
-				RelationsContainer.getAllEnumElementsAsString(), extractionEvaluationResult, targetEvaluationResult,
+				GeneralPosRelationContainer.getAllEnumElementsAsString(), extractionEvaluationResult, targetEvaluationResult,
 				elapsedTime);
 
 		detailedReportMaps.add(detailedResultHashMap);

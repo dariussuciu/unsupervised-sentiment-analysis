@@ -9,7 +9,7 @@ import com.unsupervisedsentiment.analysis.classification.ISentimentScoreSource;
 import com.unsupervisedsentiment.analysis.classification.SentiWordNetService;
 import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.core.constants.RelationEquivalency;
-import com.unsupervisedsentiment.analysis.core.constants.relations.GenericRelation;
+import com.unsupervisedsentiment.analysis.core.constants.relations.GeneralPosRelationEnum;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_NNRel;
 import com.unsupervisedsentiment.analysis.model.Dependency;
@@ -39,8 +39,8 @@ public class Helpers {
 	 */
 	public static List<SemanticGraphEdge> getTargetEdgesOnEdge(
 			final Iterable<SemanticGraphEdge> edges,
-			final GenericRelation sourceType, final GenericRelation targetType,
-			final GenericRelation relationType, final boolean isSource) {
+			final GeneralPosRelationEnum sourceType, final GeneralPosRelationEnum targetType,
+			final GeneralPosRelationEnum relationType, final boolean isSource) {
 		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 
 		for (SemanticGraphEdge edge : edges) {
@@ -72,8 +72,8 @@ public class Helpers {
 	 */
 	public static List<SemanticGraphEdge> getTargetEdgesOnEdgeAndSource(
 			final Iterable<SemanticGraphEdge> edges, final Word source,
-			final GenericRelation sourceType, final GenericRelation targetType,
-			final GenericRelation relationType, final boolean isSource) {
+			final GeneralPosRelationEnum sourceType, final GeneralPosRelationEnum targetType,
+			final GeneralPosRelationEnum relationType, final boolean isSource) {
 		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 
 		for (SemanticGraphEdge edge : edges) {
@@ -104,7 +104,7 @@ public class Helpers {
 	 */
 	public static List<SemanticGraphEdge> getTargetEdgesOnRel(
 			final Iterable<SemanticGraphEdge> edges,
-			final GenericRelation relationType) {
+			final GeneralPosRelationEnum relationType) {
 		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 
 		for (SemanticGraphEdge edge : edges) {
@@ -127,7 +127,7 @@ public class Helpers {
 	 */
 	public static List<SemanticGraphEdge> getTargetEdgesOnTarget(
 			final Iterable<SemanticGraphEdge> edges,
-			final GenericRelation targetType, final boolean isSource) {
+			final GeneralPosRelationEnum targetType, final boolean isSource) {
 		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 
 		for (SemanticGraphEdge edge : edges) {
@@ -176,7 +176,7 @@ public class Helpers {
 	public static boolean checkEquivalentRelations(
 			final GrammaticalRelation relationSourceH,
 			final GrammaticalRelation relationTargetH,
-			final GenericRelation relationType) {
+			final GeneralPosRelationEnum relationType) {
 		// equivalency from Stanford, keep for know, until we know more about
 		// how it decides when relations
 		// are equivalent
@@ -221,8 +221,8 @@ public class Helpers {
 	}
 
 	public static Set<Tuple> extractTargets(final SemanticGraph semanticGraph,
-			final Set<Word> words, final GenericRelation relationType,
-			final GenericRelation sourcePos, final GenericRelation targetPos,
+			final Set<Word> words, final GeneralPosRelationEnum relationType,
+			final GeneralPosRelationEnum sourcePos, final GeneralPosRelationEnum targetPos,
 			final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> targets = new HashSet<Tuple>();
 
@@ -267,8 +267,8 @@ public class Helpers {
 	public static Set<Tuple> getTriplesRelativeToH(
 			final SemanticGraph semanticGraph, final Word source,
 			final SemanticGraphEdge edgeWithH, final IndexedWord H,
-			final boolean isSource, final GenericRelation sourcePos,
-			final GenericRelation targetPos, final GenericRelation relationPos,
+			final boolean isSource, final GeneralPosRelationEnum sourcePos,
+			final GeneralPosRelationEnum targetPos, final GeneralPosRelationEnum relationPos,
 			final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> targets = new HashSet<Tuple>();
 		// for incoming target edges
@@ -309,7 +309,7 @@ public class Helpers {
 
 	public static boolean validateTriple(final Word source,
 			final IndexedWord target, final IndexedWord H,
-			final GenericRelation sourcePos, final GenericRelation targetPos) {
+			final GeneralPosRelationEnum sourcePos, final GeneralPosRelationEnum targetPos) {
 		final String sourceWord = source.getValue();
 		final String targetWord = target.value();
 		final String hWord = H.value();
@@ -369,8 +369,8 @@ public class Helpers {
 	public static Set<Tuple> getTriplesRelativeToHOnEquivalency(
 			final SemanticGraph semanticGraph, final Word source,
 			final SemanticGraphEdge edgeWithH, final IndexedWord H,
-			final boolean isSource, final GenericRelation relationPos,
-			final GenericRelation sourcePos, final GenericRelation targetPos,
+			final boolean isSource, final GeneralPosRelationEnum relationPos,
+			final GeneralPosRelationEnum sourcePos, final GeneralPosRelationEnum targetPos,
 			final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> targets = new HashSet<Tuple>();
 		// for incoming target edges

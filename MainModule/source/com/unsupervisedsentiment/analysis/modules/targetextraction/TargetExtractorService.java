@@ -171,8 +171,7 @@ public class TargetExtractorService implements ITargetExtractorService {
 									Pos_NNRel.getInstance(),
 									Pos_NNRel.getInstance(), targetType,
 									semanticGraphIndex);
-					targets.addAll(Helpers.getNewTuples(foundTargets,
-							existingFeatures));
+					targets.addAll(Helpers.getNewTuples(foundTargets, existingFeatures));
 
 					// targets.addAll(Helpers.getTriplesRelativeToHOnEquivalency(semanticGraph,
 					// feature,

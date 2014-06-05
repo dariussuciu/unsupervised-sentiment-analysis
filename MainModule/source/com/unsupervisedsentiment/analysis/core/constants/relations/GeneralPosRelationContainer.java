@@ -1,6 +1,6 @@
 package com.unsupervisedsentiment.analysis.core.constants.relations;
 
-public class RelationsContainer {
+public class GeneralPosRelationContainer {
 
 	public static Dep_MRRel DEP_MR = Dep_MRRel.getInstance();
 	public static Dep_ConjRel DEP_CONJ = Dep_ConjRel.getInstance();

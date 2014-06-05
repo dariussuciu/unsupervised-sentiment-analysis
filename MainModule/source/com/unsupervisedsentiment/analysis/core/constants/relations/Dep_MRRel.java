@@ -1,6 +1,6 @@
 package com.unsupervisedsentiment.analysis.core.constants.relations;
 
-public class Dep_MRRel extends GenericRelation {
+public class Dep_MRRel extends GeneralPosRelationEnum {
 
 	/**
 	 * Removed: <br>

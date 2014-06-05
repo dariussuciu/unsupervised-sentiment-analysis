@@ -1,6 +1,6 @@
 package com.unsupervisedsentiment.analysis.core.constants.relations;
 
-public class Dep_ConjRel extends GenericRelation {
+public class Dep_ConjRel extends GeneralPosRelationEnum {
 	public static enum CONJ {
 		conj, conj_and
 	}

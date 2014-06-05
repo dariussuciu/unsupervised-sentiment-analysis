@@ -1,6 +1,6 @@
 package com.unsupervisedsentiment.analysis.core.constants.relations;
 
-public class Pos_NNRel extends GenericRelation {
+public class Pos_NNRel extends GeneralPosRelationEnum {
 	/*
 	 * Added: - PRP - she / he
 	 */

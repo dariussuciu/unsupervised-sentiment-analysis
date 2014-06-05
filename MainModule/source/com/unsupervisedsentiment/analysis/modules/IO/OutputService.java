@@ -13,7 +13,7 @@ import java.util.Set;
 import au.com.bytecode.opencsv.CSVWriter;
 
 import com.unsupervisedsentiment.analysis.core.Config;
-import com.unsupervisedsentiment.analysis.core.constants.relations.RelationsContainer;
+import com.unsupervisedsentiment.analysis.core.constants.relations.GeneralPosRelationContainer;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Triple;
@@ -168,7 +168,7 @@ public class OutputService {
 					+ detailedReportsMaps.get(0).get("Number of Seeds") + " Target Threshold: "
 					+ detailedReportsMaps.get(0).get("Target Frequency Threshold") + " Polarity Threshold: "
 					+ detailedReportsMaps.get(0).get("Polarity Threshold") + " All relations: "
-					+ RelationsContainer.getAllEnumElementsAsString() + " Custom Text " + "\n");
+					+ GeneralPosRelationContainer.getAllEnumElementsAsString() + " Custom Text " + "\n");
 
 			for (HashMap<String, String> map : detailedReportsMaps) {
 				System.out.println(map.toString());
