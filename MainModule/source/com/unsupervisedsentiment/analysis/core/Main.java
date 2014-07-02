@@ -113,12 +113,21 @@ public class Main {
 			LinkedHashSet<Tuple> combinedTuples = new LinkedHashSet<Tuple>();
 
 			Classification classification = new Classification();
-			classification.assignScoresBasedOnSeeds(featureTuples);
+			ArrayList<Tuple> ff = classification.assignScoresBasedOnSeeds(featureTuples);
+			ArrayList<Tuple> fff = ff;
 			// classification.assignSentiWordScores(featureTuples);
 
 			classification = new Classification();
-			classification.assignScoresBasedOnSeeds(opinionWordTuples);
+			ArrayList<Tuple> ow = classification.assignScoresBasedOnSeeds(opinionWordTuples);
+			ArrayList<Tuple> oww = ow;
+			/*
+			Classification classification2 = new Classification();
+			classification2.assignScoresBasedOnSeeds(featureTuples);
+			// classification.assignSentiWordScores(featureTuples);
 
+			classification2 = new Classification();
+			classification2.assignScoresBasedOnSeeds(opinionWordTuples);
+*/
 			combinedTuples.addAll(featureTuples);
 			combinedTuples.addAll(opinionWordTuples);
 
@@ -164,37 +173,38 @@ public class Main {
 					.getPolarityThreshold(), RelationsContainer
 					.getAllEnumElementsAsString()));
 
-//			List<EvaluationModel> scoreEvaluationModels = Helpers
-//					.getEvaluationModels(storedEvaluationModelsDirectory,
-//							input, true, ElementType.OPINION_WORD,
-//							"OpinionWordEvaluationModel");
-//			
-//			ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
-//					combinedTuples);
+			List<EvaluationModel> scoreEvaluationModels = Helpers
+					.getEvaluationModels(storedEvaluationModelsDirectory,
+							input, true, ElementType.OPINION_WORD,
+							"ScoreEvaluationModel");
+			
+			ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
+					combinedTuples);
 
-//			List<Word> foundOpinionWords = Helpers.ExtractElements(resultTuples, ElementType.OPINION_WORD);
-//			for(Word foundOpinionWord : foundOpinionWords)
-//			{
-//				Tuple seed = new Tuple();
-//				seed.setSource(foundOpinionWord);
-//				seed.setTupleType(TupleType.Seed);
-//				seed.setSentenceIndex(-1);
-//				seed.setSentence(null);
-//				seedWords.add(seed);
-//			}		
+			List<Word> foundOpinionWords = Helpers.ExtractElements(resultTuples, ElementType.OPINION_WORD);
+			for(Word foundOpinionWord : foundOpinionWords)
+			{
+				Tuple seed = new Tuple();
+				seed.setSource(foundOpinionWord);
+				seed.setTupleType(TupleType.Seed);
+				seed.setSentenceIndex(-1);
+				seed.setSentence(null);
+				seedWords.add(seed);
+			}		
 			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(
 					featureTuples);
-			// System.out.println("Total score for this document: "
-			// + classification.computeOverallScore(opinionWordTuplesAL));
+			 System.out.println("Total score for this document: "
+			 + classification.computeOverallScore(opinionWordTuplesAL));
 
-			// String targetString = "camera";
-			// System.out.println("Average score for target "
-			// + targetString
-			// + " is: "
-			// + classification.getAverageScoreForTarget(targetString,
-			// opinionWordTuplesAL));
+			 String targetString = "camera";
+			 System.out.println("Average score for target "
+			 + targetString
+			 + " is: "
+			 + classification.getAverageScoreForTarget(targetString,
+			 opinionWordTuplesAL));
 
 			HashMap<Double, Integer> distribution = classification.computeScoreDistribution(opinionWordTuplesAL);
+			HashMap<Double, Integer> dd = distribution;
 			// classification.assignSentiWordScores(opinionWordTuples);
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);

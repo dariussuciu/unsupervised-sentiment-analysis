@@ -11,6 +11,7 @@ import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
+import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 public class ScoreEvaluationService extends EvaluationService {
 	private double ACCEPTABLE_ERROR = 0.3;
@@ -27,62 +28,46 @@ public class ScoreEvaluationService extends EvaluationService {
 		truePositive = 0;
 		falsePositive = 0;
 		falseNegative = 0;
-
-		for (final Tuple tuple : tuples) {
-			if (tuple.getTupleType().equals(TupleType.Seed)
-					|| tuple.getElements(ElementType.OPINION_WORD).size() <= 0)
-				continue;
-
-			List<Word> opinionWords = tuple.getElements(ElementType.OPINION_WORD);
-			for (final Word opinionWord : opinionWords) {
-				boolean found = false;
-				for (final EvaluationModel model : evaluationModels) {
-					if (model.getSentenceIndex() == tuple.getSentenceIndex()) {
-						if (model.getOpinionWordScore() == Classification.DEFAULT_SCORE)
-							continue;
-						double assignedScore = opinionWord.getScore();
-						double annotatedScore = model.getOpinionWordScore();
-						if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
-							truePositive++;
-							found = true;
-							break;
-						}
+		
+		List<Word> opinionWords = Helpers.ExtractElements(tuples, ElementType.OPINION_WORD);
+		for (final Word opinionWord : opinionWords) {
+			boolean found = false;
+			for (final EvaluationModel model : evaluationModels) {
+				if (opinionWord.getSentenceIndex() == model.getSentenceIndex()) {
+					if (model.getOpinionWordScore() == Classification.DEFAULT_SCORE)
+						continue;
+					double assignedScore = opinionWord.getScore();
+					double annotatedScore = model.getOpinionWordScore();
+					if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
+						truePositive++;
+						found = true;
+						break;
 					}
 				}
+			}
 
-				if (!found) {
-					 System.out.println(tuple.getElements(ElementType.OPINION_WORD).get(0).getValue()+ " - "+
-					 tuple.getSentence());
-					
-					falsePositive++;
-				}
+			if (!found) {
+				
+				falsePositive++;
 			}
 		}
 
 		for (final EvaluationModel model : evaluationModels) {
 			boolean found = false;
-			for (final Tuple tuple : tuples) {
-				if (tuple.getTupleType().equals(TupleType.Seed)
-						|| tuple.getElements(ElementType.OPINION_WORD).size() <= 0)
+			for (final Word opinionWord : opinionWords) {
+				if (model.getOpinionWordScore() == Classification.DEFAULT_SCORE)
 					continue;
-				if (model.getSentenceIndex() == tuple.getSentenceIndex()) {
-					for (final Word opinionWord : tuple.getElements(ElementType.OPINION_WORD)) {
-						if (model.getOpinionWordScore() == Classification.DEFAULT_SCORE)
-							continue;
-						double assignedScore = opinionWord.getScore();
-						double annotatedScore = model.getOpinionWordScore();
-						if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
-							found = true;
-							break;
-						}
-					}
+				double assignedScore = opinionWord.getScore();
+				double annotatedScore = model.getOpinionWordScore();
+				if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
+					found = true;
+					break;
 				}
 			}
 
-			if (!found)
-//				System.out.println(model.getOpinionWord() + " (" + model.getSentenceIndex() + ") " + " - "
-//						+ model.getCleanSentence());
+			if (!found) {
 				falseNegative++;
+			}
 		}
 	}
 
