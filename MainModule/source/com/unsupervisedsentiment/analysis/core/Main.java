@@ -109,17 +109,29 @@ public class Main {
 
 			Set<Tuple> opinionWordTuples = algorithm.getData()
 					.getExpandedOpinionWordsTuples();
+			
+			LinkedHashSet<Tuple> combinedTuplesNoScores = new LinkedHashSet<Tuple>();
+			combinedTuplesNoScores.addAll(featureTuples);
+			combinedTuplesNoScores.addAll(opinionWordTuples);
+			
+			OutputWrapper outputFileBeforeScore = new OutputWrapper();
 
-			LinkedHashSet<Tuple> combinedTuples = new LinkedHashSet<Tuple>();
+			outputFileBeforeScore.setAuthor(input.getAuthor());
+			outputFileBeforeScore.setFilename(input.getFilename()+ "-BoforeScore");
+			outputFileBeforeScore.setSource(input.getSource());
+			outputFileBeforeScore.setTuples(combinedTuplesNoScores);
+			outputFiles.add(outputFileBeforeScore);
+
+			outputService.writeOutput(outputFiles);
+			
+			outputFiles.remove(outputFileBeforeScore);
 
 			Classification classification = new Classification();
-			ArrayList<Tuple> ff = classification.assignScoresBasedOnSeeds(featureTuples);
-			ArrayList<Tuple> fff = ff;
+			Set<Tuple> assignedFeatureTuples = classification.assignScoresBasedOnSeeds(featureTuples);
 			// classification.assignSentiWordScores(featureTuples);
 
 			classification = new Classification();
-			ArrayList<Tuple> ow = classification.assignScoresBasedOnSeeds(opinionWordTuples);
-			ArrayList<Tuple> oww = ow;
+			Set<Tuple> assignedOpinionWordTuples = classification.assignScoresBasedOnSeeds(opinionWordTuples);
 			/*
 			Classification classification2 = new Classification();
 			classification2.assignScoresBasedOnSeeds(featureTuples);
@@ -127,23 +139,24 @@ public class Main {
 
 			classification2 = new Classification();
 			classification2.assignScoresBasedOnSeeds(opinionWordTuples);
-*/
-			combinedTuples.addAll(featureTuples);
-			combinedTuples.addAll(opinionWordTuples);
+*/			
+			LinkedHashSet<Tuple> combinedTuples = new LinkedHashSet<Tuple>();
+			combinedTuples.addAll(assignedFeatureTuples);
+			combinedTuples.addAll(assignedOpinionWordTuples);
 
 			LinkedHashSet<Tuple> resultTuples = new LinkedHashSet<Tuple>();
 
 			resultTuples = combinedTuples;
 
-			OutputWrapper outputFile = new OutputWrapper();
+			OutputWrapper outputFileAfterScore = new OutputWrapper();
 
-			outputFile.setAuthor(input.getAuthor());
-			outputFile.setFilename(input.getFilename());
-			outputFile.setSource(input.getSource());
-			outputFile.setTuples(resultTuples);
-			outputFiles.add(outputFile);
+			outputFileAfterScore.setAuthor(input.getAuthor());
+			outputFileAfterScore.setFilename(input.getFilename()+ "-AfterScore");
+			outputFileAfterScore.setSource(input.getSource());
+			outputFileAfterScore.setTuples(combinedTuples);
+			outputFiles.add(outputFileAfterScore);
 
-			OpinionWordExtractionEvaluationService extractionEvaluationService = new OpinionWordExtractionEvaluationService(
+			/*OpinionWordExtractionEvaluationService extractionEvaluationService = new OpinionWordExtractionEvaluationService(
 					opinionWordEvaluationModels, resultTuples);
 			EvaluationResult extractionEvaluationResult = extractionEvaluationService
 					.getResults();
@@ -180,7 +193,7 @@ public class Main {
 			
 			ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
 					combinedTuples);
-
+*/
 			List<Word> foundOpinionWords = Helpers.ExtractElements(resultTuples, ElementType.OPINION_WORD);
 			for(Word foundOpinionWord : foundOpinionWords)
 			{
@@ -192,7 +205,7 @@ public class Main {
 				seedWords.add(seed);
 			}		
 			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(
-					featureTuples);
+					assignedFeatureTuples);
 			 System.out.println("Total score for this document: "
 			 + classification.computeOverallScore(opinionWordTuplesAL));
 
@@ -204,8 +217,7 @@ public class Main {
 			 opinionWordTuplesAL));
 
 			HashMap<Double, Integer> distribution = classification.computeScoreDistribution(opinionWordTuplesAL);
-			HashMap<Double, Integer> dd = distribution;
-			// classification.assignSentiWordScores(opinionWordTuples);
+			System.out.println ("Score distribution for this corpus: " + distribution.toString());
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);
 		outputService.writeOutput(outputFiles);
