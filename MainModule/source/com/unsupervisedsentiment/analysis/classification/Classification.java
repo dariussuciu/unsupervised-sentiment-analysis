@@ -2,7 +2,6 @@ package com.unsupervisedsentiment.analysis.classification;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +22,7 @@ public class Classification {
 		initReader();
 	}
 
-	public Set<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data) {
+	public ArrayList<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data) {
 
 		ArrayList<SeedScoreModel> seeds = polarityLexicon
 				.getSeedWordsWithScores();
@@ -40,9 +39,7 @@ public class Classification {
 				fullyAssignedTuples, seeds);
 
 		// printResults(fullyAssignedTuples);
-		
-		Set<Tuple> finalTuples = new HashSet<Tuple>(fullyAssignedTuples2);
-		return finalTuples;
+		return fullyAssignedTuples2;
 	}
 	
 	public double computeOverallScore(List<Tuple> data){

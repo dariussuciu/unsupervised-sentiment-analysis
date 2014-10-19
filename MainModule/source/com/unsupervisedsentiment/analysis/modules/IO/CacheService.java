@@ -25,6 +25,7 @@ import edu.stanford.nlp.semgraph.SemanticGraph;
 public class CacheService {
 
 	private static CacheService instance;
+	private final NLPService nlpService;
 
 	public static CacheService getInstance() {
 		if (instance == null)
@@ -34,6 +35,7 @@ public class CacheService {
 	}
 
 	private CacheService() {
+		this.nlpService = NLPService.getInstance();
 	};
 
 	/**
@@ -52,21 +54,43 @@ public class CacheService {
 	 *            the evaluation model type (see {@link Constants})
 	 * @return an evaluation model
 	 */
-	public List<EvaluationModel> getStoredOrCreateNewEvaluationModel(
-			String storedEvaluationModelsDirectory, InputWrapper input,
-			boolean forScoring, ElementType elementType,
-			String evaluationModelType) {
+	public List<EvaluationModel> getStoredOrCreateNewEvaluationModel(String storedEvaluationModelsDirectory,
+			InputWrapper input, boolean forScoring, ElementType elementType, String evaluationModelType) {
 
-		if (existsObjectsForFile(storedEvaluationModelsDirectory,
-				input.getFilename(), evaluationModelType)) {
-			List<EvaluationModel> evaluationModels = getStoredEvaluationModels(storedEvaluationModelsDirectory,
-					input.getFilename(), forScoring, elementType,
-					evaluationModelType); 
-			return evaluationModels;
+		if (existsObjectsForFile(storedEvaluationModelsDirectory, input.getFilename(), evaluationModelType)) {
+			return this.<EvaluationModel> getObjectsFromFile(storedEvaluationModelsDirectory, input.getFilename(),
+					evaluationModelType);
 		} else {
-			return getEvaluationModels(storedEvaluationModelsDirectory, input,
-					forScoring, elementType, evaluationModelType);
+			return createNewEvaluationModel(storedEvaluationModelsDirectory, input, forScoring, elementType,
+					evaluationModelType);
 		}
+	}
+
+	/**
+	 * Retrieves or creates semantic graphs for an input file.
+	 * 
+	 * @param storedSemanticGraphsDirectory
+	 *            .
+	 * @param filename
+	 *            .
+	 * @param semanticGraph
+	 *            .
+	 * @param input
+	 *            .
+	 * @return the cached or newly created semantic graphs
+	 */
+	public List<SemanticGraph> getOrCreateSemanticGraphForFile(String storedSemanticGraphsDirectory, String filename,
+			String input) {
+		List<SemanticGraph> semanticGraphs;
+
+		if (existsObjectsForFile(storedSemanticGraphsDirectory, filename, Constants.SEMANTIC_GRAPH)) {
+			semanticGraphs = this.<SemanticGraph> getObjectsFromFile(storedSemanticGraphsDirectory, filename,
+					Constants.SEMANTIC_GRAPH);
+		} else {
+			semanticGraphs = nlpService.createSemanticGraphsListForSentances(input);
+			saveObjectsToFile(semanticGraphs, storedSemanticGraphsDirectory, filename, Constants.SEMANTIC_GRAPH);
+		}
+		return semanticGraphs;
 	}
 
 	/**
@@ -80,17 +104,14 @@ public class CacheService {
 	 *            the type
 	 * @return true if the file exists, false otherwise
 	 */
-	public boolean existsObjectsForFile(final String directory,
-			final String filename, final String type) {
+	private boolean existsObjectsForFile(final String directory, final String filename, final String type) {
 		final String filePath = directory + "/" + filename + "-" + type;
 		final File f = new File(filePath);
 		return f.exists();
 	}
 
-	public <T> void saveObjectsToFile(final List<T> objects,
-			final String directory, final String filename, String type) {
-		final String filePath = getStoredObjectFilename(directory, filename,
-				type);
+	private <T> void saveObjectsToFile(final List<T> objects, final String directory, final String filename, String type) {
+		final String filePath = getStoredObjectFilename(directory, filename, type);
 		try {
 			// File f = new File(filename);
 			// if (!f.exists())
@@ -105,10 +126,8 @@ public class CacheService {
 		}
 	}
 
-	public <T> List<T> getObjectsFromFile(final String directory,
-			final String filename, final String type) {
-		final String filePath = getStoredObjectFilename(directory, filename,
-				type);
+	private <T> List<T> getObjectsFromFile(final String directory, final String filename, final String type) {
+		final String filePath = getStoredObjectFilename(directory, filename, type);
 		try {
 			final InputStream file = new FileInputStream(filePath);
 			final InputStream buffer = new BufferedInputStream(file);
@@ -127,30 +146,17 @@ public class CacheService {
 		}
 	}
 
-	private List<EvaluationModel> getEvaluationModels(String directory,
-			InputWrapper input, boolean forScoring, ElementType elementType,
-			String storedFileName) {
+	private List<EvaluationModel> createNewEvaluationModel(String directory, InputWrapper input, boolean forScoring,
+			ElementType elementType, String storedFileName) {
 		List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
-		final List<SemanticGraph> semanticGraphs = NLPService.getInstance()
-				.createSemanticGraphsListForSentances(input.getContent());
-		evaluationModels = NLPService.getInstance().getEvaluationModels(
-				semanticGraphs, forScoring, elementType);
-		saveObjectsToFile(evaluationModels, directory, input.getFilename(),
-				storedFileName);
+		final List<SemanticGraph> semanticGraphs = NLPService.getInstance().createSemanticGraphsListForSentances(
+				input.getContent());
+		evaluationModels = NLPService.getInstance().getEvaluationModels(semanticGraphs, forScoring, elementType);
+		saveObjectsToFile(evaluationModels, directory, input.getFilename(), storedFileName);
 		return evaluationModels;
 	}
 
-	private List<EvaluationModel> getStoredEvaluationModels(String directory,
-			String filename, boolean forScoring, ElementType elementType,
-			String storedFileName) {
-		List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
-		evaluationModels = this.<EvaluationModel> getObjectsFromFile(directory,
-				filename, storedFileName);
-		return evaluationModels;
-	}
-
-	private String getStoredObjectFilename(final String directory,
-			final String filename, final String type) {
+	private String getStoredObjectFilename(final String directory, final String filename, final String type) {
 		final String filePath = directory + "/" + filename + "-" + type;
 		return filePath;
 	}

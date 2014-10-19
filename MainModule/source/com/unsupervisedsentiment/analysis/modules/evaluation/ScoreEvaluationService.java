@@ -11,13 +11,12 @@ import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
-import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 public class ScoreEvaluationService extends EvaluationService {
 	private double ACCEPTABLE_ERROR = 0.3;
 
 	public ScoreEvaluationService(List<EvaluationModel> evaluationModels,
-			Set<Tuple> tuples,double acceptableError) {
+			Set<Tuple> tuples, double acceptableError) {
 		super(evaluationModels, tuples);
 		ACCEPTABLE_ERROR = acceptableError;
 	}
@@ -28,59 +27,85 @@ public class ScoreEvaluationService extends EvaluationService {
 		truePositive = 0;
 		falsePositive = 0;
 		falseNegative = 0;
-		
-		List<Word> opinionWords = Helpers.ExtractElements(tuples, ElementType.OPINION_WORD);
-		for (final Word opinionWord : opinionWords) {
-			boolean found = false;
-			for (final EvaluationModel model : evaluationModels) {
-				if (opinionWord.getSentenceIndex() == model.getSentenceIndex()) {
-					if (model.getOpinionWordScore() == Classification.DEFAULT_SCORE)
-						continue;
-					double assignedScore = opinionWord.getScore();
-					double annotatedScore = model.getOpinionWordScore();
-					if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
-						truePositive++;
-						found = true;
-						break;
+
+		for (final Tuple tuple : tuples) {
+			if (tuple.getTupleType().equals(TupleType.Seed)
+					|| tuple.getElements(ElementType.OPINION_WORD).size() <= 0)
+				continue;
+
+			List<Word> opinionWords = tuple
+					.getElements(ElementType.OPINION_WORD);
+			for (final Word opinionWord : opinionWords) {
+				boolean found = false;
+				for (final EvaluationModel model : evaluationModels) {
+					if (model.getSentenceIndex() == tuple.getSentenceIndex()) {
+						if (model.getOpinionWordScore() == Classification.DEFAULT_SCORE)
+							continue;
+						double assignedScore = opinionWord.getScore();
+						double annotatedScore = model.getOpinionWordScore();
+						if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
+							truePositive++;
+							found = true;
+							break;
+						}
 					}
 				}
-			}
 
-			if (!found) {
-				
-				falsePositive++;
+				if (!found) {
+					System.out.println(tuple
+							.getElements(ElementType.OPINION_WORD).get(0)
+							.getValue()
+							+ " - " + tuple.getSentence());
+
+					falsePositive++;
+				}
 			}
 		}
 
 		for (final EvaluationModel model : evaluationModels) {
 			boolean found = false;
-			for (final Word opinionWord : opinionWords) {
-				if (model.getOpinionWordScore() == Classification.DEFAULT_SCORE)
+			for (final Tuple tuple : tuples) {
+				if (tuple.getTupleType().equals(TupleType.Seed)
+						|| tuple.getElements(ElementType.OPINION_WORD).size() <= 0)
 					continue;
-				double assignedScore = opinionWord.getScore();
-				double annotatedScore = model.getOpinionWordScore();
-				if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
-					found = true;
-					break;
+				if (model.getSentenceIndex() == tuple.getSentenceIndex()) {
+					for (final Word opinionWord : tuple
+							.getElements(ElementType.OPINION_WORD)) {
+						if (model.getOpinionWordScore() == Classification.DEFAULT_SCORE)
+							continue;
+						double assignedScore = opinionWord.getScore();
+						double annotatedScore = model.getOpinionWordScore();
+						if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
+							found = true;
+							break;
+						}
+					}
 				}
 			}
 
-			if (!found) {
+			if (!found)
+				// System.out.println(model.getOpinionWord() + " (" +
+				// model.getSentenceIndex() + ") " + " - "
+				// + model.getCleanSentence());
 				falseNegative++;
-			}
 		}
 	}
 
-	public static void performEvaluation(List<EvaluationModel> evaluationModels,
-			Set<Tuple> tuples) {
+	public static void performEvaluation(
+			List<EvaluationModel> evaluationModels, Set<Tuple> tuples) {
 		Config config = Initializer.getConfig();
-		double acceptableError = Double.parseDouble(config.getScoringThreshold());
-		ScoreEvaluationService scoreEvaluationService = new ScoreEvaluationService(evaluationModels, tuples, acceptableError);
-		EvaluationResult scoreEvaluationResult = scoreEvaluationService.getResults();
-		System.out.println("Score Precision : "
-				+ scoreEvaluationResult.getPrecision());
-		System.out.println("Score Recall : "
-				+ scoreEvaluationResult.getRecall());
-		System.out.println("-----------------------------------------");
+		double acceptableError = Double.parseDouble(config
+				.getScoringThreshold());
+		ScoreEvaluationService scoreEvaluationService = new ScoreEvaluationService(
+				evaluationModels, tuples, acceptableError);
+		if (config.getPrintEvaluationResultsToConsole()) {
+			EvaluationResult scoreEvaluationResult = scoreEvaluationService
+					.getResults();
+			System.out.println("Score Precision : "
+					+ scoreEvaluationResult.getPrecision());
+			System.out.println("Score Recall : "
+					+ scoreEvaluationResult.getRecall());
+			System.out.println("-----------------------------------------");
+		}
 	}
 }

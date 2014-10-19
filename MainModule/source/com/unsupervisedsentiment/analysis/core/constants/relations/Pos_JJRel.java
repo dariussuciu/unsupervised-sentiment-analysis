@@ -1,6 +1,6 @@
 package com.unsupervisedsentiment.analysis.core.constants.relations;
 
-public class Pos_JJRel extends GenericRelation {
+public class Pos_JJRel extends GeneralPosRelationEnum {
 
 	public enum JJ {
 		JJ, JJR, JJS, RBR, RBS

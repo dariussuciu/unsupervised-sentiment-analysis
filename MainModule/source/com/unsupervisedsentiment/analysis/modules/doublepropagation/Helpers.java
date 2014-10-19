@@ -1,17 +1,5 @@
 package com.unsupervisedsentiment.analysis.modules.doublepropagation;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,19 +9,16 @@ import com.unsupervisedsentiment.analysis.classification.IPolarityLexion;
 import com.unsupervisedsentiment.analysis.classification.SentiWordNetService;
 import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.core.constants.RelationEquivalency;
-import com.unsupervisedsentiment.analysis.core.constants.relations.GenericRelation;
+import com.unsupervisedsentiment.analysis.core.constants.relations.GeneralPosRelationEnum;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_NNRel;
 import com.unsupervisedsentiment.analysis.model.Dependency;
 import com.unsupervisedsentiment.analysis.model.ElementType;
-import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Triple;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
-import com.unsupervisedsentiment.analysis.modules.IO.InputWrapper;
-import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
@@ -54,8 +39,8 @@ public class Helpers {
 	 */
 	public static List<SemanticGraphEdge> getTargetEdgesOnEdge(
 			final Iterable<SemanticGraphEdge> edges,
-			final GenericRelation sourceType, final GenericRelation targetType,
-			final GenericRelation relationType, final boolean isSource) {
+			final GeneralPosRelationEnum sourceType, final GeneralPosRelationEnum targetType,
+			final GeneralPosRelationEnum relationType, final boolean isSource) {
 		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 
 		for (SemanticGraphEdge edge : edges) {
@@ -87,8 +72,8 @@ public class Helpers {
 	 */
 	public static List<SemanticGraphEdge> getTargetEdgesOnEdgeAndSource(
 			final Iterable<SemanticGraphEdge> edges, final Word source,
-			final GenericRelation sourceType, final GenericRelation targetType,
-			final GenericRelation relationType, final boolean isSource) {
+			final GeneralPosRelationEnum sourceType, final GeneralPosRelationEnum targetType,
+			final GeneralPosRelationEnum relationType, final boolean isSource) {
 		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 
 		for (SemanticGraphEdge edge : edges) {
@@ -119,7 +104,7 @@ public class Helpers {
 	 */
 	public static List<SemanticGraphEdge> getTargetEdgesOnRel(
 			final Iterable<SemanticGraphEdge> edges,
-			final GenericRelation relationType) {
+			final GeneralPosRelationEnum relationType) {
 		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 
 		for (SemanticGraphEdge edge : edges) {
@@ -142,7 +127,7 @@ public class Helpers {
 	 */
 	public static List<SemanticGraphEdge> getTargetEdgesOnTarget(
 			final Iterable<SemanticGraphEdge> edges,
-			final GenericRelation targetType, final boolean isSource) {
+			final GeneralPosRelationEnum targetType, final boolean isSource) {
 		final List<SemanticGraphEdge> targetEdges = new ArrayList<SemanticGraphEdge>();
 
 		for (SemanticGraphEdge edge : edges) {
@@ -191,7 +176,7 @@ public class Helpers {
 	public static boolean checkEquivalentRelations(
 			final GrammaticalRelation relationSourceH,
 			final GrammaticalRelation relationTargetH,
-			final GenericRelation relationType) {
+			final GeneralPosRelationEnum relationType) {
 		// equivalency from Stanford, keep for know, until we know more about
 		// how it decides when relations
 		// are equivalent
@@ -236,8 +221,8 @@ public class Helpers {
 	}
 
 	public static Set<Tuple> extractTargets(final SemanticGraph semanticGraph,
-			final Set<Word> words, final GenericRelation relationType,
-			final GenericRelation sourcePos, final GenericRelation targetPos,
+			final Set<Word> words, final GeneralPosRelationEnum relationType,
+			final GeneralPosRelationEnum sourcePos, final GeneralPosRelationEnum targetPos,
 			final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> targets = new HashSet<Tuple>();
 
@@ -282,8 +267,8 @@ public class Helpers {
 	public static Set<Tuple> getTriplesRelativeToH(
 			final SemanticGraph semanticGraph, final Word source,
 			final SemanticGraphEdge edgeWithH, final IndexedWord H,
-			final boolean isSource, final GenericRelation sourcePos,
-			final GenericRelation targetPos, final GenericRelation relationPos,
+			final boolean isSource, final GeneralPosRelationEnum sourcePos,
+			final GeneralPosRelationEnum targetPos, final GeneralPosRelationEnum relationPos,
 			final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> targets = new HashSet<Tuple>();
 		// for incoming target edges
@@ -324,7 +309,7 @@ public class Helpers {
 
 	public static boolean validateTriple(final Word source,
 			final IndexedWord target, final IndexedWord H,
-			final GenericRelation sourcePos, final GenericRelation targetPos) {
+			final GeneralPosRelationEnum sourcePos, final GeneralPosRelationEnum targetPos) {
 		final String sourceWord = source.getValue();
 		final String targetWord = target.value();
 		final String hWord = H.value();
@@ -336,19 +321,22 @@ public class Helpers {
 		if (!sourcePos.contains(source.getPosTag())
 				|| !targetPos.contains(target.tag()))
 			return false;
-		
 
-		if(Pos_NNRel.getInstance().contains(H.tag()) && Pos_NNRel.getInstance().contains(target.tag()))
-		return false;
-		
-		//if(Pos_NNRel.getInstance().contains(H.tag()) && Pos_NNRel.getInstance().contains(source.getPosTag()))
-		//return false;
-		
-		if(Pos_JJRel.getInstance().contains(H.tag()) && Pos_JJRel.getInstance().contains(target.tag()))
-		return false;
-		
-		//if(Pos_JJRel.getInstance().contains(H.tag()) && Pos_JJRel.getInstance().contains(source.getPosTag()))
-		//return false;
+		if (Pos_NNRel.getInstance().contains(H.tag())
+				&& Pos_NNRel.getInstance().contains(target.tag()))
+			return false;
+
+		if (Pos_NNRel.getInstance().contains(H.tag())
+				&& Pos_NNRel.getInstance().contains(source.getPosTag()))
+			return false;
+
+		if (Pos_JJRel.getInstance().contains(H.tag())
+				&& Pos_JJRel.getInstance().contains(target.tag()))
+			return false;
+
+		if (Pos_JJRel.getInstance().contains(H.tag())
+				&& Pos_JJRel.getInstance().contains(source.getPosTag()))
+			return false;
 
 		return true;
 	}
@@ -381,8 +369,8 @@ public class Helpers {
 	public static Set<Tuple> getTriplesRelativeToHOnEquivalency(
 			final SemanticGraph semanticGraph, final Word source,
 			final SemanticGraphEdge edgeWithH, final IndexedWord H,
-			final boolean isSource, final GenericRelation relationPos,
-			final GenericRelation sourcePos, final GenericRelation targetPos,
+			final boolean isSource, final GeneralPosRelationEnum relationPos,
+			final GeneralPosRelationEnum sourcePos, final GeneralPosRelationEnum targetPos,
 			final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> targets = new HashSet<Tuple>();
 		// for incoming target edges
@@ -454,59 +442,6 @@ public class Helpers {
 		return newTuples;
 	}
 
-	public static boolean existsObjectsForFile(final String directory,
-			final String filename, final String type) {
-		final String filePath = directory + "/" + filename + "-" + type;
-		final File f = new File(filePath);
-		return f.exists();
-	}
-
-	public static <T> void saveObjectsToFile(final List<T> objects,
-			final String directory, final String filename, String type) {
-		final String filePath = getStoredObjectFilename(directory, filename,
-				type);
-		try {
-			// File f = new File(filename);
-			// if (!f.exists())
-			// f.createNewFile();
-			final OutputStream file = new FileOutputStream(filePath);
-			final OutputStream buffer = new BufferedOutputStream(file);
-			final ObjectOutput output = new ObjectOutputStream(buffer);
-			output.writeObject(objects);
-			output.close();
-		} catch (IOException ex) {
-			System.out.println(ex);
-		}
-	}
-
-	public static <T> List<T> getObjectsFromFile(final String directory,
-			final String filename, final String type) {
-		final String filePath = getStoredObjectFilename(directory, filename,
-				type);
-		try {
-			final InputStream file = new FileInputStream(filePath);
-			final InputStream buffer = new BufferedInputStream(file);
-			final ObjectInput input = new ObjectInputStream(buffer);
-
-			// deserialize the List
-			@SuppressWarnings("unchecked")
-			List<T> objects = (List<T>) input.readObject();
-			input.close();
-			// display its data
-			return objects;
-		} catch (ClassNotFoundException ex) {
-			return null;
-		} catch (IOException ex) {
-			return null;
-		}
-	}
-
-	private static String getStoredObjectFilename(final String directory,
-			final String filename, final String type) {
-		final String filePath = directory + "/" + filename + "-" + type;
-		return filePath;
-	}
-
 	public static boolean isInvalidTuple(final Tuple tuple) {
 		if (tuple.getSource().getValue().equals("-lrb-")
 				|| tuple.getSource().getValue().equals("-rrb-"))
@@ -547,88 +482,57 @@ public class Helpers {
 		return new String[] { SentiWordNetService.SWNPos.Verb.toString() };
 	}
 
-	public static List<EvaluationModel> getEvaluationModels(String directory,
-			InputWrapper input, boolean forScoring, ElementType elementType, String storedFileName) {
-		List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
-		final List<SemanticGraph> semanticGraphs = NLPService.getInstance().createSemanticGraphsListForSentances(input.getContent());
-		evaluationModels = NLPService.getInstance().getEvaluationModels(
-				semanticGraphs, forScoring, elementType);
-		Helpers.saveObjectsToFile(evaluationModels, directory,
-				input.getFilename(), storedFileName);
-		return evaluationModels;
-	}
-	
-	public static List<EvaluationModel> getStoredEvaluationModels(String directory,
-			InputWrapper input, boolean forScoring, ElementType elementType, String storedFileName) {
-		List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
-		evaluationModels = Helpers.<EvaluationModel> getObjectsFromFile(
-				directory, input.getFilename(), storedFileName);
-		return evaluationModels;
-	}
-	
-	public static double normalizeScore(double score){
-		if (score < -10000 && score > -100000)
-			return score / 10000;
-		if (score < -1000 && score > -10000)
-			return score / 1000;
-		if (score < -100 && score > -1000)
-			return score / 100;
-		if (score < -10 && score > -100)
-			return score / 10;
-		if (score < 0 && score > -10)
-			return score / 10;
-		if (score >= 0 && score < 10)
-			return score / 10;
+	public static double normalizeScore(double score) {
 		if (score >= 10 && score < 100)
 			return score / 100;
 		if (score >= 100 && score < 1000)
 			return score / 1000;
-		if (score >=1000 && score < 10000)
+		if (score >= 1000 && score < 10000)
 			return score / 10000;
 		if (score >= 10000 && score < 100000)
 			return score / 100000;
 		return score;
 	}
-	
-	public static List<Word> ExtractElements(Set<Tuple> tuples, ElementType elementType) {
+
+	public static List<Word> ExtractElements(Set<Tuple> tuples,
+			ElementType elementType) {
 		List<Word> elements = new ArrayList<Word>();
-		
-		for(Tuple tuple : tuples) {
+
+		for (Tuple tuple : tuples) {
 			if (tuple.getTupleType().equals(TupleType.Seed)
 					|| tuple.getElements(elementType).size() <= 0)
 				continue;
-			
-			for(Word foundElement : tuple.getElements(elementType))
-			{
+
+			for (Word foundElement : tuple.getElements(elementType)) {
 				int numberOfInstances = 1;
 				boolean isDuplicate = false;
-				for(Word existingElement : elements) {
-					if(existingElement.equals(foundElement) && existingElement.getSentenceIndex() == foundElement.getSentenceIndex())
-					{
+				for (Word existingElement : elements) {
+					if (existingElement.equals(foundElement)
+							&& existingElement.getSentenceIndex() == foundElement
+									.getSentenceIndex()) {
 						isDuplicate = true;
 					}
 				}
-				for(Tuple otherTuple : tuples) {
-					for(Word otherElement : otherTuple.getElements(elementType)) {
-						if(otherElement.equals(foundElement))
-						{
+				for (Tuple otherTuple : tuples) {
+					for (Word otherElement : otherTuple
+							.getElements(elementType)) {
+						if (otherElement.equals(foundElement)) {
 							numberOfInstances++;
 						}
 					}
 				}
-				
-				if(!isDuplicate)
-				{
+
+				if (!isDuplicate) {
 					foundElement.setNumberOfInstances(numberOfInstances);
 					elements.add(foundElement);
-				}
-				else 
-				{
-					//System.out.println("Duplicate: " + foundOpinionWord.getValue() + " - " + foundOpinionWord.getSentenceIndex() );
+				} else {
+					// System.out.println("Duplicate: " +
+					// foundOpinionWord.getValue() + " - " +
+					// foundOpinionWord.getSentenceIndex() );
 				}
 			}
 		}
-		
+
 		return elements;
 	}
 }

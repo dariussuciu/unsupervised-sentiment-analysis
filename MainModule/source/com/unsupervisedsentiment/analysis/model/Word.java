@@ -1,6 +1,6 @@
 package com.unsupervisedsentiment.analysis.model;
 
-import com.unsupervisedsentiment.analysis.core.constants.relations.RelationsContainer;
+import com.unsupervisedsentiment.analysis.core.constants.relations.GeneralPosRelationContainer;
 
 public class Word {
 	private String posTag;
@@ -80,7 +80,7 @@ public class Word {
 			if (other.posTag != null)
 				return false;
 		} else if (!posTag.equals(other.posTag)) {
-			if (!RelationsContainer.arePosEquivalent(posTag, other.posTag)) {
+			if (!GeneralPosRelationContainer.arePosEquivalent(posTag, other.posTag)) {
 				return false;
 			}
 		}

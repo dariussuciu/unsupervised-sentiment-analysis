@@ -1,23 +1,23 @@
 package com.unsupervisedsentiment.analysis.core.constants.relations;
 
-public class Dep_MRRel extends GenericRelation {
+public class Dep_MRRel extends GeneralPosRelationEnum {
 
 	/**
 	 * Removed: <br>
-	
+	 * 
 	 * - mark: She sais that you like to swim. mark(that,swim) <br>
 	 * - num: Sam ate 3 sheep. num(sheep, 3) <br>
 	 * - number: I have four thousand sheep. number(thousand, four) <br>
 	 * - poss: Their offces. poss(offces, their) <br>
 	 * ' - possesive: Bill's clothes. possesive(Bill, 's) <br>
-	 * - preconj: Both the boys and the girls are here. preconj(boys, both) -
-	 * - predet: All the boys are here. predet(boys, all) <br>
+	 * - preconj: Both the boys and the girls are here. preconj(boys, both) - -
+	 * predet: All the boys are here. predet(boys, all) <br>
 	 * - prep: I saw a cat in a hat" prep(cat, in) <br>
 	 * - prt: They shut down the station. prt(shut, down) <br>
 	 * - quantmod: About 200 people came to the party. quantmod(200, About) <br>
 	 * - tmod: Last night, I swam in the pool. tmod(swam, night) <br>
-	 * - vmod: I don't have anything to say to you. vmod(anything, say) - rcmod:
-	 * ? <br>
+	 * - vmod: I don't have anything to say to you. vmod(anything, say) <br>
+	 * - rcmod: ? <br>
 	 * - advcl: ? <br>
 	 * - neg: ? <br>
 	 * <br>
@@ -59,7 +59,7 @@ public class Dep_MRRel extends GenericRelation {
 	 * - iobj: She gave me a raise. iobj(gave, me) <br>
 	 */
 	public enum obj {
-	
+
 	};
 
 	public enum obj2 {
@@ -105,12 +105,8 @@ public class Dep_MRRel extends GenericRelation {
 
 	@Override
 	public boolean contains(final String word) {
-		return super.isInEnum(word, mod.class)
-				|| super.isInEnum(word, pmod.class)
-				|| super.isInEnum(word, subj.class)
-				|| super.isInEnum(word, s.class)
-				|| super.isInEnum(word, obj.class)
-				|| super.isInEnum(word, obj2.class)
+		return super.isInEnum(word, mod.class) || super.isInEnum(word, pmod.class) || super.isInEnum(word, subj.class)
+				|| super.isInEnum(word, s.class) || super.isInEnum(word, obj.class) || super.isInEnum(word, obj2.class)
 				|| super.isInEnum(word, desc.class);
 	};
 

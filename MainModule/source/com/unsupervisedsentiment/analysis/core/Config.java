@@ -26,13 +26,19 @@ public class Config {
 
 	private String evaluationMetadataFile;
 
+	private String detailedEvaluationMetadataFile;
+
 	private String numberOfSeeds;
 
 	private String seedType;
 
 	private String polarityThreshold;
-	
+
 	private String scoringThreshold;
+
+	private String targetFrequencyThreshold;
+	
+	private boolean printEvaluationResultsToConsole;
 
 	@XmlElement(name = "inputDirectory")
 	public String getInputDirectory() {
@@ -76,8 +82,7 @@ public class Config {
 		return storedSemanticGraphsDirectory.trim();
 	}
 
-	public void setStoredSemanticGraphsDirectory(
-			final String storedSemanticGraphsDirectory) {
+	public void setStoredSemanticGraphsDirectory(final String storedSemanticGraphsDirectory) {
 		this.storedSemanticGraphsDirectory = storedSemanticGraphsDirectory;
 	}
 
@@ -104,8 +109,7 @@ public class Config {
 		return evaluationModelsDirectory.trim();
 	}
 
-	public void setEvaluationModelsDirectory(
-			final String evaluationModelsDirectory) {
+	public void setEvaluationModelsDirectory(final String evaluationModelsDirectory) {
 		this.evaluationModelsDirectory = evaluationModelsDirectory;
 	}
 
@@ -138,8 +142,7 @@ public class Config {
 
 	@Override
 	public String toString() {
-		return "Input Directory: " + inputDirectory + "\n"
-				+ "Output Directory: " + inputDirectory + "\n";
+		return "Input Directory: " + inputDirectory + "\n" + "Output Directory: " + inputDirectory + "\n";
 	}
 
 	@XmlElement(name = "polarityThreshold")
@@ -150,7 +153,7 @@ public class Config {
 	public void setPolarityThreshold(String polarityThreshold) {
 		this.polarityThreshold = polarityThreshold;
 	}
-	
+
 	@XmlElement(name = "scoringThreshold")
 	public String getScoringThreshold() {
 		return scoringThreshold.trim();
@@ -158,6 +161,33 @@ public class Config {
 
 	public void setScoringThreshold(String scoringThreshold) {
 		this.scoringThreshold = scoringThreshold;
+	}
+
+	@XmlElement(name = "targetFrequencyThreshold")
+	public String getTargetFrequencyThreshold() {
+		return targetFrequencyThreshold.trim();
+	}
+
+	public void setTargetFrequencyThreshold(String targetFrequencyThreshold) {
+		this.targetFrequencyThreshold = targetFrequencyThreshold;
+	}
+
+	@XmlElement(name = "detailedEvaluationMetadataFile")
+	public String getDetailedEvaluationMetadataFile() {
+		return detailedEvaluationMetadataFile.trim();
+	}
+
+	public void setDetailedEvaluationMetadataFile(String detailedEvaluationMetadataFile) {
+		this.detailedEvaluationMetadataFile = detailedEvaluationMetadataFile;
+	}
+
+	@XmlElement(name = "printEvaluationResultsToConsole")
+	public boolean getPrintEvaluationResultsToConsole() {
+		return printEvaluationResultsToConsole;
+	}
+
+	public void setPrintEvaluationResultsToConsole(boolean evaluateInput) {
+		this.printEvaluationResultsToConsole = evaluateInput;
 	}
 
 }

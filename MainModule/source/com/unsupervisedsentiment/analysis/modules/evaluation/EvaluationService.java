@@ -17,8 +17,7 @@ public abstract class EvaluationService {
 	// correct
 	protected double falseNegative;
 
-	public EvaluationService(List<EvaluationModel> evaluationModels,
-			Set<Tuple> tuples) {
+	public EvaluationService(List<EvaluationModel> evaluationModels, Set<Tuple> tuples) {
 		this.evaluationModels = evaluationModels;
 		this.tuples = tuples;
 	}
@@ -28,6 +27,9 @@ public abstract class EvaluationService {
 		EvaluationResult result = new EvaluationResult();
 		result.setPrecision(getPrecision());
 		result.setRecall(getRecall());
+		result.setTruePositive((int) truePositive);
+		result.setFalseNegative((int) falseNegative);
+		result.setFalsePositive((int) falsePositive);
 		return result;
 	}
 
