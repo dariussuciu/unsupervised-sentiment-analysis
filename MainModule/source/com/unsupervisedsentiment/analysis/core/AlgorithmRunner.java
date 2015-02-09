@@ -35,22 +35,6 @@ public class AlgorithmRunner {
 
 	public AlgorithmRunner() {
 		initialize();
-
-		seedWords = new HashSet<Tuple>();
-		config.setSeedWords(inputService.getSeedWordsFromFile());
-
-		for (String seedString : config.getSeedWords()) {
-			Tuple seed = new Tuple();
-			// TODO: not always JJ? what if adverbs
-			Word word = new Word("JJ", seedString.trim(), ElementType.OPINION_WORD);
-			seed.setSource(word);
-			seed.setTupleType(TupleType.Seed);
-			seed.setSentenceIndex(-1);
-			seed.setSentence(null);
-			seedWords.add(seed);
-		}
-
-		Initializer.setConfig(config);
 	}
 
 	public void runAlgorithm() {
@@ -152,5 +136,26 @@ public class AlgorithmRunner {
 		inputFiles = inputService.getTextFromFile();
 		outputFiles = new ArrayList<OutputWrapper>();
 		metadataResults = new ArrayList<EvaluationMetadata>();
+		seedWords = new HashSet<Tuple>();
+
+		config.setSeedWords(inputService.getSeedWordsFromFile());
+
+		initSeedWords();
+
+		Initializer.setConfig(config);
 	}
+
+	private void initSeedWords() {
+		for (String seedString : config.getSeedWords()) {
+			Tuple seed = new Tuple();
+			// TODO: not always JJ? what if adverbs
+			Word word = new Word("JJ", seedString.trim(), ElementType.OPINION_WORD);
+			seed.setSource(word);
+			seed.setTupleType(TupleType.Seed);
+			seed.setSentenceIndex(-1);
+			seed.setSentence(null);
+			seedWords.add(seed);
+		}
+	}
+
 }
