@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.unsupervisedsentiment.analysis.classification.ISentimentScoreSource;
+import com.unsupervisedsentiment.analysis.classification.IPolarityLexion;
 import com.unsupervisedsentiment.analysis.classification.SentiWordNetService;
 import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.core.constants.RelationEquivalency;
@@ -452,7 +452,7 @@ public class Helpers {
 			return true;
 
 		if (tuple.getTarget().getType().equals(ElementType.OPINION_WORD)) {
-			ISentimentScoreSource swnService = SentiWordNetService
+			IPolarityLexion swnService = SentiWordNetService
 					.getInstance();
 			Word target = tuple.getTarget();
 			String[] equivalentPOS = getEquivalentPOS(target.getPosTag());

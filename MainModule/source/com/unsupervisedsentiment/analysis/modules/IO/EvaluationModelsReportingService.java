@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.core.Config;
 import com.unsupervisedsentiment.analysis.core.constants.Constants;
@@ -18,6 +19,7 @@ import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationMetadata;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationResult;
 import com.unsupervisedsentiment.analysis.modules.evaluation.OpinionWordExtractionEvaluationService;
+import com.unsupervisedsentiment.analysis.modules.evaluation.ScoreEvaluationService;
 import com.unsupervisedsentiment.analysis.modules.evaluation.TargetExtractionEvaluationService;
 
 /**
@@ -34,6 +36,7 @@ public class EvaluationModelsReportingService {
 
 	private final List<EvaluationModel> opinionWordEvaluationModels;
 	private final List<EvaluationModel> targetEvaluationModels;
+	private final List<EvaluationModel> scoreEvaluationModels;
 
 	private Config config;
 	private InputWrapper input;
@@ -54,6 +57,10 @@ public class EvaluationModelsReportingService {
 		targetEvaluationModels = cacheService.getStoredOrCreateNewEvaluationModel(storedEvaluationModelsDirectory,
 				input, false, ElementType.FEATURE, Constants.TARGET_EVAL_MODEL);
 
+		scoreEvaluationModels = cacheService
+				.getStoredOrCreateNewEvaluationModel(
+						storedEvaluationModelsDirectory, input, true,
+						ElementType.OPINION_WORD, Constants.SCORE_EVAL_MODEL);
 	}
 
 	public EvaluationMetadata outputAndGetEvaluationMetadataResults(LinkedHashSet<Tuple> resultTuples,
@@ -67,10 +74,20 @@ public class EvaluationModelsReportingService {
 
 		TargetExtractionEvaluationService targetEvaluationService = new TargetExtractionEvaluationService(
 				targetEvaluationModels, resultTuples);
-		EvaluationResult targetEvaluationResult = targetEvaluationService.getResults();
-		System.out.println("Target Extraction Precision : " + targetEvaluationResult.getPrecision());
-		System.out.println("Target Extraction Recall : " + targetEvaluationResult.getRecall());
+		EvaluationResult targetEvaluationResult = targetEvaluationService
+				.getResults();
+		if (config.getPrintEvaluationResultsToConsole()) {
+			System.out.println("Precision : "
+					+ extractionEvaluationResult.getPrecision());
+			System.out.println("Recall : "
+					+ extractionEvaluationResult.getRecall());
 		System.out.println("-----------------------------------------");
+			System.out.println("Target Extraction Precision : "
+					+ targetEvaluationResult.getPrecision());
+			System.out.println("Target Extraction Recall : "
+					+ targetEvaluationResult.getRecall());
+			System.out.println("-----------------------------------------");
+		}
 
 		EvaluationMetadata metadata = new EvaluationMetadata(Constants.sdf.format(new Date()), config.getSeedType(),
 				input.getFilename(), String.valueOf(numberOfSeedWords), String.valueOf(numberOfIterations),
@@ -144,7 +161,14 @@ public class EvaluationModelsReportingService {
 	}
 
 	public void outputDetailedReportMaps(String filename) {
-		outputService.writeMapToDetailedReportsFile(filename, detailedReportMaps);
+		outputService.writeMapToDetailedReportsFile(filename,
+				detailedReportMaps);
+	}
+
+	public void evaluateScoring(Set<Tuple> combinedTuples) {
+		ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
+				combinedTuples);
+
 	}
 
 }

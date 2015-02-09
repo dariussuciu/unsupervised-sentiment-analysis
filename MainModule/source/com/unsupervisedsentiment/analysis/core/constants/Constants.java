@@ -9,6 +9,7 @@ public class Constants {
 
 	public static final String SEMANTIC_GRAPH = "SemanticGraph";
 	public static final String OPINION_WORD_EVAL_MODEL = "OpinionWordEvaluationModel";
+	public static final String SCORE_EVAL_MODEL = "ScoreEvaluationModel";
 	public static final String TARGET_EVAL_MODEL = "TargetEvaluationModel";
 
 	public static final SimpleDateFormat sdf = new SimpleDateFormat(

@@ -93,12 +93,17 @@ public class AlgorithmRunner {
 			 * Vlad's part
 			 */
 			Classification classification = new Classification();
-			classification.assignScoresBasedOnSeeds(featureTuples);
+			ArrayList<Tuple> assignedFeatures = classification.assignScoresBasedOnSeeds(featureTuples);
 			// classification.assignSentiWordScores(featureTuples);
 
 			classification = new Classification();
-			classification.assignScoresBasedOnSeeds(opinionWordTuples);
+			ArrayList<Tuple> assignedOpinions = classification.assignScoresBasedOnSeeds(opinionWordTuples);
 
+			LinkedHashSet<Tuple> combinedTuples = new LinkedHashSet<Tuple>();
+			combinedTuples.addAll(assignedFeatures);
+			combinedTuples.addAll(assignedOpinions);
+
+			reportingService.evaluateScoring(combinedTuples);
 			// List<EvaluationModel> scoreEvaluationModels = Helpers
 			// .getEvaluationModels(storedEvaluationModelsDirectory,
 			// input, true, ElementType.OPINION_WORD,
@@ -119,17 +124,19 @@ public class AlgorithmRunner {
 			// seedWords.add(seed);
 			// }
 			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(featureTuples);
-			// System.out.println("Total score for this document: "
-			// + classification.computeOverallScore(opinionWordTuplesAL));
 
-			// String targetString = "camera";
-			// System.out.println("Average score for target "
-			// + targetString
-			// + " is: "
-			// + classification.getAverageScoreForTarget(targetString,
-			// opinionWordTuplesAL));
+			 System.out.println("Total score for this document: "
+			 + classification.computeOverallScore(opinionWordTuplesAL));
+
+			 String targetString = "casino";
+			 System.out.println("Average score for target "
+			 + targetString
+			 + " is: "
+			 + classification.getAverageScoreForTarget(targetString,
+			 opinionWordTuplesAL));
 
 			HashMap<Double, Integer> distribution = classification.computeScoreDistribution(opinionWordTuplesAL);
+			System.out.println(distribution.toString());
 			// classification.assignSentiWordScores(opinionWordTuples);
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);

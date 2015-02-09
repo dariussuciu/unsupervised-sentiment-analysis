@@ -37,6 +37,8 @@ public class Config {
 	private String scoringThreshold;
 
 	private String targetFrequencyThreshold;
+	
+	private boolean printEvaluationResultsToConsole;
 
 	@XmlElement(name = "inputDirectory")
 	public String getInputDirectory() {
@@ -177,6 +179,15 @@ public class Config {
 
 	public void setDetailedEvaluationMetadataFile(String detailedEvaluationMetadataFile) {
 		this.detailedEvaluationMetadataFile = detailedEvaluationMetadataFile;
+	}
+
+	@XmlElement(name = "printEvaluationResultsToConsole")
+	public boolean getPrintEvaluationResultsToConsole() {
+		return printEvaluationResultsToConsole;
+	}
+
+	public void setPrintEvaluationResultsToConsole(boolean evaluateInput) {
+		this.printEvaluationResultsToConsole = evaluateInput;
 	}
 
 }
