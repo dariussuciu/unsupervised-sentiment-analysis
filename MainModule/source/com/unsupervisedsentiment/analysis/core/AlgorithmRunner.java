@@ -77,36 +77,16 @@ public class AlgorithmRunner {
 			 * Vlad's part
 			 */
 			Classification classification = new Classification();
-			ArrayList<Tuple> assignedFeatures = classification.assignScoresBasedOnSeeds(featureTuples);
-			// classification.assignSentiWordScores(featureTuples);
+			ArrayList<Tuple> assignedFeatures = classification.assignScoresBasedOnSeeds(featureTuples, false);
 
-			classification = new Classification();
-			ArrayList<Tuple> assignedOpinions = classification.assignScoresBasedOnSeeds(opinionWordTuples);
+//			classification = new Classification();
+//			ArrayList<Tuple> assignedOpinions = classification.assignScoresBasedOnSeeds(opinionWordTuples, false);
 
 			LinkedHashSet<Tuple> combinedTuples = new LinkedHashSet<Tuple>();
 			combinedTuples.addAll(assignedFeatures);
-			combinedTuples.addAll(assignedOpinions);
+//			combinedTuples.addAll(assignedOpinions);
 
 			reportingService.evaluateScoring(combinedTuples);
-			// List<EvaluationModel> scoreEvaluationModels = Helpers
-			// .getEvaluationModels(storedEvaluationModelsDirectory,
-			// input, true, ElementType.OPINION_WORD,
-			// "OpinionWordEvaluationModel");
-			//
-			// ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
-			// combinedTuples);
-
-			// List<Word> foundOpinionWords =
-			// Helpers.ExtractElements(resultTuples, ElementType.OPINION_WORD);
-			// for(Word foundOpinionWord : foundOpinionWords)
-			// {
-			// Tuple seed = new Tuple();
-			// seed.setSource(foundOpinionWord);
-			// seed.setTupleType(TupleType.Seed);
-			// seed.setSentenceIndex(-1);
-			// seed.setSentence(null);
-			// seedWords.add(seed);
-			// }
 			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(featureTuples);
 
 			 System.out.println("Total score for this document: "
