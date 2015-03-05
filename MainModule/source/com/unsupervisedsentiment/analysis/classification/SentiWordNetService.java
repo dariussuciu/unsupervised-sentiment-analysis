@@ -4,14 +4,19 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.core.Config;
 import com.unsupervisedsentiment.analysis.core.Initializer;
+import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel.JJ;
 import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 import com.unsupervisedsentiment.analysis.modules.IO.InputService;
+
+import edu.stanford.nlp.ling.IndexedWord;
+import edu.stanford.nlp.semgraph.SemanticGraph;
 
 public class SentiWordNetService implements IPolarityLexion {
 
@@ -189,6 +194,36 @@ public class SentiWordNetService implements IPolarityLexion {
 			hash.add(new SeedScoreModel(seedName, score));
 		}
 		return hash;
+	}
+	
+	public List<String> getSeedWordsFromSemanticGraph(List<SemanticGraph> graphs){
+		List<String> adjectives = new ArrayList<String>();
+		for(SemanticGraph sentence : graphs){
+			List<String> wordsInSentence = new ArrayList<String>();
+			
+			Collection<IndexedWord> rootNodes = sentence.getRoots();
+		    for (IndexedWord root : rootNodes) {
+		    	wordsInSentence.add(root.toString());
+		    }
+		    
+		    ArrayList<IndexedWord> nodesList = new ArrayList<IndexedWord>(sentence.vertexSet());
+		    for(IndexedWord word : nodesList){
+		      wordsInSentence.add(word.toString());
+		    }
+		    
+		    for(String word : wordsInSentence){
+		    	if(word.contains("-" + JJ.JJ.toString())){
+		    		adjectives.add(word.replace("-" + JJ.JJ.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
+		    	}
+		    	if(word.contains("-" + JJ.JJS.toString())){
+		    		adjectives.add(word.replace("-" + JJ.JJS.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
+		    	}
+		    	if(word.contains("-" + JJ.JJR.toString())){
+		    		adjectives.add(word.replace("-" + JJ.JJR.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
+		    	}
+		    }
+		}
+		return adjectives;
 	}
 
 }

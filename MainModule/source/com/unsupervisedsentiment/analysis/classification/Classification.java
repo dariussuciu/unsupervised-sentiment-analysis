@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
 import com.unsupervisedsentiment.analysis.classification.SentiWordNetService.SWNPos;
-import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel.JJ;
 import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
+
+import edu.stanford.nlp.semgraph.SemanticGraph;
 
 
 public class Classification {
@@ -30,20 +32,18 @@ public class Classification {
 		initReader();
 	}
 
-	public ArrayList<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data, boolean useSeedWordsFromFile) {
+	public ArrayList<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data, List<SemanticGraph> semanticGrapshs, boolean useSeedWordsFromFile) {
 
 		if(useSeedWordsFromFile){
-			seeds = new ArrayList<SeedScoreModel>();
 			seeds = polarityLexicon.getSeedWordsWithScores();
 		}
 		else{
 			seeds = new ArrayList<SeedScoreModel>();
-			for(Tuple tuple : data){
-				String posTag = tuple.getSource().getPosTag();
-				if(posTag != null && posTag.equals(JJ.JJ.toString()) || posTag.equals(JJ.JJR.toString()) || posTag.equals(JJ.JJS.toString())){
-					double score = polarityLexicon.extract(tuple.getSource().getValue(), new String[]{SWNPos.Adjective.toString()});
-					seeds.add(new SeedScoreModel(tuple.getSource().getValue(), score));
-				}
+			List<String> extractedSeedWords = polarityLexicon.getSeedWordsFromSemanticGraph(semanticGrapshs);
+			//the extracted seed words do not have any polarities, so we have to asign them
+			for(String word : extractedSeedWords){
+				double score = polarityLexicon.extract(word, new String[]{SWNPos.Adjective.toString()});
+				seeds.add(new SeedScoreModel(word, score));
 			}
 		}
 		

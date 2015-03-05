@@ -27,7 +27,7 @@ public class PolaritySummarization {
 		for (Tuple tuple : data){
 			if (tuple.getSource().getScore() != Classification.DEFAULT_SCORE) {
 				DecimalFormat df = new DecimalFormat("#.#");
-				String formatted = df.format(tuple.getSource().getScore());
+				String formatted = df.format(tuple.getSource().getScore()).replace(",", ".");
 				double value = Double.parseDouble(formatted);
 				if (myMap.containsKey(value)){
 					myMap.put(value, myMap.get(value) + 1);

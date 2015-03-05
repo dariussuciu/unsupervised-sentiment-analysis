@@ -13,7 +13,6 @@ import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
-import com.unsupervisedsentiment.analysis.modules.IO.CacheService;
 import com.unsupervisedsentiment.analysis.modules.IO.EvaluationModelsReportingService;
 import com.unsupervisedsentiment.analysis.modules.IO.InputService;
 import com.unsupervisedsentiment.analysis.modules.IO.InputWrapper;
@@ -77,7 +76,7 @@ public class AlgorithmRunner {
 			 * Vlad's part
 			 */
 			Classification classification = new Classification();
-			ArrayList<Tuple> assignedFeatures = classification.assignScoresBasedOnSeeds(featureTuples, false);
+			ArrayList<Tuple> assignedFeatures = classification.assignScoresBasedOnSeeds(featureTuples, inputData.getSentancesSemanticGraphs(),false);
 
 //			classification = new Classification();
 //			ArrayList<Tuple> assignedOpinions = classification.assignScoresBasedOnSeeds(opinionWordTuples, false);
