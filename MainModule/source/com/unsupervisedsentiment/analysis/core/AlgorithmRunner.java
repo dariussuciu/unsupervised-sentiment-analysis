@@ -118,7 +118,7 @@ public class AlgorithmRunner {
 
 		inputService = InputService.getInstance(config);
 		outputService = OutputService.getInstance(config);
-		visualisationService = VisualisationService.getInstance(config);
+		visualisationService = VisualisationService.getInstance();
 
 		inputFiles = inputService.getTextFromFile();
 		outputFiles = new ArrayList<OutputWrapper>();

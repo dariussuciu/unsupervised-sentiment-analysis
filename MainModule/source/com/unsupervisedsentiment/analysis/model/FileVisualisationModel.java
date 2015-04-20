@@ -31,4 +31,8 @@ public class FileVisualisationModel {
 		return evaluationMetadataResults;
 	}
 
+	@Override
+	public String toString() {
+		return evaluationMetadataResults.getFilename();
+	}
 }
