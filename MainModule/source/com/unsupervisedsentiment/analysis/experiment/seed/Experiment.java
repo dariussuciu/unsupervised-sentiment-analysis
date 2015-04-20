@@ -61,7 +61,7 @@ public class Experiment {
 		negativeSeeds = SeedWordsFilter.mostFrequent(nrNegSeeds, negativeSeeds, textFiles);
 		positiveSeeds = SeedWordsFilter.mostFrequent(nrPosSeeds, positiveSeeds, textFiles);
 
-		if (CollectionUtils.isNotEmpty(negativeSeeds) && CollectionUtils.isNotEmpty(positiveSeeds)) {			
+		if (CollectionUtils.isNotEmpty(negativeSeeds) && CollectionUtils.isNotEmpty(positiveSeeds)) {
 			final String destination = "D:\\JDE\\Projects\\unsupervised-sentiment-analysis-io\\Experiments\\SeedWords";
 			writeFileToDestination(destination, "positive-words.txt", positiveSeeds);
 			writeFileToDestination(destination, "negative-words.txt", negativeSeeds);
@@ -72,17 +72,17 @@ public class Experiment {
 		PrintWriter printWriter = null;
 		try {
 			final File destinationFile = new File(destination);
-	        final File outFile = new File(destinationFile, fileName);
-            printWriter = new PrintWriter(new FileWriterWithEncoding(outFile, Charset.forName("UTF-8")));
-            for (String word : words) {
-            	printWriter.write(word + "\r\n");
-            }
+			final File outFile = new File(destinationFile, fileName);
+			printWriter = new PrintWriter(new FileWriterWithEncoding(outFile, Charset.forName("UTF-8")));
+			for (String word : words) {
+				printWriter.write(word + "\r\n");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-            if (printWriter != null) {
-                printWriter.close();
-            }
+			if (printWriter != null) {
+				printWriter.close();
+			}
 		}
 	}
 }

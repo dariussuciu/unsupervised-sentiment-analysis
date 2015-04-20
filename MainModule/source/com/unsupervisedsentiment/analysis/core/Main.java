@@ -9,16 +9,16 @@ public class Main {
 		AlgorithmRunner algorithmRunner = new AlgorithmRunner();
 
 		Config config = Initializer.getConfig();
-		
+
 		algorithmRunner.runAlgorithm();
-		
+
 		Double polarityThreshold = Double.valueOf(config.getPolarityThreshold());
 
 		for (double d = polarityThreshold; d <= 0.21; d += 0.01) {
 			if (d > 0.01) {
 				d += 0.05;
 			}
-			
+
 			Integer targetThreshold = Integer.valueOf(config.getTargetFrequencyThreshold());
 
 			for (int t = targetThreshold; t <= 4; t++) {
@@ -32,5 +32,6 @@ public class Main {
 			config.setTargetFrequencyThreshold(String.valueOf(targetThreshold));
 			Initializer.setConfig(config);
 		}
+
 	}
 }

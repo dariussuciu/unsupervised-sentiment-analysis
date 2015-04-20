@@ -43,15 +43,13 @@ public class InputService {
 
 			// add all seeds
 
-			if (numberOfSeeds.equals(Constants.MAX)
-					|| !numberOfSeeds.matches("\\d+")) {
+			if (numberOfSeeds.equals(Constants.MAX) || !numberOfSeeds.matches("\\d+")) {
 				seedWords.addAll(positiveSeedWords);
 				seedWords.addAll(negativeSeedWords);
 			} else {
 				int nrOfSeeds = Integer.valueOf(numberOfSeeds);
 
-				seedWords.addAll(getSeedWords(positiveSeedWords,
-						negativeSeedWords, nrOfSeeds));
+				seedWords.addAll(getSeedWords(positiveSeedWords, negativeSeedWords, nrOfSeeds));
 
 			}
 		} catch (FileNotFoundException e) {
@@ -62,8 +60,7 @@ public class InputService {
 		return seedWords;
 	}
 
-	private Collection<? extends String> getSeedWords(
-			List<String> positiveSeedWords, List<String> negativeSeedWords,
+	private Collection<? extends String> getSeedWords(List<String> positiveSeedWords, List<String> negativeSeedWords,
 			int nrOfSeeds) {
 		List<String> seeds = new ArrayList<String>();
 
@@ -117,7 +114,7 @@ public class InputService {
 		try {
 			Scanner in = new Scanner(new FileReader(file.getPath()));
 			InputWrapper iWrapper = new InputWrapper();
-			//getHeaders(in, iWrapper);
+			// getHeaders(in, iWrapper);
 			getContent(in, iWrapper);
 			iWrapper.setFilename(file.getName());
 			return iWrapper;

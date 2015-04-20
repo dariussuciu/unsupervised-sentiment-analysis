@@ -1,7 +1,7 @@
 package com.unsupervisedsentiment.analysis.model;
 
-import java.util.List;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import edu.stanford.nlp.semgraph.SemanticGraph;
 
@@ -34,8 +34,7 @@ public class DoublePropagationData {
 		return sentancesSemanticGraphs;
 	}
 
-	public void setSentancesSemanticGraphs(
-			final List<SemanticGraph> sentancesSemanticGraph) {
+	public void setSentancesSemanticGraphs(final List<SemanticGraph> sentancesSemanticGraph) {
 		this.sentancesSemanticGraphs = sentancesSemanticGraph;
 	}
 
@@ -51,8 +50,7 @@ public class DoublePropagationData {
 		return expandedOpinionWords;
 	}
 
-	public void setExpandedOpinionWords(
-			final LinkedHashSet<Tuple> expandedOpinionWords) {
+	public void setExpandedOpinionWords(final LinkedHashSet<Tuple> expandedOpinionWords) {
 		this.expandedOpinionWords = expandedOpinionWords;
 	}
 
@@ -78,8 +76,7 @@ public class DoublePropagationData {
 
 	private Word getWord(final Tuple tuple, final ElementType type) {
 		// seed words tuples don`t have targets
-		if (tuple.getTupleType().equals(TupleType.Seed)
-				&& tuple.getSource().getType().equals(type)) {
+		if (tuple.getTupleType().equals(TupleType.Seed) && tuple.getSource().getType().equals(type)) {
 			return tuple.getSource();
 		}
 

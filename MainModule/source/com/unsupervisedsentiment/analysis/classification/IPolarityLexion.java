@@ -11,6 +11,6 @@ public interface IPolarityLexion {
 	public Double extract(String word, String pos[]);
 
 	public ArrayList<SeedScoreModel> getSeedWordsWithScores();
-	
+
 	public List<String> getSeedWordsFromSemanticGraph(List<SemanticGraph> graphs);
 }

@@ -1,11 +1,10 @@
 package com.unsupervisedsentiment.analysis.modules.doublepropagation;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import com.unsupervisedsentiment.analysis.core.Initializer;
-import com.unsupervisedsentiment.analysis.core.constants.Constants;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.modules.IO.CacheService;

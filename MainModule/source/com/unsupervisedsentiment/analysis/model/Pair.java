@@ -19,7 +19,8 @@ public class Pair extends Tuple {
 		this.relation = relation;
 	}
 
-	public Pair(Word opinion, Word target, Dependency dependency, TupleType tupleType, String relation, int sentenceIndex, String sentence) {
+	public Pair(Word opinion, Word target, Dependency dependency, TupleType tupleType, String relation,
+			int sentenceIndex, String sentence) {
 		super(opinion, target, dependency, tupleType, sentenceIndex, sentence);
 		this.relation = relation;
 	}
@@ -32,8 +33,7 @@ public class Pair extends Tuple {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result
-				+ ((relation == null) ? 0 : relation.hashCode());
+		result = prime * result + ((relation == null) ? 0 : relation.hashCode());
 		return result;
 	}
 

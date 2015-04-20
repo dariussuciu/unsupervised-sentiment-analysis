@@ -11,8 +11,7 @@ public class OutputWrapper extends FileWrapper {
 		super();
 	}
 
-	public OutputWrapper(String author, String source, String content,
-			String filename, Set<Tuple> tuples) {
+	public OutputWrapper(String author, String source, String content, String filename, Set<Tuple> tuples) {
 		super(author, source, content, filename);
 		this.tuples = tuples;
 	}

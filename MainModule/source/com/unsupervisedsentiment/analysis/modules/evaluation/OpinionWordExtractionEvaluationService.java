@@ -11,8 +11,7 @@ import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 public class OpinionWordExtractionEvaluationService extends EvaluationService {
 
-	public OpinionWordExtractionEvaluationService(List<EvaluationModel> evaluationModels,
-			Set<Tuple> tuples) {
+	public OpinionWordExtractionEvaluationService(List<EvaluationModel> evaluationModels, Set<Tuple> tuples) {
 		super(evaluationModels, tuples);
 	}
 
@@ -26,8 +25,7 @@ public class OpinionWordExtractionEvaluationService extends EvaluationService {
 			boolean found = false;
 			for (final EvaluationModel model : evaluationModels) {
 				if (opinionWord.getSentenceIndex() == model.getSentenceIndex()) {
-					if (opinionWord.getValue().equals(
-							model.getElement())) {
+					if (opinionWord.getValue().equals(model.getElement())) {
 						truePositive++;
 						found = true;
 						break;
@@ -36,14 +34,13 @@ public class OpinionWordExtractionEvaluationService extends EvaluationService {
 			}
 
 			if (!found) {
-				for(Tuple tuple : tuples) 
-				{
-					if(tuple.getSentenceIndex() == opinionWord.getSentenceIndex())
-					{
-//						 System.out.println(opinionWord.getValue() +
-//								 opinionWord.getPosTag() + " - " +
-//								 opinionWord.getSentenceIndex() + " - " + tuple.getSentence());
-						 break;
+				for (Tuple tuple : tuples) {
+					if (tuple.getSentenceIndex() == opinionWord.getSentenceIndex()) {
+						// System.out.println(opinionWord.getValue() +
+						// opinionWord.getPosTag() + " - " +
+						// opinionWord.getSentenceIndex() + " - " +
+						// tuple.getSentence());
+						break;
 					}
 				}
 				falsePositive++;
@@ -53,38 +50,39 @@ public class OpinionWordExtractionEvaluationService extends EvaluationService {
 		for (final EvaluationModel model : evaluationModels) {
 			boolean found = false;
 			for (final Word opinionWord : opinionWords) {
-				if (opinionWord.getValue().equals(
-						model.getElement()) && model.getSentenceIndex() == opinionWord.getSentenceIndex()) {
+				if (opinionWord.getValue().equals(model.getElement())
+						&& model.getSentenceIndex() == opinionWord.getSentenceIndex()) {
 					found = true;
 				}
 			}
 
 			if (!found) {
-				//System.out.println(model.getOpinionWord() + " (" + model.getSentenceIndex() + ") " + " - "
-				//		+ model.getCleanSentence());
+				// System.out.println(model.getOpinionWord() + " (" +
+				// model.getSentenceIndex() + ") " + " - "
+				// + model.getCleanSentence());
 				falseNegative++;
 			}
 		}
-		
-//		for (final Word target : targets) {
-//			boolean found = false;
-//			for (final EvaluationModel model : evaluationModels) {
-//				if (target.getSentenceIndex() == model.getSentenceIndex()) {
-//					if (target.getValue().equals(
-//							model.getTarget())) {
-//						//truePositive++;
-//						found = true;
-//						break;
-//					}
-//				}
-//			}
-//
-//			if (!found) {
-//				// System.out.println(opinionWord.getValue() +
-//				//		 opinionWord.getPosTag() + " - " +
-//				//		 opinionWord.getSentenceIndex());
-//				//falsePositive++;
-//			}
-//		}
+
+		// for (final Word target : targets) {
+		// boolean found = false;
+		// for (final EvaluationModel model : evaluationModels) {
+		// if (target.getSentenceIndex() == model.getSentenceIndex()) {
+		// if (target.getValue().equals(
+		// model.getTarget())) {
+		// //truePositive++;
+		// found = true;
+		// break;
+		// }
+		// }
+		// }
+		//
+		// if (!found) {
+		// // System.out.println(opinionWord.getValue() +
+		// // opinionWord.getPosTag() + " - " +
+		// // opinionWord.getSentenceIndex());
+		// //falsePositive++;
+		// }
+		// }
 	}
 }

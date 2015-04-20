@@ -42,11 +42,8 @@ public class Triple extends Tuple {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((H == null) ? 0 : H.hashCode());
-		result = prime
-				* result
-				+ ((relationHOpinion == null) ? 0 : relationHOpinion.hashCode());
-		result = prime * result
-				+ ((relationHTarget == null) ? 0 : relationHTarget.hashCode());
+		result = prime * result + ((relationHOpinion == null) ? 0 : relationHOpinion.hashCode());
+		result = prime * result + ((relationHTarget == null) ? 0 : relationHTarget.hashCode());
 		return result;
 	}
 

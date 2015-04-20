@@ -12,6 +12,5 @@ public class Constants {
 	public static final String SCORE_EVAL_MODEL = "ScoreEvaluationModel";
 	public static final String TARGET_EVAL_MODEL = "TargetEvaluationModel";
 
-	public static final SimpleDateFormat sdf = new SimpleDateFormat(
-			"dd/MM/yyyy K:m:s a");
+	public static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy K:m:s a");
 }

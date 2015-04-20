@@ -7,7 +7,7 @@ import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 
 public class PolarityAssigner {
-	
+
 	/**
 	 * Necessary because for some reason changes in a Set<E> do not persist!
 	 * 
@@ -27,9 +27,8 @@ public class PolarityAssigner {
 		}
 		return tuples;
 	}
-	
-	public static ArrayList<Tuple> assignScoresToSeeds(ArrayList<Tuple> tuples,
-			ArrayList<SeedScoreModel> seeds) {
+
+	public static ArrayList<Tuple> assignScoresToSeeds(ArrayList<Tuple> tuples, ArrayList<SeedScoreModel> seeds) {
 		for (Tuple tuple : tuples) {
 			for (SeedScoreModel model : seeds) {
 				String seed = model.getSeed().trim();
@@ -38,8 +37,7 @@ public class PolarityAssigner {
 				if (tuple.getTarget() != null) {
 					String target = tuple.getTarget().getValue();
 
-					if (seed.equals(source.trim())
-							|| seed.equals(target.trim())) {
+					if (seed.equals(source.trim()) || seed.equals(target.trim())) {
 						double score = model.getScore();
 						tuple.getSource().setScore(score);
 						tuple.getTarget().setScore(score);
@@ -50,13 +48,11 @@ public class PolarityAssigner {
 		}
 		return tuples;
 	}
-	
-	public static ArrayList<Tuple> assignScores(ArrayList<Tuple> data,
-			ArrayList<SeedScoreModel> seeds) {
+
+	public static ArrayList<Tuple> assignScores(ArrayList<Tuple> data, ArrayList<SeedScoreModel> seeds) {
 
 		for (Tuple tuple : data) {
-			if (isSeed(seeds, tuple.getSource().getValue())
-					|| (tuple.getTarget() != null)
+			if (isSeed(seeds, tuple.getSource().getValue()) || (tuple.getTarget() != null)
 					&& isSeed(seeds, tuple.getTarget().getValue())) {
 				if (tuple.getSource().getScore() != Classification.DEFAULT_SCORE) {
 					ScorePropagator.propagateScore(data, tuple);

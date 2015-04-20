@@ -17,8 +17,7 @@ import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 
-public class OpinionWordExtractorService implements
-		IOpinionWordExtractorService {
+public class OpinionWordExtractorService implements IOpinionWordExtractorService {
 
 	private static IOpinionWordExtractorService instance;
 
@@ -33,89 +32,63 @@ public class OpinionWordExtractorService implements
 	}
 
 	@Override
-	public Set<Tuple> extractOpinionWordsUsingR2(
-			final SemanticGraph semanticGraph, final Set<Word> targets,
+	public Set<Tuple> extractOpinionWordsUsingR2(final SemanticGraph semanticGraph, final Set<Word> targets,
 			final Set<Tuple> existingOpinionWords, final int semanticGraphIndex) {
 		final Set<Tuple> foundTargets = new HashSet<Tuple>();
 
-		foundTargets.addAll(extractOpinionWordsUsingR21(semanticGraph, targets,
-				existingOpinionWords, ElementType.OPINION_WORD,
-				semanticGraphIndex));
-		foundTargets.addAll(extractOpinionWordsUsingR22(semanticGraph, targets,
-				existingOpinionWords, ElementType.OPINION_WORD,
-				semanticGraphIndex));
+		foundTargets.addAll(extractOpinionWordsUsingR21(semanticGraph, targets, existingOpinionWords,
+				ElementType.OPINION_WORD, semanticGraphIndex));
+		foundTargets.addAll(extractOpinionWordsUsingR22(semanticGraph, targets, existingOpinionWords,
+				ElementType.OPINION_WORD, semanticGraphIndex));
 		return foundTargets;
 	}
 
 	@Override
-	public Set<Tuple> extractOpinionWordsUsingR4(
-			final SemanticGraph semanticGraph, final Set<Word> opinionWords,
+	public Set<Tuple> extractOpinionWordsUsingR4(final SemanticGraph semanticGraph, final Set<Word> opinionWords,
 			final Set<Tuple> existingOpinionWords, int semanticGraphIndex) {
 		final Set<Tuple> foundTargets = new HashSet<Tuple>();
 
-		foundTargets.addAll(extractOpinionWordsUsingR41(semanticGraph,
-				opinionWords, existingOpinionWords, ElementType.OPINION_WORD,
-				semanticGraphIndex));
-		foundTargets.addAll(extractOpinionWordsUsingR42(semanticGraph,
-				opinionWords, existingOpinionWords, ElementType.OPINION_WORD,
-				semanticGraphIndex));
+		foundTargets.addAll(extractOpinionWordsUsingR41(semanticGraph, opinionWords, existingOpinionWords,
+				ElementType.OPINION_WORD, semanticGraphIndex));
+		foundTargets.addAll(extractOpinionWordsUsingR42(semanticGraph, opinionWords, existingOpinionWords,
+				ElementType.OPINION_WORD, semanticGraphIndex));
 		return foundTargets;
 	}
 
-	public Set<Tuple> extractOpinionWordsUsingR21(
-			final SemanticGraph semanticGraph, final Set<Word> opinionWords,
-			final Set<Tuple> existingOpinionWords,
-			final ElementType targetType, final int semanticGraphIndex) {
-		final Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph,
-				opinionWords, Dep_MRRel.getInstance(), Pos_NNRel.getInstance(),
-				Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
+	public Set<Tuple> extractOpinionWordsUsingR21(final SemanticGraph semanticGraph, final Set<Word> opinionWords,
+			final Set<Tuple> existingOpinionWords, final ElementType targetType, final int semanticGraphIndex) {
+		final Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph, opinionWords, Dep_MRRel.getInstance(),
+				Pos_NNRel.getInstance(), Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
 		return Helpers.getNewTuples(foundTargets, existingOpinionWords);
 		// return Helpers.extractTargets(semanticGraph, opinionWords,
 		// Dep_MRRel.getInstance(), Pos_JJRel.getInstance());
 	}
 
-	public Set<Tuple> extractOpinionWordsUsingR22(
-			final SemanticGraph semanticGraph, final Set<Word> features,
-			final Set<Tuple> existingOpinionWords,
-			final ElementType targetType, final int semanticGraphIndex) {
+	public Set<Tuple> extractOpinionWordsUsingR22(final SemanticGraph semanticGraph, final Set<Word> features,
+			final Set<Tuple> existingOpinionWords, final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> targets = new HashSet<Tuple>();
 
 		for (final Word feature : features) {
-			final List<IndexedWord> vertexes = semanticGraph
-					.getAllNodesByWordPattern(feature.getPattern());
+			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(feature.getPattern());
 			for (final IndexedWord vertex : vertexes) {
 				// for outgoing edges
-				final List<SemanticGraphEdge> outgoingEdgesWithH = Helpers
-						.getTargetEdgesOnRel(
-								semanticGraph.outgoingEdgeIterable(vertex),
-								Dep_MRRel.getInstance());
+				final List<SemanticGraphEdge> outgoingEdgesWithH = Helpers.getTargetEdgesOnRel(
+						semanticGraph.outgoingEdgeIterable(vertex), Dep_MRRel.getInstance());
 				for (final SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
-					final Set<Tuple> foundTargets = Helpers
-							.getTriplesRelativeToH(semanticGraph, feature,
-									edgeWithH, edgeWithH.getTarget(), true,
-									Pos_NNRel.getInstance(),
-									Pos_JJRel.getInstance(),
-									Dep_MRRel.getInstance(), targetType,
-									semanticGraphIndex);
-					targets.addAll(Helpers.getNewTuples(foundTargets,
-							existingOpinionWords));
+					final Set<Tuple> foundTargets = Helpers.getTriplesRelativeToH(semanticGraph, feature, edgeWithH,
+							edgeWithH.getTarget(), true, Pos_NNRel.getInstance(), Pos_JJRel.getInstance(),
+							Dep_MRRel.getInstance(), targetType, semanticGraphIndex);
+					targets.addAll(Helpers.getNewTuples(foundTargets, existingOpinionWords));
 				}
 
 				// for incoming edges
-				final List<SemanticGraphEdge> incomingEdgesWithH = Helpers
-						.getTargetEdgesOnRel(
-								semanticGraph.incomingEdgeIterable(vertex),
-								Dep_MRRel.getInstance());
+				final List<SemanticGraphEdge> incomingEdgesWithH = Helpers.getTargetEdgesOnRel(
+						semanticGraph.incomingEdgeIterable(vertex), Dep_MRRel.getInstance());
 				for (final SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
-					final Set<Tuple> foundTargets = Helpers
-							.getTriplesRelativeToH(semanticGraph, feature,
-									edgeWithH, edgeWithH.getSource(), false,
-									Pos_NNRel.getInstance(),
-									Pos_JJRel.getInstance(),
-									Dep_MRRel.getInstance(), targetType,
-									semanticGraphIndex);
-					targets.addAll(Helpers.getNewTuples(foundTargets,
-							existingOpinionWords));
+					final Set<Tuple> foundTargets = Helpers.getTriplesRelativeToH(semanticGraph, feature, edgeWithH,
+							edgeWithH.getSource(), false, Pos_NNRel.getInstance(), Pos_JJRel.getInstance(),
+							Dep_MRRel.getInstance(), targetType, semanticGraphIndex);
+					targets.addAll(Helpers.getNewTuples(foundTargets, existingOpinionWords));
 				}
 			}
 		}
@@ -123,41 +96,28 @@ public class OpinionWordExtractorService implements
 		return targets;
 	}
 
-	public Set<Tuple> extractOpinionWordsUsingR41(
-			final SemanticGraph semanticGraph, final Set<Word> opinionWords,
-			final Set<Tuple> existingOpinionWords,
-			final ElementType targetType, final int semanticGraphIndex) {
+	public Set<Tuple> extractOpinionWordsUsingR41(final SemanticGraph semanticGraph, final Set<Word> opinionWords,
+			final Set<Tuple> existingOpinionWords, final ElementType targetType, final int semanticGraphIndex) {
 
-		final Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph,
-				opinionWords, Dep_ConjRel.getInstance(),
-				Pos_JJRel.getInstance(), Pos_JJRel.getInstance(), targetType,
-				semanticGraphIndex);
+		final Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph, opinionWords, Dep_ConjRel.getInstance(),
+				Pos_JJRel.getInstance(), Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
 		return Helpers.getNewTuples(foundTargets, existingOpinionWords);
 	}
 
-	public Set<Tuple> extractOpinionWordsUsingR42(
-			final SemanticGraph semanticGraph, final Set<Word> opinionWords,
-			final Set<Tuple> existingOpinionWords,
-			final ElementType targetType, final int semanticGraphIndex) {
+	public Set<Tuple> extractOpinionWordsUsingR42(final SemanticGraph semanticGraph, final Set<Word> opinionWords,
+			final Set<Tuple> existingOpinionWords, final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> targets = new HashSet<Tuple>();
 
 		for (final Word feature : opinionWords) {
-			final List<IndexedWord> vertexes = semanticGraph
-					.getAllNodesByWordPattern(feature.getPattern());
+			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(feature.getPattern());
 			for (final IndexedWord vertex : vertexes) {
 				// for outgoing edges
-				final Iterable<SemanticGraphEdge> outgoingEdgesWithH = semanticGraph
-						.outgoingEdgeIterable(vertex);
+				final Iterable<SemanticGraphEdge> outgoingEdgesWithH = semanticGraph.outgoingEdgeIterable(vertex);
 				for (final SemanticGraphEdge edgeWithH : outgoingEdgesWithH) {
-					final Set<Tuple> foundTargets = Helpers
-							.getTriplesRelativeToHOnEquivalency(semanticGraph,
-									feature, edgeWithH, edgeWithH.getTarget(),
-									true, Dep_ConjRel.getInstance(),
-									Pos_JJRel.getInstance(),
-									Pos_JJRel.getInstance(), targetType,
-									semanticGraphIndex);
-					targets.addAll(Helpers.getNewTuples(foundTargets,
-							existingOpinionWords));
+					final Set<Tuple> foundTargets = Helpers.getTriplesRelativeToHOnEquivalency(semanticGraph, feature,
+							edgeWithH, edgeWithH.getTarget(), true, Dep_ConjRel.getInstance(), Pos_JJRel.getInstance(),
+							Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
+					targets.addAll(Helpers.getNewTuples(foundTargets, existingOpinionWords));
 					// targets.addAll(Helpers.getTriplesRelativeToHOnEquivalency(semanticGraph,
 					// feature,
 					// edgeWithH, edgeWithH.getTarget(), true,
@@ -165,18 +125,12 @@ public class OpinionWordExtractorService implements
 				}
 
 				// for incoming edges
-				final Iterable<SemanticGraphEdge> incomingEdgesWithH = semanticGraph
-						.incomingEdgeIterable(vertex);
+				final Iterable<SemanticGraphEdge> incomingEdgesWithH = semanticGraph.incomingEdgeIterable(vertex);
 				for (final SemanticGraphEdge edgeWithH : incomingEdgesWithH) {
-					final Set<Tuple> foundTargets = Helpers
-							.getTriplesRelativeToHOnEquivalency(semanticGraph,
-									feature, edgeWithH, edgeWithH.getSource(),
-									false, Dep_ConjRel.getInstance(),
-									Pos_JJRel.getInstance(),
-									Pos_JJRel.getInstance(), targetType,
-									semanticGraphIndex);
-					targets.addAll(Helpers.getNewTuples(foundTargets,
-							existingOpinionWords));
+					final Set<Tuple> foundTargets = Helpers.getTriplesRelativeToHOnEquivalency(semanticGraph, feature,
+							edgeWithH, edgeWithH.getSource(), false, Dep_ConjRel.getInstance(),
+							Pos_JJRel.getInstance(), Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
+					targets.addAll(Helpers.getNewTuples(foundTargets, existingOpinionWords));
 
 					// targets.addAll(Helpers.getTriplesRelativeToHOnEquivalency(semanticGraph,
 					// feature,

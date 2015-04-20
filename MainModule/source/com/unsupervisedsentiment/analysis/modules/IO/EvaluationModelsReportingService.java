@@ -2,8 +2,6 @@ package com.unsupervisedsentiment.analysis.modules.IO;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -57,10 +55,8 @@ public class EvaluationModelsReportingService {
 		targetEvaluationModels = cacheService.getStoredOrCreateNewEvaluationModel(storedEvaluationModelsDirectory,
 				input, false, ElementType.FEATURE, Constants.TARGET_EVAL_MODEL);
 
-		scoreEvaluationModels = cacheService
-				.getStoredOrCreateNewEvaluationModel(
-						storedEvaluationModelsDirectory, input, true,
-						ElementType.OPINION_WORD, Constants.SCORE_EVAL_MODEL);
+		scoreEvaluationModels = cacheService.getStoredOrCreateNewEvaluationModel(storedEvaluationModelsDirectory,
+				input, true, ElementType.OPINION_WORD, Constants.SCORE_EVAL_MODEL);
 	}
 
 	public EvaluationMetadata outputAndGetEvaluationMetadataResults(LinkedHashSet<Tuple> resultTuples,
@@ -68,24 +64,17 @@ public class EvaluationModelsReportingService {
 		OpinionWordExtractionEvaluationService extractionEvaluationService = new OpinionWordExtractionEvaluationService(
 				opinionWordEvaluationModels, resultTuples);
 		EvaluationResult extractionEvaluationResult = extractionEvaluationService.getResults();
-		System.out.println("Precision : " + extractionEvaluationResult.getPrecision());
-		System.out.println("Recall : " + extractionEvaluationResult.getRecall());
-		System.out.println("-----------------------------------------");
 
 		TargetExtractionEvaluationService targetEvaluationService = new TargetExtractionEvaluationService(
 				targetEvaluationModels, resultTuples);
-		EvaluationResult targetEvaluationResult = targetEvaluationService
-				.getResults();
+		EvaluationResult targetEvaluationResult = targetEvaluationService.getResults();
+
 		if (config.getPrintEvaluationResultsToConsole()) {
-			System.out.println("Precision : "
-					+ extractionEvaluationResult.getPrecision());
-			System.out.println("Recall : "
-					+ extractionEvaluationResult.getRecall());
-		System.out.println("-----------------------------------------");
-			System.out.println("Target Extraction Precision : "
-					+ targetEvaluationResult.getPrecision());
-			System.out.println("Target Extraction Recall : "
-					+ targetEvaluationResult.getRecall());
+			System.out.println("Precision : " + extractionEvaluationResult.getPrecision());
+			System.out.println("Recall : " + extractionEvaluationResult.getRecall());
+			System.out.println("-----------------------------------------");
+			System.out.println("Target Extraction Precision : " + targetEvaluationResult.getPrecision());
+			System.out.println("Target Extraction Recall : " + targetEvaluationResult.getRecall());
 			System.out.println("-----------------------------------------");
 		}
 
@@ -96,6 +85,7 @@ public class EvaluationModelsReportingService {
 				new ResultPrecRecall(String.valueOf(targetEvaluationResult.getPrecision()), String
 						.valueOf(targetEvaluationResult.getRecall())), config.getPolarityThreshold(),
 				GeneralPosRelationContainer.getAllEnumElementsAsString());
+
 		return metadata;
 	};
 
@@ -112,8 +102,8 @@ public class EvaluationModelsReportingService {
 				config.getSeedWords().size(), config.getTargetFrequencyThreshold(), config.getPolarityThreshold(),
 				extractionEvaluationResult.getPrecision(), extractionEvaluationResult.getRecall(),
 				targetEvaluationResult.getPrecision(), targetEvaluationResult.getRecall(),
-				GeneralPosRelationContainer.getAllEnumElementsAsString(), extractionEvaluationResult, targetEvaluationResult,
-				elapsedTime);
+				GeneralPosRelationContainer.getAllEnumElementsAsString(), extractionEvaluationResult,
+				targetEvaluationResult, elapsedTime);
 
 		detailedReportMaps.add(detailedResultHashMap);
 	}
@@ -161,13 +151,11 @@ public class EvaluationModelsReportingService {
 	}
 
 	public void outputDetailedReportMaps(String filename) {
-		outputService.writeMapToDetailedReportsFile(filename,
-				detailedReportMaps);
+		outputService.writeMapToDetailedReportsFile(filename, detailedReportMaps);
 	}
 
 	public void evaluateScoring(Set<Tuple> combinedTuples) {
-		ScoreEvaluationService.performEvaluation(scoreEvaluationModels,
-				combinedTuples);
+		ScoreEvaluationService.performEvaluation(scoreEvaluationModels, combinedTuples);
 
 	}
 

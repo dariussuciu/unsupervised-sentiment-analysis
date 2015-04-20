@@ -38,5 +38,5 @@ public class SeedFrequency implements Comparable<SeedFrequency> {
 	public int compareTo(SeedFrequency other) {
 		return new CompareToBuilder().append(this.count, other.getCount()).build();
 	}
-	
+
 }

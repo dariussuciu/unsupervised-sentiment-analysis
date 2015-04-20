@@ -13,8 +13,7 @@ public class EvaluationModel implements Serializable {
 	private final int sentenceIndex;
 	private double opinionWordScore;
 
-	public EvaluationModel(final String element, final String sentence,
-			final int sentenceIndex) {
+	public EvaluationModel(final String element, final String sentence, final int sentenceIndex) {
 		super();
 		this.element = element;
 		this.sentence = sentence;
@@ -30,17 +29,16 @@ public class EvaluationModel implements Serializable {
 	}
 
 	public String getCleanSentence() {
-		String cleanSentence = sentence.replaceAll("(###)|(%%%)|(\\$\\$\\$)",
-				"");
+		String cleanSentence = sentence.replaceAll("(###)|(%%%)|(\\$\\$\\$)", "");
 		return cleanSentence;
 	}
 
 	@Override
 	public String toString() {
-		return "EvaluationModel [element=" + element + ", sentence="
-				+ sentence + ", sentenceIndex=" + sentenceIndex + "]";
+		return "EvaluationModel [element=" + element + ", sentence=" + sentence + ", sentenceIndex=" + sentenceIndex
+				+ "]";
 	}
-	
+
 	public double getOpinionWordScore() {
 		return opinionWordScore;
 	}

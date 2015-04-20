@@ -10,8 +10,7 @@ public class FileWrapper {
 	public FileWrapper() {
 	}
 
-	public FileWrapper(String author, String source, String content,
-			String filename) {
+	public FileWrapper(String author, String source, String content, String filename) {
 		super();
 		this.author = author;
 		this.source = source;

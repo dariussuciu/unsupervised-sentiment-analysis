@@ -37,7 +37,7 @@ public class Config {
 	private String scoringThreshold;
 
 	private String targetFrequencyThreshold;
-	
+
 	private boolean printEvaluationResultsToConsole;
 
 	@XmlElement(name = "inputDirectory")

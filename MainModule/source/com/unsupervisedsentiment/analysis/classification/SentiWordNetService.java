@@ -56,16 +56,14 @@ public class SentiWordNetService implements IPolarityLexion {
 
 		_dict = new HashMap<String, Double>();
 		try {
-			final BufferedReader csv = new BufferedReader(new FileReader(
-					pathToSWN));
+			final BufferedReader csv = new BufferedReader(new FileReader(pathToSWN));
 			String line = "";
 
 			// headers...
 			csv.readLine();
 			while ((line = csv.readLine()) != null) {
 				String[] data = line.split("\t");
-				Double score = Double.parseDouble(data[2]) >= Double
-						.parseDouble(data[3]) ? Double.parseDouble(data[2])
+				Double score = Double.parseDouble(data[2]) >= Double.parseDouble(data[3]) ? Double.parseDouble(data[2])
 						: Double.parseDouble(data[3]);
 				String[] words = data[4].split(" ");
 				for (String w : words) {
@@ -83,13 +81,13 @@ public class SentiWordNetService implements IPolarityLexion {
 			e.printStackTrace();
 		}
 	}
-	
-	public void init2(){
+
+	public void init2() {
 		BufferedReader csv = null;
 		try {
 
 			HashMap<String, HashMap<Integer, Double>> allScoresHash = new HashMap<String, HashMap<Integer, Double>>();
-			
+
 			config = Initializer.getConfig();
 			final String pathToSWN = config.getSWNPath();
 
@@ -98,21 +96,21 @@ public class SentiWordNetService implements IPolarityLexion {
 			String line;
 			while ((line = csv.readLine()) != null) {
 
-				if (!line.trim().startsWith("#")) { 
-					
-					String[] data = line.split("\t"); 
+				if (!line.trim().startsWith("#")) {
+
+					String[] data = line.split("\t");
 					String posTag = data[0];
 
 					String[] synsetList = data[4].split(" ");
-					
+
 					Double score = Double.parseDouble(data[2]) - Double.parseDouble(data[3]);
-					
+
 					for (String rankedWord : synsetList) {
-						
+
 						String word = rankedWord.split("#")[0];
 						int rank = Integer.parseInt(rankedWord.split("#")[1]);
-						
-						String key = word + "#"	+ posTag;
+
+						String key = word + "#" + posTag;
 
 						if (!allScoresHash.containsKey(key)) {
 							allScoresHash.put(key, new HashMap<Integer, Double>());
@@ -124,15 +122,13 @@ public class SentiWordNetService implements IPolarityLexion {
 			}
 
 			_dict = new HashMap<String, Double>();
-			for (Map.Entry<String, HashMap<Integer, Double>> entry : allScoresHash
-					.entrySet()) {
+			for (Map.Entry<String, HashMap<Integer, Double>> entry : allScoresHash.entrySet()) {
 				String word = entry.getKey();
 				Map<Integer, Double> synSetScoreMap = entry.getValue();
 
 				double score = 0.0;
 				double sum = 0.0;
-				for (Map.Entry<Integer, Double> setScore : synSetScoreMap
-						.entrySet()) {
+				for (Map.Entry<Integer, Double> setScore : synSetScoreMap.entrySet()) {
 					score += setScore.getValue() / (double) setScore.getKey();
 					sum += 1.0 / (double) setScore.getKey();
 				}
@@ -170,7 +166,7 @@ public class SentiWordNetService implements IPolarityLexion {
 		return total;
 
 	}
-	
+
 	public Double extract(String word, String[] pos) {
 		Double total = new Double(0);
 		if (_dict.get(word + pos[0]) != null)
@@ -190,38 +186,38 @@ public class SentiWordNetService implements IPolarityLexion {
 		}
 
 		for (String seedName : seeds) {
-			double score = extract(seedName, new String[]{SWNPos.Adjective.toString()});
+			double score = extract(seedName, new String[] { SWNPos.Adjective.toString() });
 			hash.add(new SeedScoreModel(seedName, score));
 		}
 		return hash;
 	}
-	
-	public List<String> getSeedWordsFromSemanticGraph(List<SemanticGraph> graphs){
+
+	public List<String> getSeedWordsFromSemanticGraph(List<SemanticGraph> graphs) {
 		List<String> adjectives = new ArrayList<String>();
-		for(SemanticGraph sentence : graphs){
+		for (SemanticGraph sentence : graphs) {
 			List<String> wordsInSentence = new ArrayList<String>();
-			
+
 			Collection<IndexedWord> rootNodes = sentence.getRoots();
-		    for (IndexedWord root : rootNodes) {
-		    	wordsInSentence.add(root.toString());
-		    }
-		    
-		    ArrayList<IndexedWord> nodesList = new ArrayList<IndexedWord>(sentence.vertexSet());
-		    for(IndexedWord word : nodesList){
-		      wordsInSentence.add(word.toString());
-		    }
-		    
-		    for(String word : wordsInSentence){
-		    	if(word.contains("-" + JJ.JJ.toString())){
-		    		adjectives.add(word.replace("-" + JJ.JJ.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
-		    	}
-		    	if(word.contains("-" + JJ.JJS.toString())){
-		    		adjectives.add(word.replace("-" + JJ.JJS.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
-		    	}
-		    	if(word.contains("-" + JJ.JJR.toString())){
-		    		adjectives.add(word.replace("-" + JJ.JJR.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
-		    	}
-		    }
+			for (IndexedWord root : rootNodes) {
+				wordsInSentence.add(root.toString());
+			}
+
+			ArrayList<IndexedWord> nodesList = new ArrayList<IndexedWord>(sentence.vertexSet());
+			for (IndexedWord word : nodesList) {
+				wordsInSentence.add(word.toString());
+			}
+
+			for (String word : wordsInSentence) {
+				if (word.contains("-" + JJ.JJ.toString())) {
+					adjectives.add(word.replace("-" + JJ.JJ.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
+				}
+				if (word.contains("-" + JJ.JJS.toString())) {
+					adjectives.add(word.replace("-" + JJ.JJS.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
+				}
+				if (word.contains("-" + JJ.JJR.toString())) {
+					adjectives.add(word.replace("-" + JJ.JJR.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
+				}
+			}
 		}
 		return adjectives;
 	}

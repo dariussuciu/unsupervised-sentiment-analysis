@@ -9,7 +9,7 @@ import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 public class PolaritySummarization {
-	
+
 	public static double computeOverallScore(List<Tuple> data) {
 		double totalScore = 0;
 		for (Tuple tuple : data) {
@@ -21,25 +21,24 @@ public class PolaritySummarization {
 
 		return normalizedScore;
 	}
-	
-	public static HashMap<Double,Integer> computeScoreDistribution(List<Tuple> data){
-		HashMap<Double,Integer> myMap = new HashMap<Double,Integer>();
-		for (Tuple tuple : data){
+
+	public static HashMap<Double, Integer> computeScoreDistribution(List<Tuple> data) {
+		HashMap<Double, Integer> myMap = new HashMap<Double, Integer>();
+		for (Tuple tuple : data) {
 			if (tuple.getSource().getScore() != Classification.DEFAULT_SCORE) {
 				DecimalFormat df = new DecimalFormat("#.#");
 				String formatted = df.format(tuple.getSource().getScore()).replace(",", ".");
 				double value = Double.parseDouble(formatted);
-				if(value == -0.0)//stupid parser
+				if (value == -0.0)// stupid parser
 					value = 0.0;
-				if (myMap.containsKey(value)){
+				if (myMap.containsKey(value)) {
 					myMap.put(value, myMap.get(value) + 1);
-				}
-				else{
+				} else {
 					myMap.put(value, 1);
 				}
-				
+
 			}
-			
+
 		}
 		return myMap;
 	}
@@ -50,12 +49,11 @@ public class PolaritySummarization {
 		for (Tuple tuple : data) {
 			if (!tuple.getTupleType().equals(TupleType.Seed) && tuple.getTarget() != null) {
 				String targetString = tuple.getTarget().getValue();
-				if (targetString.toLowerCase()
-							.equals(target.toLowerCase())){
+				if (targetString.toLowerCase().equals(target.toLowerCase())) {
 					score += tuple.getTarget().getScore();
 					numberOfEntries++;
 				}
-				
+
 			}
 		}
 		double averageScore = score / numberOfEntries;

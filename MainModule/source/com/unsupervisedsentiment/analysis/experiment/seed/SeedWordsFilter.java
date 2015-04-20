@@ -20,7 +20,8 @@ import org.apache.commons.lang3.StringUtils;
 public class SeedWordsFilter {
 
 	/**
-	 * Returns the most frequent <code>maxCount</code> elements from <code>items</code>, in the specified files.
+	 * Returns the most frequent <code>maxCount</code> elements from
+	 * <code>items</code>, in the specified files.
 	 * 
 	 * @param maxCount
 	 *            max size of result

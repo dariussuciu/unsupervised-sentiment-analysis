@@ -21,17 +21,14 @@ import edu.stanford.nlp.semgraph.SemanticGraph;
 
 public class EvaluationOutputService {
 	public static boolean existsEvaluationModelForFile(final String filename) {
-		final String storedSemanticGraphsDirectory = Initializer.getConfig()
-				.getStoredSemanticGraphsDirectory();
+		final String storedSemanticGraphsDirectory = Initializer.getConfig().getStoredSemanticGraphsDirectory();
 
-		final String filePath = storedSemanticGraphsDirectory + "/" + filename
-				+ "-SemanticGraph";
+		final String filePath = storedSemanticGraphsDirectory + "/" + filename + "-SemanticGraph";
 		final File f = new File(filePath);
 		return f.exists();
 	}
 
-	public static void saveEvaluationModelToFile(
-			final List<SemanticGraph> semanticGraphsListForSentances,
+	public static void saveEvaluationModelToFile(final List<SemanticGraph> semanticGraphsListForSentances,
 			final String filename) {
 		final String filePath = getEvaluationModelFilename(filename);
 		try {
@@ -48,8 +45,7 @@ public class EvaluationOutputService {
 		}
 	}
 
-	public static List<EvaluationModel> getEvaluationModelFromFile(
-			final String filename) {
+	public static List<EvaluationModel> getEvaluationModelFromFile(final String filename) {
 		final String filePath = getEvaluationModelFilename(filename);
 		try {
 			final InputStream file = new FileInputStream(filePath);
@@ -58,8 +54,7 @@ public class EvaluationOutputService {
 
 			// deserialize the List
 			@SuppressWarnings("unchecked")
-			final List<EvaluationModel> evaluationModels = (List<EvaluationModel>) input
-					.readObject();
+			final List<EvaluationModel> evaluationModels = (List<EvaluationModel>) input.readObject();
 			input.close();
 			// display its data
 			return evaluationModels;
@@ -71,10 +66,8 @@ public class EvaluationOutputService {
 	}
 
 	private static String getEvaluationModelFilename(final String filename) {
-		final String storedSemanticGraphsDirectory = Initializer.getConfig()
-				.getStoredSemanticGraphsDirectory();
-		final String filePath = storedSemanticGraphsDirectory + "/" + filename
-				+ "-SemanticGraph";
+		final String storedSemanticGraphsDirectory = Initializer.getConfig().getStoredSemanticGraphsDirectory();
+		final String filePath = storedSemanticGraphsDirectory + "/" + filename + "-SemanticGraph";
 		return filePath;
 	}
 }

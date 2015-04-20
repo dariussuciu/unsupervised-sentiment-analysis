@@ -42,10 +42,8 @@ public class NLPService {
 
 	private NLPService() {
 		final Properties props = new Properties();
-		props.put("annotators", StanfordCoreNLP.STANFORD_TOKENIZE + ","
-				+ StanfordCoreNLP.STANFORD_SSPLIT + ","
-				+ StanfordCoreNLP.STANFORD_POS + ","
-				+ StanfordCoreNLP.STANFORD_LEMMA + ","
+		props.put("annotators", StanfordCoreNLP.STANFORD_TOKENIZE + "," + StanfordCoreNLP.STANFORD_SSPLIT + ","
+				+ StanfordCoreNLP.STANFORD_POS + "," + StanfordCoreNLP.STANFORD_LEMMA + ","
 				+ StanfordCoreNLP.STANFORD_PARSE);
 		coreNlp = new StanfordCoreNLP(props);
 	}
@@ -57,20 +55,17 @@ public class NLPService {
 
 	public List<Tuple> getTuplesFromSentence(final CoreMap sentence) {
 		final List<Tuple> tuples = new ArrayList<Tuple>();
-		final SemanticGraph dependencies = sentence
-				.get(CollapsedCCProcessedDependenciesAnnotation.class);
+		final SemanticGraph dependencies = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
 
 		final Set<SemanticGraphEdge> edgeSet = dependencies.getEdgeSet();
 
 		for (final SemanticGraphEdge egi : edgeSet) {
 			final Pair tuple = new Pair();
 			tuple.setDependency(Dependency.DIRECT_DEPENDENCY);
-			tuple.setSource(new Word(egi.getSource().get(TextAnnotation.class),
-					egi.getSource().get(PartOfSpeechAnnotation.class),
-					ElementType.NONE));
-			tuple.setTarget(new Word(egi.getTarget().get(TextAnnotation.class),
-					egi.getTarget().get(PartOfSpeechAnnotation.class),
-					ElementType.NONE));
+			tuple.setSource(new Word(egi.getSource().get(TextAnnotation.class), egi.getSource().get(
+					PartOfSpeechAnnotation.class), ElementType.NONE));
+			tuple.setTarget(new Word(egi.getTarget().get(TextAnnotation.class), egi.getTarget().get(
+					PartOfSpeechAnnotation.class), ElementType.NONE));
 			tuple.setRelation(egi.getRelation().toString());
 			tuples.add(tuple);
 		}
@@ -84,46 +79,36 @@ public class NLPService {
 		return sentences;
 	}
 
-	public List<EvaluationModel> getEvaluationModels(final List<SemanticGraph> semanticGraphs,
-			boolean forScoring, ElementType elementType) {
+	public List<EvaluationModel> getEvaluationModels(final List<SemanticGraph> semanticGraphs, boolean forScoring,
+			ElementType elementType) {
 		final List<EvaluationModel> evaluationModels = new ArrayList<EvaluationModel>();
 
 		for (int i = 0; i < semanticGraphs.size(); i++) {
-			final String sentence = semanticGraphs.get(i)
-					.toRecoveredSentenceString();
-			
+			final String sentence = semanticGraphs.get(i).toRecoveredSentenceString();
+
 			Matcher matcher;
-			
-			if(elementType.equals(ElementType.OPINION_WORD))
-			{
-				String patternForOpinionWords = forScoring ? "### (\\w*\\@.?\\d\\.?\\d*\\b)"
-						: "### (\\w*\\b)";
+
+			if (elementType.equals(ElementType.OPINION_WORD)) {
+				String patternForOpinionWords = forScoring ? "### (\\w*\\@.?\\d\\.?\\d*\\b)" : "### (\\w*\\b)";
 				final Pattern OPINION_WORD_PATTERN = Pattern.compile(patternForOpinionWords);
 				matcher = OPINION_WORD_PATTERN.matcher(sentence);
-			}
-			else 
-			{
-				String patternForTargets = forScoring ? "% % % (\\w*\\@.?\\d\\.?\\d*\\b)"
-						: "% % % (\\w*\\b)";
-				
+			} else {
+				String patternForTargets = forScoring ? "% % % (\\w*\\@.?\\d\\.?\\d*\\b)" : "% % % (\\w*\\b)";
+
 				final Pattern TARGET_PATTERN = Pattern.compile(patternForTargets);
 				matcher = TARGET_PATTERN.matcher(sentence);
 			}
-			
-			final String cleanSentence = sentence.replaceAll(
-					"(### )|(% % % )|(\\$ \\$ \\$ )|(\\@\\d\\.\\d*)", "");
+
+			final String cleanSentence = sentence.replaceAll("(### )|(% % % )|(\\$ \\$ \\$ )|(\\@\\d\\.\\d*)", "");
 			while (matcher.find()) {
 				String element = matcher.group(1);
 				double score = new Double(Classification.DEFAULT_SCORE);
 				if (forScoring) {
-					String numberString = element.substring(
-							element.indexOf("@") + 1, element.length());
+					String numberString = element.substring(element.indexOf("@") + 1, element.length());
 					score = Double.parseDouble(numberString);
-					element = element.substring(0,
-							element.indexOf("@"));
+					element = element.substring(0, element.indexOf("@"));
 				}
-				final EvaluationModel model = new EvaluationModel(element,
-						cleanSentence, i);
+				final EvaluationModel model = new EvaluationModel(element, cleanSentence, i);
 				model.setOpinionWordScore(score);
 				evaluationModels.add(model);
 			}
@@ -155,13 +140,11 @@ public class NLPService {
 		return result;
 	}
 
-	public List<SemanticGraph> createSemanticGraphsListForSentances(
-			final String s) {
+	public List<SemanticGraph> createSemanticGraphsListForSentances(final String s) {
 		final List<SemanticGraph> semanticGraphs = new ArrayList<SemanticGraph>();
 		final List<CoreMap> annotatedSentences = getAnnotatedSentencesFromText(s);
 		for (final CoreMap sentence : annotatedSentences) {
-			final SemanticGraph graph = sentence
-					.get(CollapsedCCProcessedDependenciesAnnotation.class);
+			final SemanticGraph graph = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
 			semanticGraphs.add(graph);
 		}
 		return semanticGraphs;
