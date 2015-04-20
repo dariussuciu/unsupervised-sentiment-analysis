@@ -3,6 +3,9 @@ package com.unsupervisedsentiment.analysis.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 /**
  * 
  * Tuple contains a source word and a target. The source is the starting
@@ -195,15 +198,7 @@ public class Tuple {
 
 	@Override
 	public String toString() {
-		if (source != null && target != null) {
-			return source.getValue() + " -> " + target.getValue();
-		} else {
-			if (source != null) {
-				return source.getValue() + " -> NULL";
-			} else if (target != null) {
-				return "NULL -> " + target.getValue();
-			}
-		}
-		return "";
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(this);
 	}
 }

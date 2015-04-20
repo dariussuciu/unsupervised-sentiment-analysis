@@ -1,5 +1,9 @@
 package com.unsupervisedsentiment.analysis.model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.unsupervisedsentiment.analysis.core.constants.relations.GeneralPosRelationContainer;
 
 public class Word {
@@ -22,12 +26,13 @@ public class Word {
 	public String getValue() {
 		return value;
 	}
-	
+
 	public String getPattern() {
 		String pattern;
-		if(value.contains("*"))
+		if (value.contains("*"))
 			pattern = value.replace("*", "\\*");
-		else pattern = value;
+		else
+			pattern = value;
 		return pattern;
 	}
 
@@ -131,4 +136,11 @@ public class Word {
 	public void setNumberOfInstances(int numberOfInstances) {
 		this.numberOfInstances = numberOfInstances;
 	}
+
+	@Override
+	public String toString() {
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		return gson.toJson(this);
+	}
+
 }
