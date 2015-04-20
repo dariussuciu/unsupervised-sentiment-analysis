@@ -28,12 +28,10 @@ public class Tuple {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((dependency == null) ? 0 : dependency.hashCode());
+		result = prime * result + ((dependency == null) ? 0 : dependency.hashCode());
 		result = prime * result + ((source == null) ? 0 : source.hashCode());
 		result = prime * result + ((target == null) ? 0 : target.hashCode());
-		result = prime * result
-				+ ((tupleType == null) ? 0 : tupleType.hashCode());
+		result = prime * result + ((tupleType == null) ? 0 : tupleType.hashCode());
 		return 1;
 	}
 
@@ -47,70 +45,60 @@ public class Tuple {
 			return false;
 
 		Tuple other = (Tuple) obj;
-		
-		if(this.getTupleType().equals(TupleType.Seed) && other.getTupleType().equals(TupleType.Seed))
-		{
+
+		if (this.getTupleType().equals(TupleType.Seed) && other.getTupleType().equals(TupleType.Seed)) {
 			return this.source.equals(other.source);
 
-		}
-		else 
-		{
-			if(this.getSentenceIndex() != (other.getSentenceIndex()))
-				{
-					return false;
-				}
-					
-			if(this.source == null && this.target == null) {
-				if(other.source != null || other.target != null)
-					return false;
+		} else {
+			if (this.getSentenceIndex() != (other.getSentenceIndex())) {
+				return false;
 			}
-			else {
-				if(this.source == null)
-				{
-					if(other.source == null && !other.target.equals(this.target))
+
+			if (this.source == null && this.target == null) {
+				if (other.source != null || other.target != null)
+					return false;
+			} else {
+				if (this.source == null) {
+					if (other.source == null && !other.target.equals(this.target))
 						return false;
-					if(other.target == null && !other.source.equals(this.target))
-						return false;
-				}
-				
-				if(this.target == null)
-				{
-					if(other.source == null && !other.target.equals(this.source))
-						return false;
-					if(other.target == null && !other.source.equals(this.source))
+					if (other.target == null && !other.source.equals(this.target))
 						return false;
 				}
-				
-				if(this.source.equals(other.source))
-				{
-					if(!this.target.equals(other.target))
+
+				if (this.target == null) {
+					if (other.source == null && !other.target.equals(this.source))
+						return false;
+					if (other.target == null && !other.source.equals(this.source))
 						return false;
 				}
-				
-				if(this.target.equals(other.target))
-				{
-					if(!this.source.equals(other.source))
+
+				if (this.source.equals(other.source)) {
+					if (!this.target.equals(other.target))
 						return false;
 				}
-				
-				if(this.source.equals(other.target))
-				{
-					if(!this.target.equals(other.source))
+
+				if (this.target.equals(other.target)) {
+					if (!this.source.equals(other.source))
 						return false;
 				}
-				
-				if(this.target.equals(other.source))
-				{
-					if(!this.source.equals(other.target))
+
+				if (this.source.equals(other.target)) {
+					if (!this.target.equals(other.source))
 						return false;
-					
-				}			
+				}
+
+				if (this.target.equals(other.source)) {
+					if (!this.source.equals(other.target))
+						return false;
+
+				}
 			}
 		}
 		return true;
 	}
 
-	public Tuple(Word source, Word target, Dependency dependency, TupleType tupleType, int sentenceIndex, String sentence) {
+	public Tuple(Word source, Word target, Dependency dependency, TupleType tupleType, int sentenceIndex,
+			String sentence) {
 		super();
 		this.source = source;
 		this.target = target;
@@ -159,30 +147,32 @@ public class Tuple {
 		this.source = source;
 	}
 
-	public List<Word> getElements(ElementType elementType){
+	public List<Word> getElements(ElementType elementType) {
 		List<Word> elements = new ArrayList<Word>();
-		if(getSource().getType().equals(elementType))
+		if (getSource().getType().equals(elementType))
 			elements.add(getSource());
-		if(getTarget() != null && getTarget().getType().equals(elementType))
+		if (getTarget() != null && getTarget().getType().equals(elementType))
 			elements.add(getTarget());
 		return elements;
 	}
-	
-//	public Word getOpinionWord(){
-//		Word word = getSource().getType().equals(ElementType.OPINION_WORD) ? getSource() : getTarget();
-//		return word;
-//	}
-	
-//	public Word getFeatureWord(){
-//		Word word = getSource().getType().equals(ElementType.FEATURE) ? getSource() : getTarget();
-//		return word;
-//	}
-	
-	public List<Word> getFeatureWords(){
+
+	// public Word getOpinionWord(){
+	// Word word = getSource().getType().equals(ElementType.OPINION_WORD) ?
+	// getSource() : getTarget();
+	// return word;
+	// }
+
+	// public Word getFeatureWord(){
+	// Word word = getSource().getType().equals(ElementType.FEATURE) ?
+	// getSource() : getTarget();
+	// return word;
+	// }
+
+	public List<Word> getFeatureWords() {
 		List<Word> targets = new ArrayList<Word>();
-		if(getSource().getType().equals(ElementType.FEATURE))
+		if (getSource().getType().equals(ElementType.FEATURE))
 			targets.add(getSource());
-		if(getTarget().getType().equals(ElementType.FEATURE))
+		if (getTarget().getType().equals(ElementType.FEATURE))
 			targets.add(getTarget());
 		return targets;
 	}
@@ -201,5 +191,19 @@ public class Tuple {
 
 	public void setSentence(String sentence) {
 		this.sentence = sentence;
+	}
+
+	@Override
+	public String toString() {
+		if (source != null && target != null) {
+			return source.getValue() + " -> " + target.getValue();
+		} else {
+			if (source != null) {
+				return source.getValue() + " -> NULL";
+			} else if (target != null) {
+				return "NULL -> " + target.getValue();
+			}
+		}
+		return "";
 	}
 }

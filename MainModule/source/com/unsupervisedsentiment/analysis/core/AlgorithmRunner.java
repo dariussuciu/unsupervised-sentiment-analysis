@@ -76,31 +76,22 @@ public class AlgorithmRunner {
 			 * Vlad's part
 			 */
 			Classification classification = new Classification();
-			ArrayList<Tuple> assignedFeatures = classification.assignScoresBasedOnSeeds(featureTuples, inputData.getSentancesSemanticGraphs(),false);
+			LinkedHashSet<Tuple> assignedResults = new LinkedHashSet<Tuple>(classification.assignScoresBasedOnSeeds(
+					resultTuples, inputData.getSentancesSemanticGraphs(), false));
 
-//			classification = new Classification();
-//			ArrayList<Tuple> assignedOpinions = classification.assignScoresBasedOnSeeds(opinionWordTuples, false);
+			reportingService.evaluateScoring(assignedResults);
 
-			LinkedHashSet<Tuple> combinedTuples = new LinkedHashSet<Tuple>();
-			combinedTuples.addAll(assignedFeatures);
-//			combinedTuples.addAll(assignedOpinions);
+			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(resultTuples);
 
-			reportingService.evaluateScoring(combinedTuples);
-			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(featureTuples);
+			System.out.println("Total score for this document: "
+					+ classification.computeOverallScore(opinionWordTuplesAL));
 
-			 System.out.println("Total score for this document: "
-			 + classification.computeOverallScore(opinionWordTuplesAL));
-
-			 String targetString = "casino";
-			 System.out.println("Average score for target "
-			 + targetString
-			 + " is: "
-			 + classification.getAverageScoreForTarget(targetString,
-			 opinionWordTuplesAL));
+			String targetString = "casino";
+			System.out.println("Average score for target " + targetString + " is: "
+					+ classification.getAverageScoreForTarget(targetString, opinionWordTuplesAL));
 
 			HashMap<Double, Integer> distribution = classification.computeScoreDistribution(opinionWordTuplesAL);
 			System.out.println(distribution.toString());
-			// classification.assignSentiWordScores(opinionWordTuples);
 		}
 		outputService.writeToEvaluationMetadataCsv(metadataResults);
 		outputService.writeOutput(outputFiles);
