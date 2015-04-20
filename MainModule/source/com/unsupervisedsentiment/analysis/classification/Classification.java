@@ -11,7 +11,6 @@ import com.unsupervisedsentiment.analysis.model.Tuple;
 
 import edu.stanford.nlp.semgraph.SemanticGraph;
 
-
 public class Classification {
 
 	/**
@@ -25,39 +24,36 @@ public class Classification {
 	public static double DEFAULT_SCORE = -100;
 
 	private IPolarityLexion polarityLexicon;
-	
+
 	private ArrayList<SeedScoreModel> seeds;
 
 	public Classification() {
 		initReader();
 	}
 
-	public ArrayList<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data, List<SemanticGraph> semanticGrapshs, boolean useSeedWordsFromFile) {
+	public ArrayList<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data, List<SemanticGraph> semanticGrapshs,
+			boolean useSeedWordsFromFile) {
 
-		if(useSeedWordsFromFile){
+		if (useSeedWordsFromFile) {
 			seeds = polarityLexicon.getSeedWordsWithScores();
-		}
-		else{
+		} else {
 			seeds = new ArrayList<SeedScoreModel>();
 			List<String> extractedSeedWords = polarityLexicon.getSeedWordsFromSemanticGraph(semanticGrapshs);
-			//the extracted seed words do not have any polarities, so we have to asign them
-			for(String word : extractedSeedWords){
-				double score = polarityLexicon.extract(word, new String[]{SWNPos.Adjective.toString()});
+			// the extracted seed words do not have any polarities, so we have
+			// to asign them
+			for (String word : extractedSeedWords) {
+				double score = polarityLexicon.extract(word, new String[] { SWNPos.Adjective.toString() });
 				seeds.add(new SeedScoreModel(word, score));
 			}
 		}
-		
-		ArrayList<Tuple> initialTuples = PolarityAssigner
-				.initTupleArrayList(data);
 
-		ArrayList<Tuple> partiallyAssignedTuples = PolarityAssigner
-				.assignScoresToSeeds(initialTuples, seeds);
+		ArrayList<Tuple> initialTuples = PolarityAssigner.initTupleArrayList(data);
 
-		ArrayList<Tuple> fullyAssignedTuples = PolarityAssigner.assignScores(
-				partiallyAssignedTuples, seeds);
+		ArrayList<Tuple> partiallyAssignedTuples = PolarityAssigner.assignScoresToSeeds(initialTuples, seeds);
 
-		ArrayList<Tuple> fullyAssignedTuples2 = PolarityAssigner.assignScores(
-				fullyAssignedTuples, seeds);
+		ArrayList<Tuple> fullyAssignedTuples = PolarityAssigner.assignScores(partiallyAssignedTuples, seeds);
+
+		ArrayList<Tuple> fullyAssignedTuples2 = PolarityAssigner.assignScores(fullyAssignedTuples, seeds);
 
 		printResults(fullyAssignedTuples);
 		return fullyAssignedTuples2;
@@ -81,15 +77,11 @@ public class Classification {
 		System.out.println("Score assignment:");
 
 		for (Tuple tuple : tuples) {
-			System.out.println("Source word/score :"
-					+ tuple.getSource().getValue() + "/"
-					+ tuple.getSource().getScore() + " "
-					+ tuple.getSource().getSentiWordScore());
+			System.out.println("Source word/score :" + tuple.getSource().getValue() + "/"
+					+ tuple.getSource().getScore());
 			if (tuple.getTarget() != null) {
-				System.out.println("Target word/score :"
-						+ tuple.getTarget().getValue() + "/"
-						+ tuple.getTarget().getScore() + " "
-						+ tuple.getTarget().getSentiWordScore());
+				System.out.println("Target word/score :" + tuple.getTarget().getValue() + "/"
+						+ tuple.getTarget().getScore());
 			}
 		}
 		System.out.println(tuples.size());

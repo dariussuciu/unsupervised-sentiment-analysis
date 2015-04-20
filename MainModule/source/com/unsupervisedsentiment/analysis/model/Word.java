@@ -11,7 +11,6 @@ public class Word {
 	private String value;
 	private ElementType type;
 	private double score;
-	private double sentiWordScore;
 	private int sentenceIndex;
 	private int numberOfInstances;
 
@@ -111,14 +110,6 @@ public class Word {
 
 	public void setScore(double score) {
 		this.score = score;
-	}
-
-	public double getSentiWordScore() {
-		return sentiWordScore;
-	}
-
-	public void setSentiWordScore(double sentiWordScore) {
-		this.sentiWordScore = sentiWordScore;
 	}
 
 	public int getSentenceIndex() {

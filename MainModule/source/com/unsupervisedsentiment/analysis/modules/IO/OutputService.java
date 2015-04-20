@@ -86,21 +86,19 @@ public class OutputService {
 			if (tuple.getTupleType().equals(TupleType.Pair)) {
 				final Pair pair = (Pair) tuple;
 
-				writer.write("Pair:  " + tuple.getSource().getValue() + "[" + tuple.getSource().getScore() + "]" + "{"
-						+ tuple.getSource().getSentiWordScore() + "}" + "(" + tuple.getSource().getPosTag() + ")"
-						+ " --(" + pair.getRelation() + ")--> " + tuple.getTarget().getValue() + "["
-						+ tuple.getTarget().getScore() + "]" + "{" + tuple.getTarget().getSentiWordScore() + "}" + "("
+				writer.write("Pair:  " + tuple.getSource().getValue() + "[" + tuple.getSource().getScore() + "]" + "("
+						+ tuple.getSource().getPosTag() + ")" + " --(" + pair.getRelation() + ")--> "
+						+ tuple.getTarget().getValue() + "[" + tuple.getTarget().getScore() + "]" + "("
 						+ tuple.getTarget().getPosTag() + ")" + "   - sentence: " + tuple.getSentence() + "("
 						+ tuple.getSentenceIndex() + ")");
 				writer.newLine();
 			} else if (tuple.getTupleType().equals(TupleType.Triple)) {
 				final Triple triple = (Triple) tuple;
 				writer.write("Triple:  " + tuple.getSource().getValue() + "[" + tuple.getSource().getScore() + "]"
-						+ "{" + tuple.getSource().getSentiWordScore() + "}" + "(" + tuple.getSource().getPosTag() + ")"
-						+ " --(" + triple.getRelationHOpinion() + ")--> " + triple.getH().getValue() + "("
-						+ triple.getH().getPosTag() + ")" + " --(" + triple.getRelationHTarget() + ")--> "
-						+ tuple.getTarget().getValue() + "(" + "[" + tuple.getTarget().getScore() + "]" + "{"
-						+ tuple.getTarget().getSentiWordScore() + "}" + "(" + tuple.getTarget().getPosTag() + ")"
+						+ "(" + tuple.getSource().getPosTag() + ")" + " --(" + triple.getRelationHOpinion() + ")--> "
+						+ triple.getH().getValue() + "(" + triple.getH().getPosTag() + ")" + " --("
+						+ triple.getRelationHTarget() + ")--> " + tuple.getTarget().getValue() + "(" + "["
+						+ tuple.getTarget().getScore() + "]" + "(" + tuple.getTarget().getPosTag() + ")"
 						+ "   - sentence: " + tuple.getSentence() + "(" + tuple.getSentenceIndex() + ")");
 				writer.newLine();
 			}
