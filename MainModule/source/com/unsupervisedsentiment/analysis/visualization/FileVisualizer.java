@@ -10,6 +10,7 @@ import javax.swing.JTabbedPane;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 
+import com.mxgraph.swing.mxGraphComponent;
 import com.unsupervisedsentiment.analysis.model.FileVisualisationModel;
 
 public class FileVisualizer extends JFrame {
@@ -34,23 +35,26 @@ public class FileVisualizer extends JFrame {
 		JLabel label1 = new JLabel();
 		label1.setText("Graph visualization");
 		JLabel label2 = new JLabel();
-		label2.setText("Polairty Distribution");
-		jp1.add(label1);
 		jp2.add(label2);
 		jtp.addTab("Graph visualization", jp1);
 		jtp.addTab("Polairty Distribution", jp2);
 
+		initGraphVisualization(jp1);
 		initPolarityDistributionTab(jp2);
 
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setVisible(true);
 	}
 
-	private void initPolarityDistributionTab(JPanel jp1) {
+	private void initGraphVisualization(JPanel panel) {
+		final mxGraphComponent graph = visualisationService.createVisualisationGraphFromTuples(model.getTuples());
+		panel.add(graph);
+	}
+
+	private void initPolarityDistributionTab(JPanel panel) {
 		final JFreeChart chart = visualisationService.createPolarityDistributionChart(model.getPolarityDistribution());
 		final ChartPanel chartPanel = new ChartPanel(chart);
-		chartPanel.setPreferredSize(new Dimension(500, 270));
-		jp1.add(chartPanel);
+		panel.add(chartPanel);
 
 	}
 }
