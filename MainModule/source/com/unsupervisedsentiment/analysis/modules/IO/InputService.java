@@ -53,7 +53,6 @@ public class InputService {
 
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -119,7 +118,6 @@ public class InputService {
 			iWrapper.setFilename(file.getName());
 			return iWrapper;
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

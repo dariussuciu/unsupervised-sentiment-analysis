@@ -2,11 +2,9 @@ package com.unsupervisedsentiment.analysis.visualization;
 
 import java.awt.Color;
 import java.awt.GradientPaint;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,8 +25,6 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxConstants;
-import com.mxgraph.util.mxPoint;
-import com.mxgraph.util.mxRectangle;
 import com.mxgraph.view.mxEdgeStyle;
 import com.mxgraph.view.mxGraph;
 import com.unsupervisedsentiment.analysis.model.FileVisualisationModel;
@@ -39,10 +35,19 @@ import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationMetadata;
 
 public class VisualisationService {
 
-	private static VisualisationService instance;
-	final int PORT_DIAMETER = 20;
+	private static final int MAX_OW_PER_TARGET = 14;
+	private static final int RADIUS = 175;
 
-	final int PORT_RADIUS = PORT_DIAMETER / 2;
+	private static final int I_OFFSET_X = RADIUS + 100;
+	private static final int I_OFFSET_Y = RADIUS;
+
+	private static final int OW_WIDTH = 50;
+	private static final int OW_HEIGHT = 30;
+
+	private static final int TAR_WIDTH = 60;
+	private static final int TAR_HEIGHT = 40;
+
+	private static VisualisationService instance;
 
 	public static VisualisationService getInstance() {
 		if (instance == null)
@@ -126,12 +131,9 @@ public class VisualisationService {
 		return dataset;
 	}
 
-	class ValueComparator implements Comparator<Double> {
-
-		Map<Double, Integer> base;
+	private class ValueComparator implements Comparator<Double> {
 
 		public ValueComparator(Map<Double, Integer> base) {
-			this.base = base;
 		}
 
 		public int compare(Double a, Double b) {
@@ -139,10 +141,45 @@ public class VisualisationService {
 		}
 	}
 
-	public mxGraphComponent createVisualisationGraphFromTuples(Set<Tuple> tuples) {
+	public Map<Word, Set<Word>> getSortedAssociationMap(Set<Tuple> tuples) {
+		Map<Word, Set<Word>> tupleMap = new HashMap<Word, Set<Word>>();
 
-		Map<Word, Set<Word>> wordAssociationMap = getSortedAssociationMap(tuples);
+		for (Tuple tuple : tuples) {
+			if (!tuple.getTupleType().equals(TupleType.Seed) && tuple.getTarget() != null) {
+				Word target = tuple.getTarget();
+				if (tupleMap.get(target) == null) {
+					tupleMap.put(target, new HashSet<Word>());
+				}
+				Set<Word> oWs = tupleMap.get(target);
+				oWs.add(tuple.getSource());
+			}
+		}
 
+		WordMapComparator bvc = new WordMapComparator(tupleMap);
+		TreeMap<Word, Set<Word>> sortedTupleMap = new TreeMap<Word, Set<Word>>(bvc);
+		sortedTupleMap.putAll(tupleMap);
+
+		return sortedTupleMap;
+	}
+
+	private class WordMapComparator implements Comparator<Word> {
+
+		Map<Word, Set<Word>> base;
+
+		public WordMapComparator(Map<Word, Set<Word>> tupleMap) {
+			this.base = tupleMap;
+		}
+
+		public int compare(Word a, Word b) {
+			int result = Integer.compare(base.get(b).size(), base.get(a).size());
+			if (result == 0) {
+				result = a.getValue().compareTo(b.getValue());
+			}
+			return result;
+		}
+	}
+
+	public mxGraphComponent createVisualisationGraphFromTuples(Entry<Word, Set<Word>> e) {
 		mxGraph graph = new mxGraph() {
 
 			/** rather unnecessary but who knows **/
@@ -171,101 +208,53 @@ public class VisualisationService {
 			}
 		};
 
-		// Sets the default edge style
 		Map<String, Object> style = graph.getStylesheet().getDefaultEdgeStyle();
 		style.put(mxConstants.STYLE_EDGE, mxEdgeStyle.ElbowConnector);
+		style.put(mxConstants.STYLE_ROUNDED, true);
+
+		style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
+		style.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_CLASSIC);
+		style.put(mxConstants.STYLE_STROKECOLOR, "#000000");
+		style.put(mxConstants.STYLE_FONTCOLOR, "#000000");
+		style.put(mxConstants.STYLE_LABEL_BACKGROUNDCOLOR, "#ffffff");
+
+		graph.getModel().beginUpdate();
+		graph.setCellsMovable(false);
+		graph.setCellsResizable(false);
 
 		Object parent = graph.getDefaultParent();
 
-		List<Entry<Word, Set<Word>>> entryList = new ArrayList<>(wordAssociationMap.entrySet());
-
-		Entry<Word, Set<Word>> first = entryList.get(0);
-
-		graph.getModel().beginUpdate();
 		try {
 
-			float degOffset = 360L / first.getValue().size();
-			float radius = 200;
-			float offsetX = 300;
-			float offsetY = 150;
-
 			mxCell v1 = (mxCell) graph.insertVertex(parent, null,
-					first.getKey().getValue() + "\n(" + String.format("%.2f", first.getKey().getScore()) + ")",
-					offsetX, offsetY, 80, 80, "");
-			v1.setConnectable(true);
-			mxGeometry geo = graph.getModel().getGeometry(v1);
+					e.getKey().getValue() + "\n(" + String.format("%.2f", e.getKey().getScore()) + ")", I_OFFSET_X,
+					I_OFFSET_Y, TAR_WIDTH, TAR_HEIGHT);
+			v1.setConnectable(false);
 
-			double theta = degOffset;
+			float max = e.getValue().size() > MAX_OW_PER_TARGET ? MAX_OW_PER_TARGET : e.getValue().size();
+
+			float theta = 360.0f / max;
 			int i = 0;
-			for (Word w : first.getValue()) {
-				double newX = Math.sin(theta * i) * radius + offsetX;
-				double newY = Math.cos(theta * i) * radius + offsetY;
-				Object v2 = graph.insertVertex(parent, null, w.getValue(), newX, newY, 50, 30);
+			for (Word w : e.getValue()) {
+				if (i > MAX_OW_PER_TARGET)
+					break;
+
+				double newX = Math.sin(theta * i) * RADIUS + I_OFFSET_X;
+				double newY = Math.cos(theta * i) * RADIUS + I_OFFSET_Y;
+
+				mxCell v2 = (mxCell) graph.insertVertex(parent, null, w.getValue(), newX, newY, OW_WIDTH, OW_HEIGHT,
+						"shape=ellipse");
+				v2.setConnectable(false);
 				graph.insertEdge(parent, null, "", v1, v2);
+
 				i++;
 			}
 
-			// The size of the rectangle when the minus sign is clicked
-			// ! only makes sense when cell IS foldable!!
-			// geo.setAlternateBounds(new mxRectangle(20, 20, 100, 50));
-
-			// Object v2 = graph.insertVertex(parent, null, "World!", 240, 150,
-			// 80, 30);
-
-			// graph.insertEdge(parent, null, "Edge", v1, v2);
 		} finally {
 			graph.getModel().endUpdate();
 		}
+
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		return graphComponent;
-	}
-
-	private Map<Word, Set<Word>> getSortedAssociationMap(Set<Tuple> tuples) {
-		Map<Word, Set<Word>> tupleMap = new HashMap<Word, Set<Word>>();
-
-		for (Tuple tuple : tuples) {
-			if (!tuple.getTupleType().equals(TupleType.Seed) && tuple.getTarget() != null) {
-				Word target = tuple.getTarget();
-				if (tupleMap.get(target) == null) {
-					tupleMap.put(target, new HashSet<Word>());
-				}
-				Set<Word> oWs = tupleMap.get(target);
-				oWs.add(tuple.getSource());
-			}
-		}
-
-		WordMapComparator bvc = new WordMapComparator(tupleMap);
-		TreeMap<Word, Set<Word>> sortedTupleMap = new TreeMap<Word, Set<Word>>(bvc);
-		sortedTupleMap.putAll(tupleMap);
-
-		System.out
-				.format("Sizes: %d (initial) vs %d (after grouping)\n", tuples.size(), sortedTupleMap.keySet().size());
-
-		for (Word w : sortedTupleMap.keySet()) {
-			System.out.print(w.getValue() + " : ");
-			for (Word wo : sortedTupleMap.get(w)) {
-				System.out.print(wo.getValue() + " ");
-			}
-			System.out.println();
-		}
-
-		return sortedTupleMap;
-	}
-
-	class WordMapComparator implements Comparator<Word> {
-
-		Map<Word, Set<Word>> base;
-
-		public WordMapComparator(Map<Word, Set<Word>> tupleMap) {
-			this.base = tupleMap;
-		}
-
-		public int compare(Word a, Word b) {
-			int result = Integer.compare(base.get(b).size(), base.get(a).size());
-			if (result == 0) {
-				result = a.getValue().compareTo(b.getValue());
-			}
-			return result;
-		}
 	}
 }
