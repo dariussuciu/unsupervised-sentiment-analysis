@@ -239,8 +239,8 @@ public class VisualisationService {
 				if (i > MAX_OW_PER_TARGET)
 					break;
 
-				double newX = Math.sin(theta * i) * RADIUS + I_OFFSET_X;
-				double newY = Math.cos(theta * i) * RADIUS + I_OFFSET_Y;
+				double newX = Math.sin(Math.toRadians(theta * i)) * RADIUS + I_OFFSET_X;
+				double newY = Math.cos(Math.toRadians(theta * i)) * RADIUS + I_OFFSET_Y;
 
 				mxCell v2 = (mxCell) graph.insertVertex(parent, null, w.getValue(), newX, newY, OW_WIDTH, OW_HEIGHT,
 						"shape=ellipse");
