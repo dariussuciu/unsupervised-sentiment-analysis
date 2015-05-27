@@ -48,7 +48,7 @@ public class FileVisualizer extends JFrame {
 
 		jp1.setLayout(new GridLayout(0, 3));
 		JScrollPane scrollPanel = new JScrollPane(jp1, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPanel.setPreferredSize(new Dimension(getWidth(), getHeight()));
 
 		JLabel label1 = new JLabel();

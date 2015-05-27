@@ -39,7 +39,7 @@ public class FileChooser extends JFrame {
 		add(new JScrollPane(this.fileList));
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setTitle("JList Example");
+		this.setTitle("File Review List");
 		this.setSize(200, 200);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);

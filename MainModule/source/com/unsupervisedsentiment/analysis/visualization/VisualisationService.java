@@ -15,9 +15,11 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.SymbolAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.Range;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
@@ -71,7 +73,7 @@ public class VisualisationService {
 		final JFreeChart chart = ChartFactory.createBarChart("Polarity distribution", // chart
 																						// title
 				"", // domain axis label
-				"Value", // range axis label
+				"%", // range axis label
 				dataset, // data
 				PlotOrientation.VERTICAL, // orientation
 				true, // include legend
@@ -93,7 +95,7 @@ public class VisualisationService {
 		// set the range axis to display integers only...
 		final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
+		rangeAxis.setRange(new Range(0, 100));
 		// disable bar outlines...
 		final BarRenderer renderer = (BarRenderer) plot.getRenderer();
 		renderer.setDrawBarOutline(false);
@@ -124,8 +126,14 @@ public class VisualisationService {
 		TreeMap<Double, Integer> sortedPolarityDistributionMap = new TreeMap<Double, Integer>(bvc);
 		sortedPolarityDistributionMap.putAll(polarityDistributionMap);
 
+		int totalItems = 0;
 		for (Entry<Double, Integer> entry : sortedPolarityDistributionMap.entrySet()) {
-			dataset.addValue(entry.getValue(), polaritiesSeries, entry.getKey());
+			totalItems += entry.getValue();
+		}
+
+		for (Entry<Double, Integer> entry : sortedPolarityDistributionMap.entrySet()) {
+			double value = (entry.getValue() * 100) / (double) totalItems;
+			dataset.addValue(value, polaritiesSeries, entry.getKey());
 		}
 
 		return dataset;
