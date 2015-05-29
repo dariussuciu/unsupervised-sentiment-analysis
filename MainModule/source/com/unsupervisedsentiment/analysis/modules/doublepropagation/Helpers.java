@@ -1,7 +1,9 @@
 package com.unsupervisedsentiment.analysis.modules.doublepropagation;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -235,6 +237,9 @@ public class Helpers {
 						.getTargetEdgesOnEdge(
 								semanticGraph.outgoingEdgeIterable(vertex),
 								sourcePos, targetPos, relationType, false);
+				if(semanticGraph.isNegatedVertex(vertex)) {
+					System.out.println("found negated vertex " + vertex.value());
+				}
 				for (SemanticGraphEdge edge : outgoingTargetEdges) {
 					targets.add(Helpers.getPair(word.getValue(), word
 							.getPosTag(), word.getType(), edge.getTarget()
