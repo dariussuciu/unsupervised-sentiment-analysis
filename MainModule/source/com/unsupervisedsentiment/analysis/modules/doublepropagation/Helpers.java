@@ -148,14 +148,14 @@ public class Helpers {
 			final String valueTarget, final String posTarget,
 			final ElementType typeTarget, final String relation,
 			final Dependency dependency, final int sentenceIndex,
-			final String sentence) {
+			final String sentence, final boolean isNegatedTarget) {
 		final Word opinion = new Word(posOpinion, valueOpinion, typeSource);
 		opinion.setSentenceIndex(sentenceIndex);
 		final Word target = new Word(posTarget, valueTarget, typeTarget);
 		target.setSentenceIndex(sentenceIndex);
 
 		return new Pair(opinion, target, dependency, TupleType.Pair, relation,
-				sentenceIndex, sentence);
+				sentenceIndex, sentence, isNegatedTarget);
 	}
 
 	public static Triple getTriple(final String valueSource,
@@ -164,7 +164,7 @@ public class Helpers {
 			final ElementType typeTarget, final String valueH,
 			final String posH, final String relationHOpinion,
 			final String relationHTarget, final Dependency dependency,
-			final int sentenceIndex, final String sentence) {
+			final int sentenceIndex, final String sentence, final boolean isNegatedTarget) {
 		final Word opinion = new Word(posSource, valueSource, typeSource);
 		opinion.setSentenceIndex(sentenceIndex);
 		final Word target = new Word(posTarget, valueTarget, typeTarget);
@@ -172,7 +172,7 @@ public class Helpers {
 		final Word H = new Word(posH, valueH, ElementType.NONE);
 
 		return new Triple(opinion, target, H, dependency, TupleType.Triple,
-				relationHOpinion, relationHTarget, sentenceIndex, sentence);
+				relationHOpinion, relationHTarget, sentenceIndex, sentence, isNegatedTarget);
 	}
 
 	public static boolean checkEquivalentRelations(
@@ -246,7 +246,7 @@ public class Helpers {
 							.word(), edge.getTarget().tag(), targetType, edge
 							.getRelation().toString(),
 							Dependency.DIRECT_DEPENDENCY, semanticGraphIndex,
-							semanticGraph.toRecoveredSentenceString()));
+							semanticGraph.toRecoveredSentenceString(), semanticGraph.isNegatedVertex(vertex)));
 				}
 
 				// for incoming edges
@@ -261,7 +261,7 @@ public class Helpers {
 							.word(), edge.getSource().tag(), targetType, edge
 							.getRelation().toString(),
 							Dependency.DIRECT_DEPENDENCY, semanticGraphIndex,
-							semanticGraph.toRecoveredSentenceString()));
+							semanticGraph.toRecoveredSentenceString(), semanticGraph.isNegatedVertex(vertex)));
 				}
 			}
 		}
@@ -290,7 +290,7 @@ public class Helpers {
 			if (validateTriple(source, target, H, sourcePos, targetPos))
 				targets.add(createTriple(source, target, H, relationHSource,
 						relationHTarget, targetType, semanticGraphIndex,
-						semanticGraph.toRecoveredSentenceString()));
+						semanticGraph.toRecoveredSentenceString(), semanticGraph.isNegatedVertex(target)));
 		}
 
 		// for outgoing target edges
@@ -307,7 +307,7 @@ public class Helpers {
 			if (validateTriple(source, target, H, sourcePos, targetPos))
 				targets.add(createTriple(source, target, H, relationHSource,
 						relationHTarget, targetType, semanticGraphIndex,
-						semanticGraph.toRecoveredSentenceString()));
+						semanticGraph.toRecoveredSentenceString(), semanticGraph.isNegatedVertex(target)));
 		}
 		return targets;
 	}
@@ -351,24 +351,24 @@ public class Helpers {
 			final GrammaticalRelation relationHSource,
 			final GrammaticalRelation relationHTarget,
 			final ElementType targetType, final int sentenceIndex,
-			final String sentence) {
+			final String sentence, final boolean isNegatedTarget) {
 		final String relationHSourceString = relationHSource.toString();
 		final String relationHTargetString = relationHTarget.toString();
 
 		return createTriple(source, target, H, relationHSourceString,
-				relationHTargetString, targetType, sentenceIndex, sentence);
+				relationHTargetString, targetType, sentenceIndex, sentence, isNegatedTarget);
 	}
 
 	public static Triple createTriple(final Word source,
 			final IndexedWord target, final IndexedWord H,
 			final String relationHSource, final String relationHTarget,
 			final ElementType targetType, final int sentenceIndex,
-			final String sentence) {
+			final String sentence, final boolean isNegatedTarget) {
 
 		return Helpers.getTriple(source.getValue(), source.getPosTag(),
 				source.getType(), target.word(), target.tag(), targetType,
 				H.word(), H.tag(), relationHSource, relationHTarget,
-				Dependency.DIRECT_DEPENDENCY, sentenceIndex, sentence);
+				Dependency.DIRECT_DEPENDENCY, sentenceIndex, sentence, isNegatedTarget);
 	}
 
 	public static Set<Tuple> getTriplesRelativeToHOnEquivalency(
@@ -397,7 +397,7 @@ public class Helpers {
 						targets.add(createTriple(source, target, H,
 								relationHSource, relationHTarget, targetType,
 								semanticGraphIndex,
-								semanticGraph.toRecoveredSentenceString()));
+								semanticGraph.toRecoveredSentenceString(), semanticGraph.isNegatedVertex(target)));
 				}
 			}
 		}
@@ -421,7 +421,7 @@ public class Helpers {
 						targets.add(createTriple(source, target, H,
 								relationHSource, relationHTarget, targetType,
 								semanticGraphIndex,
-								semanticGraph.toRecoveredSentenceString()));
+								semanticGraph.toRecoveredSentenceString(), semanticGraph.isNegatedVertex(target)));
 				}
 			}
 		}

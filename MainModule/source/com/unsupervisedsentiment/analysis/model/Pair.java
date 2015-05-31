@@ -19,8 +19,8 @@ public class Pair extends Tuple {
 		this.relation = relation;
 	}
 
-	public Pair(Word opinion, Word target, Dependency dependency, TupleType tupleType, String relation, int sentenceIndex, String sentence) {
-		super(opinion, target, dependency, tupleType, sentenceIndex, sentence);
+	public Pair(Word opinion, Word target, Dependency dependency, TupleType tupleType, String relation, int sentenceIndex, String sentence, boolean isNegatedTarget) {
+		super(opinion, target, dependency, tupleType, sentenceIndex, sentence, isNegatedTarget);
 		this.relation = relation;
 	}
 

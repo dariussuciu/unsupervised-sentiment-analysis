@@ -19,6 +19,7 @@ public class Tuple {
 	private TupleType tupleType;
 	private int sentenceIndex;
 	private String sentence;
+	private boolean isNegatedTarget;
 
 	public Tuple() {
 
@@ -110,7 +111,9 @@ public class Tuple {
 		return true;
 	}
 
-	public Tuple(Word source, Word target, Dependency dependency, TupleType tupleType, int sentenceIndex, String sentence) {
+	public Tuple(Word source, Word target, Dependency dependency,
+			TupleType tupleType, int sentenceIndex, String sentence,
+			boolean isNegatedTarget) {
 		super();
 		this.source = source;
 		this.target = target;
@@ -118,6 +121,7 @@ public class Tuple {
 		this.tupleType = tupleType;
 		this.sentenceIndex = sentenceIndex;
 		this.sentence = sentence;
+		this.isNegatedTarget = isNegatedTarget;
 	}
 
 	/**
@@ -201,5 +205,13 @@ public class Tuple {
 
 	public void setSentence(String sentence) {
 		this.sentence = sentence;
+	}
+
+	public boolean isNegatedTarget() {
+		return isNegatedTarget;
+	}
+
+	public void setNegatedTarget(boolean isNegatedTarget) {
+		this.isNegatedTarget = isNegatedTarget;
 	}
 }

@@ -66,6 +66,12 @@ public class AlgorithmRunner {
 			LinkedHashSet<Tuple> resultTuples = new LinkedHashSet<Tuple>();
 			resultTuples.addAll(featureTuples);
 			resultTuples.addAll(opinionWordTuples);
+			
+			for(Tuple tuple : resultTuples) {
+				if (tuple.isNegatedTarget()) {
+					System.out.println("is negated target " + tuple.getTarget());
+				}
+			}
 
 			// this output should only be written once per file
 			outputFiles.add(outputService.createOutputWrapperFromInput(input, resultTuples));
