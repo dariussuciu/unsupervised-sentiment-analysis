@@ -1,11 +1,11 @@
 package com.unsupervisedsentiment.analysis.modules.doublepropagation;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.LinkedHashSet;
+import java.util.List;
 
 import com.unsupervisedsentiment.analysis.core.Initializer;
-import com.unsupervisedsentiment.analysis.core.constants.Constants;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.modules.IO.CacheService;
@@ -16,6 +16,7 @@ import com.unsupervisedsentiment.analysis.modules.targetextraction.ITargetExtrac
 import com.unsupervisedsentiment.analysis.modules.targetextraction.OpinionWordExtractorService;
 import com.unsupervisedsentiment.analysis.modules.targetextraction.TargetExtractorService;
 
+import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 
 public class DoublePropagationAlgorithm {
@@ -80,11 +81,22 @@ public class DoublePropagationAlgorithm {
 		resetIterationFeaturesAndOpinionWords();
 
 		for (int i = 0; i < data.getSentancesSemanticGraphs().size(); i++) {
-			SemanticGraph semanticGraph = data.getSentancesSemanticGraphs().get(i);
+			final SemanticGraph semanticGraph = data.getSentancesSemanticGraphs().get(i);
+//			Collection<IndexedWord> roots = semanticGraph.getRoots();
+//			for(IndexedWord root : roots) {
+//				Collection<IndexedWord> children = semanticGraph.getChildren(root);
+//				for (IndexedWord child : children) {
+//					if(semanticGraph.isNegatedVertex(child)) {
+//						System.out.println("found negated vertex " + child.value());
+//					}
+//				}
+//				
+//			}
 			featuresIteration1.addAll(targetExtractorService.extractTargetsUsingR1(semanticGraph,
 					data.getExpandedOpinionWords(), data.getFeatureTuples(), i));
 			opinionWordsIteration1.addAll(opinionWordExtractorService.extractOpinionWordsUsingR4(semanticGraph,
 					data.getExpandedOpinionWords(), data.getExpandedOpinionWordsTuples(), i));
+			
 		}
 
 		data.getFeatureTuples().addAll(featuresIteration1);

@@ -1,6 +1,7 @@
 package com.unsupervisedsentiment.analysis.core;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -20,6 +21,9 @@ import com.unsupervisedsentiment.analysis.modules.IO.OutputService;
 import com.unsupervisedsentiment.analysis.modules.IO.OutputWrapper;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.DoublePropagationAlgorithm;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationMetadata;
+
+import edu.stanford.nlp.ling.IndexedWord;
+import edu.stanford.nlp.semgraph.SemanticGraph;
 
 public class AlgorithmRunner {
 
@@ -67,9 +71,42 @@ public class AlgorithmRunner {
 			resultTuples.addAll(featureTuples);
 			resultTuples.addAll(opinionWordTuples);
 			
+			for (int i = 0; i < algorithm.getData().getSentancesSemanticGraphs().size(); i++) {
+				final SemanticGraph semanticGraph = algorithm.getData().getSentancesSemanticGraphs().get(i);
+				for (Tuple tuple : resultTuples) {
+//					if(tuple.getTarget() != null) {
+//						List<IndexedWord> nodes = semanticGraph.getAllNodesByWordPattern(tuple.getTarget().getValue().trim().replace("*", ""));
+//						for (IndexedWord node : nodes) {
+//							if(semanticGraph.isNegatedVertex(node)) {
+//								System.out.println("found negated vertex " + node.value());
+//							}
+//						}
+//					}
+//					if(tuple.getSource() != null) {
+//						List<IndexedWord> nodes = semanticGraph.getAllNodesByWordPattern(tuple.getSource().getValue().trim().replace("*", ""));
+//						for (IndexedWord node : nodes) {
+//							if(semanticGraph.isNegatedVertex(node)) {
+//								System.out.println("found negated vertex " + node.value());
+//							}
+//						}
+//					}
+				}
+				
+//				Collection<IndexedWord> roots = semanticGraph.getRoots();
+//				for(IndexedWord root : roots) {
+//					Collection<IndexedWord> children = semanticGraph.getChildren(root);
+//					for (IndexedWord child : children) {
+//						if(semanticGraph.isNegatedVertex(child)) {
+//							System.out.println("found negated vertex " + child.value());
+//						}
+//					}
+//					
+//				}
+			}
+			
 			for(Tuple tuple : resultTuples) {
 				if (tuple.isNegatedTarget()) {
-					System.out.println("is negated target " + tuple.getTarget());
+					System.out.println("is negated target in alg runner " + tuple.getTarget().getValue());
 				}
 			}
 

@@ -227,6 +227,8 @@ public class Helpers {
 			final GeneralPosRelationEnum sourcePos, final GeneralPosRelationEnum targetPos,
 			final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> targets = new HashSet<Tuple>();
+		
+		
 
 		for (Word word : words) {
 			final List<IndexedWord> vertexes = semanticGraph
@@ -238,7 +240,7 @@ public class Helpers {
 								semanticGraph.outgoingEdgeIterable(vertex),
 								sourcePos, targetPos, relationType, false);
 				if(semanticGraph.isNegatedVertex(vertex)) {
-					System.out.println("found negated vertex " + vertex.value());
+					System.out.println("found negated vertexsdafsdf " + vertex.value());
 				}
 				for (SemanticGraphEdge edge : outgoingTargetEdges) {
 					targets.add(Helpers.getPair(word.getValue(), word
@@ -265,7 +267,11 @@ public class Helpers {
 				}
 			}
 		}
-
+		for(Tuple tuple : targets) {
+			if (tuple.isNegatedTarget()) {
+				//System.out.println("is negated target " + tuple.getTarget().getValue());
+			}
+		}
 		return targets;
 	}
 

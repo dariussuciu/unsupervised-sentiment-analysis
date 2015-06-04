@@ -69,6 +69,7 @@ public class OpinionWordExtractorService implements
 		final Set<Tuple> foundTargets = Helpers.extractTargets(semanticGraph,
 				opinionWords, Dep_MRRel.getInstance(), Pos_NNRel.getInstance(),
 				Pos_JJRel.getInstance(), targetType, semanticGraphIndex);
+		
 		return Helpers.getNewTuples(foundTargets, existingOpinionWords);
 		// return Helpers.extractTargets(semanticGraph, opinionWords,
 		// Dep_MRRel.getInstance(), Pos_JJRel.getInstance());
