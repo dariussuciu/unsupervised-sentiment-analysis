@@ -1,4 +1,7 @@
  <Config>
+	<wordNetLocation>
+		F:\WordNet\2.1\dict\
+	</wordNetLocation>
 	<inputDirectory> 
 		C:\Users\Alex\Desktop\Research\Project\Input
 	</inputDirectory>

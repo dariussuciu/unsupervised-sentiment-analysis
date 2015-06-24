@@ -76,8 +76,20 @@ public class TargetExtractionEvaluationService extends EvaluationService {
 		}
 		List<Word> filteredTargets = new ArrayList<Word>();
 		for (Word word : targets) {
+			//frequency filtering
 			if (word.getNumberOfInstances() >= frequencyThreshold)
-				filteredTargets.add(word);
+			{
+				//WordNet filtering
+				if(word.getRankScore() > 0.1)
+				{
+					filteredTargets.add(word);
+
+				}
+				else 
+				{
+					//System.out.println(word.getValue() + " - " + word.getRankScore());
+				}
+			}		
 		}
 		return filteredTargets;
 	}

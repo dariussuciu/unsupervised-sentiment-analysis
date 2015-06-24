@@ -8,6 +8,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "Config")
 public class Config {
+	
+	private String wordNetLocation;
 	private String inputDirectory;
 
 	private String outputDirectory;
@@ -188,6 +190,15 @@ public class Config {
 
 	public void setPrintEvaluationResultsToConsole(boolean evaluateInput) {
 		this.printEvaluationResultsToConsole = evaluateInput;
+	}
+
+	@XmlElement(name = "wordNetLocation")
+	public String getWordNetLocation() {
+		return wordNetLocation.trim();
+	}
+
+	public void setWordNetLocation(String wordNetLocation) {
+		this.wordNetLocation = wordNetLocation;
 	}
 
 }

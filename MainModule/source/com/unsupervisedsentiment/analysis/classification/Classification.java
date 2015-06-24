@@ -55,7 +55,7 @@ public class Classification {
 
 		ArrayList<Tuple> fullyAssignedTuples2 = PolarityAssigner.assignScores(fullyAssignedTuples, seeds);
 
-		printResults(fullyAssignedTuples);
+		//printResults(fullyAssignedTuples);
 		return fullyAssignedTuples2;
 	}
 

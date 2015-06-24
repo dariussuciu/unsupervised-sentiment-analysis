@@ -11,6 +11,8 @@ public class Word {
 	private double score;
 	private int sentenceIndex;
 	private int numberOfInstances;
+	private double rankScore;
+	private Boolean isRankComputed;
 
 	public String getPosTag() {
 		return posTag;
@@ -43,6 +45,8 @@ public class Word {
 		this.value = value;
 		this.type = type;
 		this.numberOfInstances = 0;
+		this.isRankComputed = false;
+		this.rankScore = 1;
 	}
 
 	public Word(String posTag) {
@@ -130,6 +134,22 @@ public class Word {
 	public String toString() {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		return gson.toJson(this);
+	}
+
+	public double getRankScore() {
+		return rankScore;
+	}
+
+	public void setRankScore(double rankScore) {
+		this.rankScore = rankScore;
+	}
+
+	public Boolean getIsRankComputed() {
+		return isRankComputed;
+	}
+
+	public void setIsRankComputed(Boolean isRankComputed) {
+		this.isRankComputed = isRankComputed;
 	}
 
 }

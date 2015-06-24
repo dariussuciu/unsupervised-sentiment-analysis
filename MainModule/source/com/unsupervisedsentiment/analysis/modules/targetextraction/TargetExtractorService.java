@@ -12,6 +12,7 @@ import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
+import com.unsupervisedsentiment.analysis.modules.services.wordnet.WordNetService;
 
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
@@ -24,7 +25,7 @@ public class TargetExtractorService implements ITargetExtractorService {
 	public static ITargetExtractorService getInstance() {
 		if (instance == null)
 			instance = new TargetExtractorService();
-
+		
 		return instance;
 	}
 

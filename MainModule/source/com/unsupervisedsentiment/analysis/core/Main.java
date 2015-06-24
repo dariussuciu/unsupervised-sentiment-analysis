@@ -2,7 +2,10 @@ package com.unsupervisedsentiment.analysis.core;
 
 import javax.swing.SwingUtilities;
 
+import com.unsupervisedsentiment.analysis.modules.services.wordnet.WordNetService;
 import com.unsupervisedsentiment.analysis.visualization.FileChooser;
+
+import edu.smu.tspell.wordnet.SynsetType;
 
 public class Main {
 
@@ -14,6 +17,9 @@ public class Main {
 
 		Config config = Initializer.getConfig();
 
+		//WordNetService wordNetService = new WordNetService();
+		//String result = wordNetService.searchByWord("flash drive", SynsetType.NOUN);
+		
 		algorithmRunner.runAlgorithm();
 
 //		Double polarityThreshold = Double.valueOf(config.getPolarityThreshold());

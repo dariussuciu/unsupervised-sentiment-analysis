@@ -22,6 +22,13 @@ public class OpinionWordExtractionEvaluationService extends EvaluationService {
 		falseNegative = 0;
 		List<Word> opinionWords = Helpers.ExtractElements(tuples, ElementType.OPINION_WORD);
 		for (final Word opinionWord : opinionWords) {
+
+//			if(opinionWord.getRankScore() < 0.1)
+//			{
+//				System.out.println(opinionWord.getValue() + " - " + opinionWord.getRankScore());
+//				continue;
+//			}
+			
 			boolean found = false;
 			for (final EvaluationModel model : evaluationModels) {
 				if (opinionWord.getSentenceIndex() == model.getSentenceIndex()) {
