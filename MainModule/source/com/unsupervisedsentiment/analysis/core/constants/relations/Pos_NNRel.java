@@ -7,6 +7,8 @@ public class Pos_NNRel extends GeneralPosRelationEnum {
 	public enum NN {
 		NN, NNP, NNPS, NNS, PRP
 	}
+	
+	public String NN_Compound = "NN";
 
 	private static Pos_NNRel nnRel;
 
@@ -39,4 +41,8 @@ public class Pos_NNRel extends GeneralPosRelationEnum {
 		sBuilder.append(getPrettyStringFromEnumValues(NN.values()));
 		return sBuilder.toString();
 	}
+
+	public Boolean isCompoundNoun(final String word) {
+		return word.equals(NN_Compound);
+	};
 }

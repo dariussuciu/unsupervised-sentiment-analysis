@@ -1,6 +1,6 @@
  <Config>
 	<wordNetLocation>
-		F:\WordNet\2.1\dict\
+		..\WordNet\dict\
 	</wordNetLocation>
 	<inputDirectory> 
 		C:\Users\Alex\Desktop\Research\Project\Input

@@ -62,6 +62,7 @@ public class AlgorithmRunner {
 		long currentTime = System.currentTimeMillis();
 		DoublePropagationData inputData = new DoublePropagationData();
 		inputData.setFilename(input.getFilename());
+		
 		inputData.setInput(input.getOriginalContent());
 		DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
 

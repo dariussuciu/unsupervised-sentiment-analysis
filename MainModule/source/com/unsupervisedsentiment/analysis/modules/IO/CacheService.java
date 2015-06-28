@@ -18,6 +18,7 @@ import java.util.List;
 import com.unsupervisedsentiment.analysis.core.constants.Constants;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.EvaluationModel;
+import com.unsupervisedsentiment.analysis.modules.services.spellcheck.SuggesterBasicService;
 import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 import edu.stanford.nlp.semgraph.SemanticGraph;

@@ -1,5 +1,7 @@
 package com.unsupervisedsentiment.analysis.modules.IO;
 
+import com.unsupervisedsentiment.analysis.modules.services.spellcheck.SuggesterBasicService;
+
 public class FileWrapper {
 
 	private String author;
@@ -8,6 +10,7 @@ public class FileWrapper {
 	private String filename;
 
 	public FileWrapper() {
+		super();
 	}
 
 	public FileWrapper(String author, String source, String content, String filename) {
@@ -46,7 +49,7 @@ public class FileWrapper {
 		String cleanContent = content.replaceAll("(###)|(%%%)|(@@@)|(\\$\\$\\$)", "");
 		return cleanContent;
 	}
-
+	
 	public void setContent(String content) {
 		this.content = content;
 	}

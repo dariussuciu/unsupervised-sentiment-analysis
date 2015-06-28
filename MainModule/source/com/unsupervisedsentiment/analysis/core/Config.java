@@ -10,6 +10,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Config {
 	
 	private String wordNetLocation;
+	private String spellCheckerDictionaryLocation;
+	private String spellCheckerConfigLocation;
 	private String inputDirectory;
 
 	private String outputDirectory;
@@ -199,6 +201,25 @@ public class Config {
 
 	public void setWordNetLocation(String wordNetLocation) {
 		this.wordNetLocation = wordNetLocation;
+	}
+	
+	@XmlElement(name = "spellCheckerDictionaryLocation")
+	public String getSpellCheckerDictionaryLocation() {
+		return spellCheckerDictionaryLocation.trim();
+	}
+
+	public void setSpellCheckerDictionaryLocation(
+			String spellCheckerDictionaryLocation) {
+		this.spellCheckerDictionaryLocation = spellCheckerDictionaryLocation;
+	}
+
+	@XmlElement(name = "spellCheckerConfigLocation")
+	public String getSpellCheckerConfigLocation() {
+		return spellCheckerConfigLocation.trim();
+	}
+
+	public void setSpellCheckerConfigLocation(String spellCheckerConfigLocation) {
+		this.spellCheckerConfigLocation = spellCheckerConfigLocation;
 	}
 
 }

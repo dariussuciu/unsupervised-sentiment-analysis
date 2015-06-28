@@ -79,16 +79,16 @@ public class TargetExtractionEvaluationService extends EvaluationService {
 			//frequency filtering
 			if (word.getNumberOfInstances() >= frequencyThreshold)
 			{
-				//WordNet filtering
-				if(word.getRankScore() > 0.1)
-				{
+				//PageRank filtering
+//				if(word.getRankScore() > 0.1)
+//				{
 					filteredTargets.add(word);
 
-				}
-				else 
-				{
-					//System.out.println(word.getValue() + " - " + word.getRankScore());
-				}
+//				}
+//				else 
+//				{
+//					//System.out.println(word.getValue() + " - " + word.getRankScore());
+//				}
 			}		
 		}
 		return filteredTargets;

@@ -53,10 +53,10 @@ public class PageRankFilter {
 		}
 		while(!hasConverged);
 		
-		for(Word feature : data.getFeatures())
-		{
-				System.out.println(feature.getValue() + " - " + feature.getRankScore());
-		}
+//		for(Word feature : data.getFeatures())
+//		{
+//				System.out.println(feature.getValue() + " - " + feature.getRankScore());
+//		}
 	}
 	
 	private static double calculateRank(Word target, double numberOfWords, double dampeningFactor, LinkedHashSet<Tuple> currentFeatures, LinkedHashSet<Tuple> currentOpinionWords) {

@@ -15,6 +15,7 @@ import com.unsupervisedsentiment.analysis.model.EvaluationModel;
 import com.unsupervisedsentiment.analysis.model.Pair;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 import com.unsupervisedsentiment.analysis.model.Word;
+import com.unsupervisedsentiment.analysis.modules.services.spellcheck.SuggesterBasicService;
 
 import edu.stanford.nlp.ling.CoreAnnotations.LemmaAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
@@ -33,6 +34,7 @@ public class NLPService {
 
 	private static NLPService instance;
 	private final StanfordCoreNLP coreNlp;
+	private final SuggesterBasicService suggesterBasicService;
 
 	public static NLPService getInstance() {
 		if (instance == null)
@@ -46,6 +48,8 @@ public class NLPService {
 				+ StanfordCoreNLP.STANFORD_POS + "," + StanfordCoreNLP.STANFORD_LEMMA + ","
 				+ StanfordCoreNLP.STANFORD_PARSE);
 		coreNlp = new StanfordCoreNLP(props);
+		
+		this.suggesterBasicService = SuggesterBasicService.getInstance();
 	}
 
 	public List<CoreMap> getAnnotatedSentencesFromText(final String text) {
@@ -141,8 +145,9 @@ public class NLPService {
 	}
 
 	public List<SemanticGraph> createSemanticGraphsListForSentances(final String s) {
+		String correctedText = suggesterBasicService.correctText(s);
 		final List<SemanticGraph> semanticGraphs = new ArrayList<SemanticGraph>();
-		final List<CoreMap> annotatedSentences = getAnnotatedSentencesFromText(s);
+		final List<CoreMap> annotatedSentences = getAnnotatedSentencesFromText(correctedText);
 		for (final CoreMap sentence : annotatedSentences) {
 			final SemanticGraph graph = sentence.get(CollapsedCCProcessedDependenciesAnnotation.class);
 			semanticGraphs.add(graph);

@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.core.Initializer;
+import com.unsupervisedsentiment.analysis.core.constants.relations.Dep_MRRel;
+import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_NNRel;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.ElementType;
 import com.unsupervisedsentiment.analysis.model.Tuple;
+import com.unsupervisedsentiment.analysis.model.TupleType;
 import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.modules.IO.CacheService;
 import com.unsupervisedsentiment.analysis.modules.IO.EvaluationModelsReportingService;
@@ -89,23 +92,29 @@ public class DoublePropagationAlgorithm {
 		resetIterationFeaturesAndOpinionWords();
 
 		for (int i = 0; i < data.getSentancesSemanticGraphs().size(); i++) {
+			
 			SemanticGraph semanticGraph = data.getSentancesSemanticGraphs().get(i);
+			//System.out.println(semanticGraph.toRecoveredSentenceString());
+			//semanticGraph.prettyPrint();
 			Set<Tuple> extractedFeaturesIteration1 = targetExtractorService.extractTargetsUsingR1(semanticGraph,
 					data.getExpandedOpinionWords(), data.getFeatureTuples(), i);
 			
+			//Wordnet target filter
 			Set<Tuple> filteredFeaturesIteration1 = new HashSet<Tuple>();
+
 			for(Tuple extractedFeature : extractedFeaturesIteration1)
 			{
-				String result = wordNetService.searchByWord(extractedFeature.getTarget().getValue());
-				{
-					if(result != null)
-					{
+				//wordNetService.getSynonims(extractedFeature.getTarget().getValue());
+//				String result = wordNetService.searchByWord(extractedFeature.getTarget().getValue());
+//				{
+//					if(result != null)
+//					{
 						filteredFeaturesIteration1.add(extractedFeature);
-					}
-					else {
-						System.out.println(extractedFeature.getTarget().getValue());
-					}
-				}
+//					}
+//					else {
+////						System.out.println(extractedFeature.getTarget().getValue());
+//					}
+//				}
 			}
 			
 			featuresIteration1.addAll(filteredFeaturesIteration1);
@@ -114,6 +123,18 @@ public class DoublePropagationAlgorithm {
 		}
 
 		data.getFeatureTuples().addAll(featuresIteration1);
+		
+		//Synonims and antonyms seed words
+//		for(Tuple extractedOpinionWord : opinionWordsIteration1)
+//		{
+//			HashSet<String> extractedOpinionWordSynonyms = wordNetService.getSynonyms(extractedOpinionWord.getTarget().getValue());
+//			HashSet<String> extractedOpinionWordAntonyms = wordNetService.getAntonyms(extractedOpinionWord.getTarget().getValue());
+//			HashSet<Tuple> newSeedSynonymsWords = getSeedWords(extractedOpinionWordSynonyms);
+//			HashSet<Tuple> newSeedAntonymsWords = getSeedWords(extractedOpinionWordAntonyms);
+//			data.getExpandedOpinionWordsTuples().addAll(newSeedSynonymsWords);
+//			data.getExpandedOpinionWordsTuples().addAll(newSeedAntonymsWords);
+//		}
+		
 		data.getExpandedOpinionWordsTuples().addAll(opinionWordsIteration1);
 
 		for (int i = 0; i < data.getSentancesSemanticGraphs().size(); i++) {
@@ -122,22 +143,35 @@ public class DoublePropagationAlgorithm {
 			Set<Tuple> extractedFeaturesIteration2 = targetExtractorService.extractTargetsUsingR3(semanticGraph, data.getFeatures(),
 					data.getFeatureTuples(), i);
 			
+			//Wordnet target filter
 			Set<Tuple> filteredFeaturesIteration2 = new HashSet<Tuple>();
 			for(Tuple extractedFeature : extractedFeaturesIteration2)
 			{
-				String result = wordNetService.searchByWord(extractedFeature.getTarget().getValue());
-				{
-					if(result != null)
-					{
+//				String result = wordNetService.searchByWord(extractedFeature.getTarget().getValue());
+//				{
+//					if(result != null)
+//					{
 						filteredFeaturesIteration2.add(extractedFeature);
-					}
-					else {
-						System.out.println(extractedFeature.getTarget().getValue());
-					}
-				}
+//					}
+//					else {
+//						//System.out.println(extractedFeature.getTarget().getValue());
+//					}
+//				}
 			}
 
 			featuresIteration2.addAll(filteredFeaturesIteration2);
+			
+			//Synonims and antonyms seed words
+//			for(Tuple extractedOpinionWord : opinionWordsIteration2)
+//			{
+//				HashSet<String> extractedOpinionWordSynonyms = wordNetService.getSynonyms(extractedOpinionWord.getTarget().getValue());
+//				HashSet<String> extractedOpinionWordAntonyms = wordNetService.getAntonyms(extractedOpinionWord.getTarget().getValue());
+//				HashSet<Tuple> newSeedSynonymsWords = getSeedWords(extractedOpinionWordSynonyms);
+//				HashSet<Tuple> newSeedAntonymsWords = getSeedWords(extractedOpinionWordAntonyms);
+//				data.getExpandedOpinionWordsTuples().addAll(newSeedSynonymsWords);
+//				data.getExpandedOpinionWordsTuples().addAll(newSeedAntonymsWords);
+//			}
+			
 			opinionWordsIteration2.addAll(opinionWordExtractorService.extractOpinionWordsUsingR2(semanticGraph,
 					data.getFeatures(), data.getExpandedOpinionWordsTuples(), i));
 		}
@@ -177,4 +211,19 @@ public class DoublePropagationAlgorithm {
 		return data;
 	}
 
+	private HashSet<Tuple> getSeedWords(HashSet<String> words) {
+		HashSet<Tuple> seedWords = new HashSet<Tuple>();
+		for (String seedString : words) {
+			Tuple seed = new Tuple();
+			// TODO: not always JJ? what if adverbs
+			Word word = new Word("JJ", seedString.trim(), ElementType.OPINION_WORD);
+			seed.setSource(word);
+			seed.setTupleType(TupleType.Seed);
+			seed.setSentenceIndex(-1);
+			seed.setSentence(null);
+			seedWords.add(seed);
+		}
+		
+		return seedWords;	
+	}
 }
