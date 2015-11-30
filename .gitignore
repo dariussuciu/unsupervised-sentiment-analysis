@@ -25,3 +25,4 @@ EvaluationModels/Canon G3.txt-EvaluationModel
 *.csv
 *.txt-EvaluationModel
 MainModule/.idea/
+*.iml
