@@ -231,8 +231,7 @@ public class Helpers {
 		
 
 		for (Word word : words) {
-			final List<IndexedWord> vertexes = semanticGraph
-					.getAllNodesByWordPattern(word.getPattern());
+			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(word.getPattern());
 			for (IndexedWord vertex : vertexes) {
 				// for outgoing edges
 				final List<SemanticGraphEdge> outgoingTargetEdges = Helpers
@@ -240,7 +239,7 @@ public class Helpers {
 								semanticGraph.outgoingEdgeIterable(vertex),
 								sourcePos, targetPos, relationType, false);
 				if(semanticGraph.isNegatedVertex(vertex)) {
-					System.out.println("found negated vertexsdafsdf " + vertex.value());
+					System.out.println("found negated vertex " + vertex.value());
 				}
 				for (SemanticGraphEdge edge : outgoingTargetEdges) {
 					targets.add(Helpers.getPair(word.getValue(), word
@@ -265,11 +264,6 @@ public class Helpers {
 							Dependency.DIRECT_DEPENDENCY, semanticGraphIndex,
 							semanticGraph.toRecoveredSentenceString(), semanticGraph.isNegatedVertex(vertex)));
 				}
-			}
-		}
-		for(Tuple tuple : targets) {
-			if (tuple.isNegatedTarget()) {
-				//System.out.println("is negated target " + tuple.getTarget().getValue());
 			}
 		}
 		return targets;

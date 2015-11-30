@@ -31,6 +31,10 @@ public class ScorePropagator {
 									.toLowerCase()))) {
 				if (tuple.getSource().getScore() == Classification.DEFAULT_SCORE) {
 					double score = assignedTuple.getSource().getScore();
+					if (tuple.isNegated()) {
+						System.out.println(String.format("is negated feature in classification \"%s\"", tuple.getTarget().getValue()));
+						score = score * -1;
+					}
 					tuple.getSource().setScore(score);
 					if (tuple.getTarget() != null)
 						tuple.getTarget().setScore(score);
@@ -39,6 +43,11 @@ public class ScorePropagator {
 				else {
 					double score = (assignedTuple.getSource().getScore() + tuple
 							.getSource().getScore()) / 2;
+					if (tuple.isNegated()) {
+						System.out.println(String.format("is negated feature in classification \"%s\"", tuple.getTarget().getValue()));
+						score = score * -1;
+						tuple.setNegated(false);
+					}
 					tuple.getSource().setScore(score);
 					if (tuple.getTarget() != null)
 						tuple.getTarget().setScore(score);

@@ -19,7 +19,7 @@ public class Tuple {
 	private TupleType tupleType;
 	private int sentenceIndex;
 	private String sentence;
-	private boolean isNegatedTarget;
+	private boolean isNegated;
 
 	public Tuple() {
 
@@ -121,7 +121,7 @@ public class Tuple {
 		this.tupleType = tupleType;
 		this.sentenceIndex = sentenceIndex;
 		this.sentence = sentence;
-		this.isNegatedTarget = isNegatedTarget;
+		this.isNegated = isNegatedTarget;
 	}
 
 	/**
@@ -207,11 +207,11 @@ public class Tuple {
 		this.sentence = sentence;
 	}
 
-	public boolean isNegatedTarget() {
-		return isNegatedTarget;
+	public boolean isNegated() {
+		return isNegated;
 	}
 
-	public void setNegatedTarget(boolean isNegatedTarget) {
-		this.isNegatedTarget = isNegatedTarget;
+	public void setNegated(boolean isNegatedTarget) {
+		this.isNegated = isNegatedTarget;
 	}
 }

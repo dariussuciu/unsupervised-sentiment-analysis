@@ -103,12 +103,6 @@ public class AlgorithmRunner {
 //					
 //				}
 			}
-			
-			for(Tuple tuple : resultTuples) {
-				if (tuple.isNegatedTarget()) {
-					System.out.println("is negated target in alg runner " + tuple.getTarget().getValue());
-				}
-			}
 
 			// this output should only be written once per file
 			outputFiles.add(outputService.createOutputWrapperFromInput(input, resultTuples));
