@@ -238,9 +238,6 @@ public class Helpers {
 						.getTargetEdgesOnEdge(
 								semanticGraph.outgoingEdgeIterable(vertex),
 								sourcePos, targetPos, relationType, false);
-				if(semanticGraph.isNegatedVertex(vertex)) {
-					System.out.println("found negated vertex " + vertex.value());
-				}
 				for (SemanticGraphEdge edge : outgoingTargetEdges) {
 					targets.add(Helpers.getPair(word.getValue(), word
 							.getPosTag(), word.getType(), edge.getTarget()
