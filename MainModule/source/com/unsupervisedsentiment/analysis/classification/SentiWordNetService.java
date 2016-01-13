@@ -210,8 +210,17 @@ public class SentiWordNetService implements IPolarityLexion {
 		    for(IndexedWord word : nodesList){
 		      wordsInSentence.add(word.toString());
 		    }
-		    
-		    for(String word : wordsInSentence){
+
+            String previousWord = "";
+		    for(int i = 0; i < wordsInSentence.size(); i++){
+                String word = wordsInSentence.get(i);
+                String unalteredWord = word;
+                for (Classification.Modifier modifier : Classification.Modifier.values()) {
+                    if (previousWord != null && previousWord.equals(modifier.toString() + "-RB")) {
+                        word = modifier.toString() + " " + word;
+                    }
+                }
+                previousWord = unalteredWord;
 		    	if(word.contains("-" + JJ.JJ.toString())){
 		    		adjectives.add(word.replace("-" + JJ.JJ.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
 		    	}
@@ -221,8 +230,12 @@ public class SentiWordNetService implements IPolarityLexion {
 		    	if(word.contains("-" + JJ.JJR.toString())){
 		    		adjectives.add(word.replace("-" + JJ.JJR.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
 		    	}
+                if(word.contains("-" + JJ.RB.toString())){
+                    adjectives.add(word.replace("-" + JJ.RB.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
+                }
 		    }
-		}
+
+        }
 		return adjectives;
 	}
 

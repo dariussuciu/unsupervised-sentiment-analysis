@@ -227,12 +227,23 @@ public class Helpers {
 			final GeneralPosRelationEnum sourcePos, final GeneralPosRelationEnum targetPos,
 			final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> targets = new HashSet<Tuple>();
-		
-		
 
-		for (Word word : words) {
+        /*for (IndexedWord vertex : semanticGraph.vertexSet()) {
+            if (vertex.toString().contains("very")) {
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + vertex.toString());
+            }
+        }*/
+
+        /*for (Word tuple : words) {
+            if (tuple.getScore().contains("very")) {
+                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + tuple.getScore());
+            }
+        }*/
+
+
+        for (Word word : words) {
 			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(word.getPattern());
-			for (IndexedWord vertex : vertexes) {
+            for (IndexedWord vertex : vertexes) {
 				// for outgoing edges
 				final List<SemanticGraphEdge> outgoingTargetEdges = Helpers
 						.getTargetEdgesOnEdge(
@@ -529,7 +540,7 @@ public class Helpers {
 					elements.add(foundElement);
 				} else {
 					// System.out.println("Duplicate: " +
-					// foundOpinionWord.getValue() + " - " +
+					// foundOpinionWord.getScore() + " - " +
 					// foundOpinionWord.getSentenceIndex() );
 				}
 			}

@@ -39,7 +39,7 @@ public class TargetExtractionEvaluationService extends EvaluationService {
 			if (!found) {
 				for (Tuple tuple : tuples) {
 					if (tuple.getSentenceIndex() == target.getSentenceIndex()) {
-						// System.out.println(target.getValue() +
+						// System.out.println(target.getScore() +
 						// target.getPosTag() + " - " +
 						// target.getSentenceIndex()
 						// + " - " + tuple.getSentence());

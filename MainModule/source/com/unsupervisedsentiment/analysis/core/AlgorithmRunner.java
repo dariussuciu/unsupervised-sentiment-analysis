@@ -75,7 +75,7 @@ public class AlgorithmRunner {
 				final SemanticGraph semanticGraph = algorithm.getData().getSentancesSemanticGraphs().get(i);
 				for (Tuple tuple : resultTuples) {
 //					if(tuple.getTarget() != null) {
-//						List<IndexedWord> nodes = semanticGraph.getAllNodesByWordPattern(tuple.getTarget().getValue().trim().replace("*", ""));
+//						List<IndexedWord> nodes = semanticGraph.getAllNodesByWordPattern(tuple.getTarget().getScore().trim().replace("*", ""));
 //						for (IndexedWord node : nodes) {
 //							if(semanticGraph.isNegatedVertex(node)) {
 //								System.out.println("found negated vertex " + node.value());
@@ -83,7 +83,7 @@ public class AlgorithmRunner {
 //						}
 //					}
 //					if(tuple.getSource() != null) {
-//						List<IndexedWord> nodes = semanticGraph.getAllNodesByWordPattern(tuple.getSource().getValue().trim().replace("*", ""));
+//						List<IndexedWord> nodes = semanticGraph.getAllNodesByWordPattern(tuple.getSource().getScore().trim().replace("*", ""));
 //						for (IndexedWord node : nodes) {
 //							if(semanticGraph.isNegatedVertex(node)) {
 //								System.out.println("found negated vertex " + node.value());

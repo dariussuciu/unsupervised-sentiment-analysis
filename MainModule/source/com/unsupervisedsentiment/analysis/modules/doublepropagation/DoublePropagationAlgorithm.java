@@ -8,6 +8,7 @@ import java.util.List;
 import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
 import com.unsupervisedsentiment.analysis.model.Tuple;
+import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.modules.IO.CacheService;
 import com.unsupervisedsentiment.analysis.modules.IO.EvaluationModelsReportingService;
 import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
@@ -61,7 +62,7 @@ public class DoublePropagationAlgorithm {
 		} while (featuresIteration1.size() > 0 && opinionWordsIteration1.size() > 0);
 
 		reportingService.outputDetailedReportMaps(data.getFilename());
-		return data;
+        return data;
 	}
 
 	private void initialize(HashSet<Tuple> seedWords) {
@@ -96,8 +97,20 @@ public class DoublePropagationAlgorithm {
 					data.getExpandedOpinionWords(), data.getFeatureTuples(), i));
 			opinionWordsIteration1.addAll(opinionWordExtractorService.extractOpinionWordsUsingR4(semanticGraph,
 					data.getExpandedOpinionWords(), data.getExpandedOpinionWordsTuples(), i));
-			
-		}
+/*
+
+            for (Tuple tuple : featuresIteration1) {
+                if (tuple.getTarget() != null && tuple.getTarget().getScore().contains("very")) {
+                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + tuple.getTarget().getScore());
+                }
+                if (tuple.getSource().getScore().contains("very")) {
+                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + tuple.getSource().getScore());
+                }
+            }
+*/
+
+
+        }
 
 		data.getFeatureTuples().addAll(featuresIteration1);
 		data.getExpandedOpinionWordsTuples().addAll(opinionWordsIteration1);

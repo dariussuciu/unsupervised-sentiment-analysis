@@ -22,6 +22,22 @@ public class Classification {
 	 * 
 	 * 
 	 */
+
+
+    public enum Modifier {
+        very(1), especially(0.5), noticeably(0.5), clearly(0.5);
+
+        private double numVal;
+
+        Modifier(double numVal) {
+            this.numVal = numVal;
+        }
+
+        public double getScore() {
+            return numVal;
+        }
+    }
+
 	public static double DEFAULT_SCORE = -100;
 
 	private IPolarityLexion polarityLexicon;
@@ -43,7 +59,18 @@ public class Classification {
 			//the extracted seed words do not have any polarities, so we have to asign them
 			for(String word : extractedSeedWords){
 				double score = polarityLexicon.extract(word, new String[]{SWNPos.Adjective.toString()});
-				seeds.add(new SeedScoreModel(word, score));
+                for (Modifier modifier : Modifier.values()) {
+                    if (word.contains(modifier.name()) && !word.equals(modifier.name())) {
+                        String modifiedWord = word.split(" ")[1];
+                        score = polarityLexicon.extract(modifiedWord, new String[]{SWNPos.Adjective.toString()});
+                        score = score > 0 ? (score + modifier.getScore()) : (score - modifier.getScore());
+                        score = score > 1 ? 1 : score < -1 ? -1 : score;
+                        System.out.println("!!!!!!!!!!!!!!!!!!!!!! word: " + word + " score: " + score);
+                    }
+                }
+                SeedScoreModel model = new SeedScoreModel(word, score);
+				seeds.add(model);
+
 			}
 		}
 		
@@ -59,7 +86,7 @@ public class Classification {
 		ArrayList<Tuple> fullyAssignedTuples2 = PolarityAssigner.assignScores(
 				fullyAssignedTuples, seeds);
 
-		printResults(fullyAssignedTuples);
+		//printResults(fullyAssignedTuples);
 		return fullyAssignedTuples2;
 	}
 

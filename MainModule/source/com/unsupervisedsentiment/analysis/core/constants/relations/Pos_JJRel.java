@@ -3,7 +3,7 @@ package com.unsupervisedsentiment.analysis.core.constants.relations;
 public class Pos_JJRel extends GeneralPosRelationEnum {
 
 	public enum JJ {
-		JJ, JJR, JJS, RBR, RBS
+		JJ, JJR, JJS, RBR, RBS, RB
 	}
 
 	private static Pos_JJRel jjRel;

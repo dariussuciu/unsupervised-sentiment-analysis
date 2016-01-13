@@ -40,7 +40,7 @@ public class OpinionWordExtractionEvaluationService extends EvaluationService {
 				{
 					if(tuple.getSentenceIndex() == opinionWord.getSentenceIndex())
 					{
-//						 System.out.println(opinionWord.getValue() +
+//						 System.out.println(opinionWord.getScore() +
 //								 opinionWord.getPosTag() + " - " +
 //								 opinionWord.getSentenceIndex() + " - " + tuple.getSentence());
 						 break;
@@ -70,7 +70,7 @@ public class OpinionWordExtractionEvaluationService extends EvaluationService {
 //			boolean found = false;
 //			for (final EvaluationModel model : evaluationModels) {
 //				if (target.getSentenceIndex() == model.getSentenceIndex()) {
-//					if (target.getValue().equals(
+//					if (target.getScore().equals(
 //							model.getTarget())) {
 //						//truePositive++;
 //						found = true;
@@ -80,7 +80,7 @@ public class OpinionWordExtractionEvaluationService extends EvaluationService {
 //			}
 //
 //			if (!found) {
-//				// System.out.println(opinionWord.getValue() +
+//				// System.out.println(opinionWord.getScore() +
 //				//		 opinionWord.getPosTag() + " - " +
 //				//		 opinionWord.getSentenceIndex());
 //				//falsePositive++;
