@@ -64,8 +64,6 @@ public class Classification {
                         String modifiedWord = word.split(" ")[1];
                         score = polarityLexicon.extract(modifiedWord, new String[]{SWNPos.Adjective.toString()});
                         score = score > 0 ? (score + modifier.getScore()) : (score - modifier.getScore());
-                        score = score > 1 ? 1 : score < -1 ? -1 : score;
-                        System.out.println("!!!!!!!!!!!!!!!!!!!!!! word: " + word + " score: " + score);
                     }
                 }
                 SeedScoreModel model = new SeedScoreModel(word, score);
