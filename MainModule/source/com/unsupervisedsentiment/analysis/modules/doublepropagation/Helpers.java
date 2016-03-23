@@ -496,7 +496,9 @@ public class Helpers {
 	}
 
 	public static double normalizeScore(double score) {
-		if (score >= 10 && score < 100)
+        if (score >= 1 && score < 10)
+            return score / 10;
+        if (score >= 10 && score < 100)
 			return score / 100;
 		if (score >= 100 && score < 1000)
 			return score / 1000;

@@ -17,7 +17,7 @@ public class PolaritySummarization {
 				totalScore += tuple.getSource().getScore();
 			}
 		}
-		double normalizedScore = Helpers.normalizeScore(totalScore);
+		double normalizedScore = totalScore > 0 ? Helpers.normalizeScore(totalScore) : (-1 * Helpers.normalizeScore((-1 * totalScore)));
 
 		return normalizedScore;
 	}
