@@ -21,6 +21,7 @@ import com.unsupervisedsentiment.analysis.modules.IO.OutputService;
 import com.unsupervisedsentiment.analysis.modules.IO.OutputWrapper;
 import com.unsupervisedsentiment.analysis.modules.doublepropagation.DoublePropagationAlgorithm;
 import com.unsupervisedsentiment.analysis.modules.evaluation.EvaluationMetadata;
+import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
@@ -52,7 +53,9 @@ public class AlgorithmRunner {
 
 			inputData.setFilename(input.getFilename());
 
-			inputData.setInput(input.getOriginalContent());
+            String text = input.getOriginalContent();
+            NLPService.getInstance().createInitialWords(text);
+			inputData.setInput(text);
 			DoublePropagationAlgorithm algorithm = new DoublePropagationAlgorithm(inputData);
 
 			// the evaluation models are retrieved or created in the
@@ -70,39 +73,6 @@ public class AlgorithmRunner {
 			LinkedHashSet<Tuple> resultTuples = new LinkedHashSet<Tuple>();
 			resultTuples.addAll(featureTuples);
 			resultTuples.addAll(opinionWordTuples);
-			
-			for (int i = 0; i < algorithm.getData().getSentancesSemanticGraphs().size(); i++) {
-				final SemanticGraph semanticGraph = algorithm.getData().getSentancesSemanticGraphs().get(i);
-				for (Tuple tuple : resultTuples) {
-//					if(tuple.getTarget() != null) {
-//						List<IndexedWord> nodes = semanticGraph.getAllNodesByWordPattern(tuple.getTarget().getScore().trim().replace("*", ""));
-//						for (IndexedWord node : nodes) {
-//							if(semanticGraph.isNegatedVertex(node)) {
-//								System.out.println("found negated vertex " + node.value());
-//							}
-//						}
-//					}
-//					if(tuple.getSource() != null) {
-//						List<IndexedWord> nodes = semanticGraph.getAllNodesByWordPattern(tuple.getSource().getScore().trim().replace("*", ""));
-//						for (IndexedWord node : nodes) {
-//							if(semanticGraph.isNegatedVertex(node)) {
-//								System.out.println("found negated vertex " + node.value());
-//							}
-//						}
-//					}
-				}
-				
-//				Collection<IndexedWord> roots = semanticGraph.getRoots();
-//				for(IndexedWord root : roots) {
-//					Collection<IndexedWord> children = semanticGraph.getChildren(root);
-//					for (IndexedWord child : children) {
-//						if(semanticGraph.isNegatedVertex(child)) {
-//							System.out.println("found negated vertex " + child.value());
-//						}
-//					}
-//					
-//				}
-			}
 
 			// this output should only be written once per file
 			outputFiles.add(outputService.createOutputWrapperFromInput(input, resultTuples));
@@ -113,14 +83,10 @@ public class AlgorithmRunner {
 			 * Vlad's part
 			 */
 			Classification classification = new Classification();
-			ArrayList<Tuple> assignedFeatures = classification.assignScoresBasedOnSeeds(featureTuples, inputData.getSentancesSemanticGraphs(),false);
-
-//			classification = new Classification();
-//			ArrayList<Tuple> assignedOpinions = classification.assignScoresBasedOnSeeds(opinionWordTuples, false);
+			ArrayList<Tuple> assignedFeatures = classification.assignScoresBasedOnSeeds(resultTuples, inputData.getSentancesSemanticGraphs(),false);
 
 			LinkedHashSet<Tuple> combinedTuples = new LinkedHashSet<Tuple>();
 			combinedTuples.addAll(assignedFeatures);
-//			combinedTuples.addAll(assignedOpinions);
 
 			reportingService.evaluateScoring(combinedTuples);
 			List<Tuple> opinionWordTuplesAL = new ArrayList<Tuple>(featureTuples);

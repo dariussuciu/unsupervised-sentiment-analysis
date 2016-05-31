@@ -83,33 +83,10 @@ public class DoublePropagationAlgorithm {
 
 		for (int i = 0; i < data.getSentancesSemanticGraphs().size(); i++) {
 			final SemanticGraph semanticGraph = data.getSentancesSemanticGraphs().get(i);
-//			Collection<IndexedWord> roots = semanticGraph.getRoots();
-//			for(IndexedWord root : roots) {
-//				Collection<IndexedWord> children = semanticGraph.getChildren(root);
-//				for (IndexedWord child : children) {
-//					if(semanticGraph.isNegatedVertex(child)) {
-//						System.out.println("found negated vertex " + child.value());
-//					}
-//				}
-//				
-//			}
 			featuresIteration1.addAll(targetExtractorService.extractTargetsUsingR1(semanticGraph,
 					data.getExpandedOpinionWords(), data.getFeatureTuples(), i));
 			opinionWordsIteration1.addAll(opinionWordExtractorService.extractOpinionWordsUsingR4(semanticGraph,
 					data.getExpandedOpinionWords(), data.getExpandedOpinionWordsTuples(), i));
-/*
-
-            for (Tuple tuple : featuresIteration1) {
-                if (tuple.getTarget() != null && tuple.getTarget().getScore().contains("very")) {
-                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + tuple.getTarget().getScore());
-                }
-                if (tuple.getSource().getScore().contains("very")) {
-                    System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + tuple.getSource().getScore());
-                }
-            }
-*/
-
-
         }
 
 		data.getFeatureTuples().addAll(featuresIteration1);

@@ -18,10 +18,11 @@ public class PolarityAssigner {
 		ArrayList<Tuple> tuples = new ArrayList<Tuple>();
 		for (Tuple tuple : data) {
 			if (tuple != null) {
-				if (tuple.getSource() != null)
-					tuple.getSource().setScore(Classification.DEFAULT_SCORE);
-				if (tuple.getTarget() != null)
-					tuple.getTarget().setScore(Classification.DEFAULT_SCORE);
+                double score = SentiWordNetService.getInstance().extract(tuple.getSource().getValue(), new String[]{SentiWordNetService.SWNPos.Adjective.toString(), SentiWordNetService.SWNPos.Adverb.toString()});
+                tuple.getSource().setScore(score);
+				if (tuple.getTarget() != null) {
+                    tuple.getTarget().setScore(score);
+                }
 				tuples.add(tuple);
 			}
 		}
@@ -30,6 +31,7 @@ public class PolarityAssigner {
 	
 	public static ArrayList<Tuple> assignScoresToSeeds(ArrayList<Tuple> tuples,
 			ArrayList<SeedScoreModel> seeds) {
+
 		for (Tuple tuple : tuples) {
 			for (SeedScoreModel model : seeds) {
 				String seed = model.getSeed().trim();
@@ -38,13 +40,23 @@ public class PolarityAssigner {
 				if (tuple.getTarget() != null) {
 					String target = tuple.getTarget().getValue();
 
-					if (seed.equals(source.trim())
-							|| seed.equals(target.trim())) {
+					if (seed.equals(target.trim())) {
 						double score = model.getScore();
 						tuple.getSource().setScore(score);
 						tuple.getTarget().setScore(score);
+                        tuple.getSource().setHasModifier(model.isHasModifier());
+                        tuple.getTarget().setHasModifier(model.isHasModifier());
 					}
 				}
+                if (seed.equals(source.trim())) {
+                    double score = model.getScore();
+                    tuple.getSource().setScore(score);
+                    tuple.getSource().setHasModifier(model.isHasModifier());
+                    if (tuple.getTarget() != null) {
+                        tuple.getTarget().setScore(score);
+                        tuple.getTarget().setHasModifier(model.isHasModifier());
+                    }
+                }
 			}
 
 		}

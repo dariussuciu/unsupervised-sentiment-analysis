@@ -34,6 +34,12 @@ public class NLPService {
 	private static NLPService instance;
 	private final StanfordCoreNLP coreNlp;
 
+    public List<Word> getInitialWords() {
+        return initialWords;
+    }
+
+    private List<Word> initialWords = new ArrayList<>();
+
 	public static NLPService getInstance() {
 		if (instance == null)
 			instance = new NLPService();
@@ -96,8 +102,10 @@ public class NLPService {
 			
 			if(elementType.equals(ElementType.OPINION_WORD))
 			{
-				String patternForOpinionWords = forScoring ? "### (\\w*\\@.?\\d\\.?\\d*\\b)"
-						: "### (\\w*\\b)";
+				String patternForOpinionWords = "### (\\w*\\b)";
+                if (forScoring) {
+                    patternForOpinionWords = "### (\\w*\\@.?\\d\\.?\\d*\\b)";
+                }
 				final Pattern OPINION_WORD_PATTERN = Pattern.compile(patternForOpinionWords);
 				matcher = OPINION_WORD_PATTERN.matcher(sentence);
 			}
@@ -109,7 +117,8 @@ public class NLPService {
 				final Pattern TARGET_PATTERN = Pattern.compile(patternForTargets);
 				matcher = TARGET_PATTERN.matcher(sentence);
 			}
-			
+
+            String patternForModifiers = "\\$\\$\\$(.*)\\ .*?\\ ?\\#\\#\\#";
 			final String cleanSentence = sentence.replaceAll(
 					"(### )|(% % % )|(\\$ \\$ \\$ )|(\\@\\d\\.\\d*)", "");
 			while (matcher.find()) {
@@ -132,6 +141,32 @@ public class NLPService {
 		return evaluationModels;
 	}
 
+    public void createInitialWords(String text) {
+            final List<String> lemmas = new LinkedList<String>();
+            // create an empty Annotation just with the given text
+            final Annotation document = new Annotation(text);
+
+            // run all Annotators on this text
+            coreNlp.annotate(document);
+
+            // Iterate over all of the sentences found
+            final List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+            for (int i = 0; i < sentences.size(); i++) {
+                // Iterate over all tokens in a sentence
+                for (final CoreLabel token : sentences.get(i).get(TokensAnnotation.class)) {
+                    // Retrieve and add the lemma for each word into the
+                    // list of lemmas
+                    String initialPos = token.get(PartOfSpeechAnnotation.class);
+                    Word word = new Word(initialPos, token.value());
+                    word.setSentenceIndex(i);
+                    String lemmatized = token.get(LemmaAnnotation.class);
+                    word.setValue(lemmatized);
+                    initialWords.add(word);
+                    lemmas.add(lemmatized);
+                }
+            }
+    }
+
 	private String doLemmatization(final String documentText) {
 		final List<String> lemmas = new LinkedList<String>();
 		String result = "";
@@ -143,13 +178,14 @@ public class NLPService {
 
 		// Iterate over all of the sentences found
 		final List<CoreMap> sentences = document.get(SentencesAnnotation.class);
-		for (final CoreMap sentence : sentences) {
-			// Iterate over all tokens in a sentence
+        for (final CoreMap sentence : sentences) {
+            // Iterate over all tokens in a sentence
 			for (final CoreLabel token : sentence.get(TokensAnnotation.class)) {
 				// Retrieve and add the lemma for each word into the
 				// list of lemmas
-				lemmas.add(token.get(LemmaAnnotation.class));
-				result += token.get(LemmaAnnotation.class) + " ";
+                String lemmatized = token.get(LemmaAnnotation.class);
+				lemmas.add(lemmatized);
+				result += lemmatized + " ";
 			}
 		}
 		return result;

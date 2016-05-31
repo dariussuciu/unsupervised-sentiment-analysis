@@ -4,11 +4,13 @@ public class SeedScoreModel {
 
 	private String seed;
 	private double score;
+    private boolean hasModifier;
 
-	public SeedScoreModel(String seed, double score) {
+	public SeedScoreModel(String seed, double score, boolean hasModifier) {
 		super();
 		this.seed = seed;
 		this.score = score;
+        this.hasModifier = hasModifier;
 	}
 
 	public String getSeed() {
@@ -27,4 +29,11 @@ public class SeedScoreModel {
 		this.score = score;
 	}
 
+    public boolean isHasModifier() {
+        return hasModifier;
+    }
+
+    public void setHasModifier(boolean hasModifier) {
+        this.hasModifier = hasModifier;
+    }
 }

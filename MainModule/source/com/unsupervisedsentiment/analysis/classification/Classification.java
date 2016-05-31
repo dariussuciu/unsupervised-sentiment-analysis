@@ -3,40 +3,20 @@ package com.unsupervisedsentiment.analysis.classification;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.classification.SentiWordNetService.SWNPos;
+import com.unsupervisedsentiment.analysis.core.constants.relations.Dep_ConjRel;
+import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_NNRel;
 import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 
 import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.util.Pair;
 
 
 public class Classification {
-
-	/**
-	 * Should make cases for modifiers like : very, especially, noticeably,
-	 * clearly, undisputed negatia
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-
-
-    public enum Modifier {
-        very(1), especially(0.5), noticeably(0.5), clearly(0.5);
-
-        private double numVal;
-
-        Modifier(double numVal) {
-            this.numVal = numVal;
-        }
-
-        public double getScore() {
-            return numVal;
-        }
-    }
 
 	public static double DEFAULT_SCORE = -100;
 
@@ -50,26 +30,48 @@ public class Classification {
 
 	public ArrayList<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data, List<SemanticGraph> semanticGrapshs, boolean useSeedWordsFromFile) {
 
+        Map<String, Pair<Double, Double>> knownModifiers = polarityLexicon.getModifiers();
+
 		if(useSeedWordsFromFile){
 			seeds = polarityLexicon.getSeedWordsWithScores();
 		}
 		else{
-			seeds = new ArrayList<SeedScoreModel>();
-			List<String> extractedSeedWords = polarityLexicon.getSeedWordsFromSemanticGraph(semanticGrapshs);
-			//the extracted seed words do not have any polarities, so we have to asign them
-			for(String word : extractedSeedWords){
-				double score = polarityLexicon.extract(word, new String[]{SWNPos.Adjective.toString()});
-                for (Modifier modifier : Modifier.values()) {
-                    if (word.contains(modifier.name()) && !word.equals(modifier.name())) {
-                        String modifiedWord = word.split(" ")[1];
-                        score = polarityLexicon.extract(modifiedWord, new String[]{SWNPos.Adjective.toString()});
-                        score = score > 0 ? (score + modifier.getScore()) : (score - modifier.getScore());
-                    }
-                }
-                SeedScoreModel model = new SeedScoreModel(word, score);
-				seeds.add(model);
+			seeds = new ArrayList<>();
+			List<String> extractedSeedWords = polarityLexicon.getSeedWordsFromSemanticGraph(semanticGrapshs, knownModifiers);
+            for (String word : extractedSeedWords) {
 
-			}
+                if (word.contains(" ")) {
+                    word = removePOSsFromWord(word);
+                    String[] splittedWord = word.split(" ");
+                    String actualWord = splittedWord[splittedWord.length - 1];
+                    double actualWordScore = polarityLexicon.extract(actualWord, new String[]{SWNPos.Adjective.toString(), SWNPos.Adverb.toString()});
+                    double constructScore = actualWordScore;
+                    for (int i = splittedWord.length - 2; i >= 0; i--) {
+                        String modifier = splittedWord[i];
+                        double modifierScore = 0;
+                        if (knownModifiers.containsKey(modifier)) {
+                            modifierScore = actualWordScore > 0 ? knownModifiers.get(modifier).first : knownModifiers.get(modifier).second;
+                        }
+                        //should this be here?
+                        /*if ((modifierScore - constructScore) > 0 && modifierScore > 0) {
+                            constructScore = constructScore - constructScore * Math.abs(modifierScore);
+                        } else {*/
+                            double sign = actualWordScore < 0 ? -1 : 1;
+                            constructScore = sign * (Math.abs(constructScore) + (1 - Math.abs(constructScore)) * modifierScore);
+                        /*}*/
+                    }
+                    word = removePOSsFromWord(word);
+                    SeedScoreModel model = new SeedScoreModel(word, constructScore, true);
+                    seeds.add(model);
+                    actualWord = removePOSsFromWord(actualWord);
+                    SeedScoreModel modelSolo = new SeedScoreModel(actualWord, constructScore, true);
+                    seeds.add(modelSolo);
+                } else {
+                    double score = polarityLexicon.extract(word, new String[]{SWNPos.Adjective.toString()});
+                    SeedScoreModel model = new SeedScoreModel(word, score, false);
+                    seeds.add(model);
+                }
+            }
 		}
 		
 		ArrayList<Tuple> initialTuples = PolarityAssigner
@@ -84,9 +86,52 @@ public class Classification {
 		ArrayList<Tuple> fullyAssignedTuples2 = PolarityAssigner.assignScores(
 				fullyAssignedTuples, seeds);
 
-		//printResults(fullyAssignedTuples);
+		//printResults(fullyAssignedTuples2);
 		return fullyAssignedTuples2;
 	}
+
+    private String removePOSsFromWord(String word) {
+        if (word.contains("-" + Pos_NNRel.NN.NN.toString())) {
+            word = word.replaceAll("-" + Pos_NNRel.NN.NN.toString(), "");
+        }
+        if (word.contains("-" + Pos_NNRel.NN.NNP.toString())) {
+            word = word.replaceAll("-" + Pos_NNRel.NN.NNP.toString(), "");
+        }
+        if (word.contains("-" + Pos_NNRel.NN.NNPS.toString())) {
+            word = word.replaceAll("-" + Pos_NNRel.NN.NNPS.toString(), "");
+        }
+        if (word.contains("-" + Pos_NNRel.NN.NNS.toString())) {
+            word = word.replaceAll("-" + Pos_NNRel.NN.NNS.toString(), "");
+        }
+        if (word.contains("-" + Dep_ConjRel.CONJ.conj.toString())) {
+            word = word.replaceAll("-" + Dep_ConjRel.CONJ.conj.toString(), "");
+        }
+        if (word.contains("-" + Dep_ConjRel.CONJ.conj_and.toString())) {
+            word = word.replaceAll("-" + Dep_ConjRel.CONJ.conj_and.toString(), "");
+        }
+        if (word.contains("-" + "CD")) {
+            word = word.replaceAll("-" + "CD", "");
+        }
+        if (word.contains("-" + "SYM".toString())) {
+            word = word.replaceAll("-" + "SYM", "");
+        }
+        if (word.contains("-" + "VB".toString())) {
+            word = word.replaceAll("-" + "VB", "");
+        }
+        if (word.contains("-" + "IN".toString())) {
+            word = word.replaceAll("-" + "IN", "");
+        }
+        if (word.contains("-" + "FW".toString())) {
+            word = word.replaceAll("-" + "FW", "");
+        }
+        return word;
+    }
+
+    private List<String> getModifiersForWord(Map<String, Pair<Double, Double>> knownModifiers, String word) {
+        List<String> modifiers = new ArrayList<>();
+
+        return modifiers;
+    }
 
 	public double computeOverallScore(List<Tuple> data) {
 		return PolaritySummarization.computeOverallScore(data);

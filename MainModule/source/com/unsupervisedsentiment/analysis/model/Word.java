@@ -4,12 +4,16 @@ import com.unsupervisedsentiment.analysis.core.constants.relations.GeneralPosRel
 
 public class Word {
 	private String posTag;
+    private String previousPosTag;
 	private String value;
 	private ElementType type;
 	private double score;
 	private double sentiWordScore;
 	private int sentenceIndex;
 	private int numberOfInstances;
+    private String initialValue;
+    private String initialPos;
+    private boolean hasModifier;
 
 	public String getPosTag() {
 		return posTag;
@@ -42,6 +46,11 @@ public class Word {
 		this.type = type;
 		this.numberOfInstances = 0;
 	}
+
+    public Word(String initialPos, String initialValue) {
+        this.initialPos = initialPos;
+        this.initialValue = initialValue;
+    }
 
 	public Word(String posTag) {
 		super();
@@ -131,4 +140,36 @@ public class Word {
 	public void setNumberOfInstances(int numberOfInstances) {
 		this.numberOfInstances = numberOfInstances;
 	}
+
+    public String getPreviousPosTag() {
+        return previousPosTag;
+    }
+
+    public void setPreviousPosTag(String previousPosTag) {
+        this.previousPosTag = previousPosTag;
+    }
+
+    public String getInitialValue() {
+        return initialValue;
+    }
+
+    public void setInitialValue(String initialValue) {
+        this.initialValue = initialValue;
+    }
+
+    public String getInitialPos() {
+        return initialPos;
+    }
+
+    public void setInitialPos(String initialPos) {
+        this.initialPos = initialPos;
+    }
+
+    public boolean hasModifier() {
+        return hasModifier;
+    }
+
+    public void setHasModifier(boolean hasModifier) {
+        this.hasModifier = hasModifier;
+    }
 }

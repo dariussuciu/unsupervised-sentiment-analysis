@@ -14,229 +14,267 @@ import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_JJRel.JJ;
 import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 import com.unsupervisedsentiment.analysis.modules.IO.InputService;
+import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.semgraph.SemanticGraph;
+import edu.stanford.nlp.util.Pair;
 
 public class SentiWordNetService implements IPolarityLexion {
 
-	public enum SWNPos {
-		Adjective("#a"), Verb("#v"), Noun("#n"), Adverb("#r");
+    public static final String WORD_AND_POS_REGEX = "(.*)\\-[A-Z]*";
 
-		private String value;
+    public enum SWNPos {
+        Adjective("#a"), Verb("#v"), Noun("#n"), Adverb("#r");
 
-		private SWNPos(String value) {
-			this.value = value;
-		}
+        private String value;
 
-		public String toString() {
-			return this.value;
-		}
-	}
+        private SWNPos(String value) {
+            this.value = value;
+        }
 
-	private HashMap<String, Double> _dict;
-	private Config config;
+        public String toString() {
+            return this.value;
+        }
+    }
 
-	private static IPolarityLexion instance;
+    private HashMap<String, Double> _dict;
+    private HashMap<Pair<String, Pair<Double, Double>>, String> modifierDictionary;
+    private Config config;
 
-	public static IPolarityLexion getInstance() {
-		if (instance == null)
-			instance = new SentiWordNetService();
+    private static IPolarityLexion instance;
 
-		return instance;
-	}
+    public static IPolarityLexion getInstance() {
+        if (instance == null)
+            instance = new SentiWordNetService();
 
-	private SentiWordNetService() {
-		init2();
-	}
+        return instance;
+    }
 
-	public void init() {
-		config = Initializer.getConfig();
-		final String pathToSWN = config.getSWNPath();
+    private SentiWordNetService() {
+        init2();
+    }
 
-		_dict = new HashMap<String, Double>();
-		try {
-			final BufferedReader csv = new BufferedReader(new FileReader(
-					pathToSWN));
-			String line = "";
+    public void init() {
+        config = Initializer.getConfig();
+        final String pathToSWN = config.getSWNPath();
 
-			// headers...
-			csv.readLine();
-			while ((line = csv.readLine()) != null) {
-				String[] data = line.split("\t");
-				Double score = Double.parseDouble(data[2]) >= Double
-						.parseDouble(data[3]) ? Double.parseDouble(data[2])
-						: Double.parseDouble(data[3]);
-				String[] words = data[4].split(" ");
-				for (String w : words) {
-					String[] w_n = w.split("#");
-					w_n[0] += "#" + data[0];
-					if (_dict.containsKey(w_n[0])) {
-						_dict.put(w_n[0], score);
-					} else {
-						_dict.put(w_n[0], score);
-					}
-				}
-			}
-			csv.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public void init2(){
-		BufferedReader csv = null;
-		try {
+        _dict = new HashMap<String, Double>();
+        try {
+            final BufferedReader csv = new BufferedReader(new FileReader(
+                    pathToSWN));
+            String line = "";
 
-			HashMap<String, HashMap<Integer, Double>> allScoresHash = new HashMap<String, HashMap<Integer, Double>>();
-			
-			config = Initializer.getConfig();
-			final String pathToSWN = config.getSWNPath();
-
-			csv = new BufferedReader(new FileReader(pathToSWN));
-
-			String line;
-			while ((line = csv.readLine()) != null) {
-
-				if (!line.trim().startsWith("#")) { 
-					
-					String[] data = line.split("\t"); 
-					String posTag = data[0];
-
-					String[] synsetList = data[4].split(" ");
-					
-					Double score = Double.parseDouble(data[2]) - Double.parseDouble(data[3]);
-					
-					for (String rankedWord : synsetList) {
-						
-						String word = rankedWord.split("#")[0];
-						int rank = Integer.parseInt(rankedWord.split("#")[1]);
-						
-						String key = word + "#"	+ posTag;
-
-						if (!allScoresHash.containsKey(key)) {
-							allScoresHash.put(key, new HashMap<Integer, Double>());
-						}
-
-						allScoresHash.get(key).put(rank, score);
-					}
-				}
-			}
-
-			_dict = new HashMap<String, Double>();
-			for (Map.Entry<String, HashMap<Integer, Double>> entry : allScoresHash
-					.entrySet()) {
-				String word = entry.getKey();
-				Map<Integer, Double> synSetScoreMap = entry.getValue();
-
-				double score = 0.0;
-				double sum = 0.0;
-				for (Map.Entry<Integer, Double> setScore : synSetScoreMap
-						.entrySet()) {
-					score += setScore.getValue() / (double) setScore.getKey();
-					sum += 1.0 / (double) setScore.getKey();
-				}
-				score = score / sum;
-
-				_dict.put(word, score);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (csv != null) {
-				try {
-					csv.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-
-	/**
-	 * Possible pos parameters #n, #a, #r, #v
-	 * 
-	 * @param word
-	 * @param pos
-	 * @return
-	 */
-	public Double extract2(final String word, final String[] pos) {
-		Double total = new Double(0);
-		for (int i = 0; i < pos.length; i++) {
-			if (_dict.get(word + pos[i]) != null)
-				total = _dict.get(word + pos[i]) + total;
-		}
-		return total;
-
-	}
-	
-	public Double extract(String word, String[] pos) {
-		Double total = new Double(0);
-		if (_dict.get(word + pos[0]) != null)
-			total += _dict.get(word + pos[0]) + total;
-		return total;
-	}
-
-	public ArrayList<SeedScoreModel> getSeedWordsWithScores() {
-		final InputService inputService = InputService.getInstance(config);
-		config.setSeedWords(inputService.getSeedWordsFromFile());
-		ArrayList<SeedScoreModel> hash = new ArrayList<SeedScoreModel>();
-		ArrayList<String> seedsTemp = (ArrayList<String>) config.getSeedWords();
-		ArrayList<String> seeds = new ArrayList<String>();
-
-		for (String seed : seedsTemp) {
-			seeds.add(seed.trim());
-		}
-
-		for (String seedName : seeds) {
-			double score = extract(seedName, new String[]{SWNPos.Adjective.toString()});
-			hash.add(new SeedScoreModel(seedName, score));
-		}
-		return hash;
-	}
-	
-	public List<String> getSeedWordsFromSemanticGraph(List<SemanticGraph> graphs){
-		List<String> adjectives = new ArrayList<String>();
-		for(SemanticGraph sentence : graphs){
-			List<String> wordsInSentence = new ArrayList<String>();
-			
-			Collection<IndexedWord> rootNodes = sentence.getRoots();
-		    for (IndexedWord root : rootNodes) {
-		    	wordsInSentence.add(root.toString());
-		    }
-		    
-		    ArrayList<IndexedWord> nodesList = new ArrayList<IndexedWord>(sentence.vertexSet());
-		    for(IndexedWord word : nodesList){
-		      wordsInSentence.add(word.toString());
-		    }
-
-            String previousWord = "";
-		    for(int i = 0; i < wordsInSentence.size(); i++){
-                String word = wordsInSentence.get(i);
-                String unalteredWord = word;
-                for (Classification.Modifier modifier : Classification.Modifier.values()) {
-                    if (previousWord != null && previousWord.equals(modifier.toString() + "-RB")) {
-                        word = modifier.toString() + " " + word;
+            // headers...
+            csv.readLine();
+            while ((line = csv.readLine()) != null) {
+                String[] data = line.split("\t");
+                Double score = Double.parseDouble(data[2]) >= Double
+                        .parseDouble(data[3]) ? Double.parseDouble(data[2])
+                        : Double.parseDouble(data[3]);
+                String[] words = data[4].split(" ");
+                for (String w : words) {
+                    String[] w_n = w.split("#");
+                    w_n[0] += "#" + data[0];
+                    if (_dict.containsKey(w_n[0])) {
+                        _dict.put(w_n[0], score);
+                    } else {
+                        _dict.put(w_n[0], score);
                     }
                 }
-                previousWord = unalteredWord;
-		    	if(word.contains("-" + JJ.JJ.toString())){
-		    		adjectives.add(word.replace("-" + JJ.JJ.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
-		    	}
-		    	if(word.contains("-" + JJ.JJS.toString())){
-		    		adjectives.add(word.replace("-" + JJ.JJS.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
-		    	}
-		    	if(word.contains("-" + JJ.JJR.toString())){
-		    		adjectives.add(word.replace("-" + JJ.JJR.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
-		    	}
-                if(word.contains("-" + JJ.RB.toString())){
-                    adjectives.add(word.replace("-" + JJ.RB.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", ""));
-                }
-		    }
-
+            }
+            csv.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-		return adjectives;
-	}
+    }
+
+    public void init2() {
+        BufferedReader csv = null;
+        try {
+
+            HashMap<String, HashMap<Integer, Double>> allScoresHash = new HashMap<String, HashMap<Integer, Double>>();
+
+            config = Initializer.getConfig();
+            final String pathToSWN = config.getSWNPath();
+
+            csv = new BufferedReader(new FileReader(pathToSWN));
+
+            modifierDictionary = new HashMap<>();
+
+            String line;
+            while ((line = csv.readLine()) != null) {
+
+                if (!line.trim().startsWith("#")) {
+
+                    String[] data = line.split("\t");
+                    String posTag = data[0];
+
+                    String[] synsetList = data[4].split(" ");
+
+                    String gloss = data[5];
+
+                    double posScore = Double.parseDouble(data[2]);
+                    double negScore = Double.parseDouble(data[3]);
+                    Double score = posScore - negScore;
+
+                    for (String rankedWord : synsetList) {
+
+                        String word = rankedWord.split("#")[0];
+                        int rank = Integer.parseInt(rankedWord.split("#")[1]);
+
+                        String key = word + "#" + posTag;
+
+                        if (!allScoresHash.containsKey(key)) {
+                            allScoresHash.put(key, new HashMap<Integer, Double>());
+                        }
+
+                        allScoresHash.get(key).put(rank, score);
+                        if (gloss.contains("intensifier") || gloss.contains("intensifiers")) {
+                            modifierDictionary.put(new Pair<>(key, new Pair<>(posScore, negScore)), gloss);
+                        }
+                    }
+                }
+            }
+
+            _dict = new HashMap<String, Double>();
+            for (Map.Entry<String, HashMap<Integer, Double>> entry : allScoresHash
+                    .entrySet()) {
+                String word = entry.getKey();
+                Map<Integer, Double> synSetScoreMap = entry.getValue();
+
+                double score = 0.0;
+                double sum = 0.0;
+                for (Map.Entry<Integer, Double> setScore : synSetScoreMap
+                        .entrySet()) {
+                    score += setScore.getValue() / (double) setScore.getKey();
+                    sum += 1.0 / (double) setScore.getKey();
+                }
+                score = score / sum;
+
+                _dict.put(word, score);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (csv != null) {
+                try {
+                    csv.close();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * Possible pos parameters #n, #a, #r, #v
+     *
+     * @param word
+     * @param pos
+     * @return
+     */
+    public Double extract2(final String word, final String[] pos) {
+        Double total = new Double(0);
+        for (int i = 0; i < pos.length; i++) {
+            if (_dict.get(word + pos[i]) != null)
+                total = _dict.get(word + pos[i]) + total;
+        }
+        return total;
+
+    }
+
+    public Double extract(String word, String[] pos) {
+        Double total = new Double(0);
+        if (_dict.get(word + pos[0]) != null)
+            total += _dict.get(word + pos[0]) + total;
+        return total;
+    }
+
+    public ArrayList<SeedScoreModel> getSeedWordsWithScores() {
+        final InputService inputService = InputService.getInstance(config);
+        config.setSeedWords(inputService.getSeedWordsFromFile());
+        ArrayList<SeedScoreModel> hash = new ArrayList<SeedScoreModel>();
+        ArrayList<String> seedsTemp = (ArrayList<String>) config.getSeedWords();
+        ArrayList<String> seeds = new ArrayList<String>();
+
+        for (String seed : seedsTemp) {
+            seeds.add(seed.trim());
+        }
+
+        for (String seedName : seeds) {
+            double score = extract(seedName, new String[]{SWNPos.Adjective.toString()});
+            hash.add(new SeedScoreModel(seedName, score, false));
+        }
+        return hash;
+    }
+
+    public List<String> getSeedWordsFromSemanticGraph(List<SemanticGraph> graphs, Map<String, Pair<Double, Double>> knownModifiers) {
+        List<String> adjectives = new ArrayList<String>();
+        for (SemanticGraph sentence : graphs) {
+            List<String> wordsInSentence = new ArrayList<String>();
+
+            Collection<IndexedWord> rootNodes = sentence.getRoots();
+            for (IndexedWord root : rootNodes) {
+                wordsInSentence.add(root.toString());
+            }
+
+            ArrayList<IndexedWord> nodesList = new ArrayList<IndexedWord>(sentence.vertexSet());
+            for (IndexedWord word : nodesList) {
+                wordsInSentence.add(word.toString());
+            }
+
+            for (int i = wordsInSentence.size() - 1; i >= 0; i--) {
+                String word = wordsInSentence.get(i);
+                //skip modifiers
+                if (knownModifiers.containsKey(word)) {
+                    continue;
+                }
+                if (i > 0) {
+                    int j = i - 1;
+                    String nextWord = Helpers.extractByRegexOneGroup(wordsInSentence.get(j), WORD_AND_POS_REGEX);
+                    while (knownModifiers.containsKey(nextWord) && j > 0) {
+                        word = wordsInSentence.get(j) + " " + word;
+                        j--;
+                        nextWord = wordsInSentence.get(j);
+                    }
+                }
+                //adjectives.add(word);
+                boolean shouldAdd = false;
+                if (word.contains("-" + JJ.JJ.toString())) {
+                    word = word.replaceAll("-" + JJ.JJ.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", "");
+                    shouldAdd = true;
+                }
+                if (word.contains("-" + JJ.JJS.toString())) {
+                    word = word.replaceAll("-" + JJ.JJS.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", "");
+                    shouldAdd = true;
+                }
+                if (word.contains("-" + JJ.JJR.toString())) {
+                    word = word.replaceAll("-" + JJ.JJR.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", "");
+                    shouldAdd = true;
+                }
+                if (word.contains("-" + JJ.RB.toString())) {
+                    word = word.replaceAll("-" + JJ.RB.toString(), "").replaceAll("\\@.?\\d\\.?\\d*\\b", "");
+                    shouldAdd = true;
+                }
+                if (shouldAdd) {
+                    adjectives.add(word);
+                }
+            }
+        }
+        return adjectives;
+    }
+
+    public Map<String, Pair<Double, Double>> getModifiers() {
+        Map<String, Pair<Double, Double>> modifiers = new HashMap<>();
+        for (Pair wordValue : modifierDictionary.keySet()) {
+            if (wordValue.first.toString().contains("#")) {
+                wordValue.first = wordValue.first.toString().split("#")[0];
+            }
+            modifiers.put((String) wordValue.first, new Pair<>((Double) ((Pair) wordValue.second).first, (Double) ((Pair) wordValue.second).second));
+        }
+        return modifiers;
+    }
 
 }

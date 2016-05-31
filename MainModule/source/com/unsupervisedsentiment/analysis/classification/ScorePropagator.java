@@ -42,6 +42,11 @@ public class ScorePropagator {
 				else {
 					double score = (assignedTuple.getSource().getScore() + tuple
 							.getSource().getScore()) / 2;
+                    if (assignedTuple.getSource().hasModifier()) {
+                        score = assignedTuple.getSource().getScore();
+                    } else if (tuple.getSource().hasModifier()) {
+                        score = tuple.getSource().getScore();
+                    }
 					if (tuple.isNegated()) {
 						score = score * -1;
 						tuple.setNegated(false);

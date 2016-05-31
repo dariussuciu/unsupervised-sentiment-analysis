@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.unsupervisedsentiment.analysis.classification.IPolarityLexion;
 import com.unsupervisedsentiment.analysis.classification.SentiWordNetService;
@@ -97,7 +99,7 @@ public class Helpers {
 
 	/**
 	 * Gets the target edges based only on the relation pos tag
-	 * 
+	 *
 	 * @param edges
 	 * @param targetType
 	 * @param relationType
@@ -120,7 +122,7 @@ public class Helpers {
 
 	/**
 	 * Gets the target edges based only on the target pos tag
-	 * 
+	 *
 	 * @param edges
 	 * @param targetType
 	 * @param relationType
@@ -227,19 +229,6 @@ public class Helpers {
 			final GeneralPosRelationEnum sourcePos, final GeneralPosRelationEnum targetPos,
 			final ElementType targetType, final int semanticGraphIndex) {
 		final Set<Tuple> targets = new HashSet<Tuple>();
-
-        /*for (IndexedWord vertex : semanticGraph.vertexSet()) {
-            if (vertex.toString().contains("very")) {
-                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + vertex.toString());
-            }
-        }*/
-
-        /*for (Word tuple : words) {
-            if (tuple.getScore().contains("very")) {
-                System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + tuple.getScore());
-            }
-        }*/
-
 
         for (Word word : words) {
 			final List<IndexedWord> vertexes = semanticGraph.getAllNodesByWordPattern(word.getPattern());
@@ -550,4 +539,14 @@ public class Helpers {
 
 		return elements;
 	}
+
+    public static String extractByRegexOneGroup(String from, String regex) {
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(from);
+
+        if (m.find()) {
+            return m.group(1);
+        }
+        return "";
+    }
 }
