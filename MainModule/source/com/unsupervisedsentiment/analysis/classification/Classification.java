@@ -18,26 +18,25 @@ import edu.stanford.nlp.util.Pair;
 
 public class Classification {
 
-	public static double DEFAULT_SCORE = -100;
+    public static double DEFAULT_SCORE = -100;
 
-	private IPolarityLexion polarityLexicon;
-	
-	private ArrayList<SeedScoreModel> seeds;
+    private IPolarityLexion polarityLexicon;
 
-	public Classification() {
-		initReader();
-	}
+    private ArrayList<SeedScoreModel> seeds;
 
-	public ArrayList<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data, List<SemanticGraph> semanticGrapshs, boolean useSeedWordsFromFile) {
+    public Classification() {
+        initReader();
+    }
+
+    public ArrayList<Tuple> assignScoresBasedOnSeeds(Set<Tuple> data, List<SemanticGraph> semanticGrapshs, boolean useSeedWordsFromFile) {
 
         Map<String, Pair<Double, Double>> knownModifiers = polarityLexicon.getModifiers();
 
-		if(useSeedWordsFromFile){
-			seeds = polarityLexicon.getSeedWordsWithScores();
-		}
-		else{
-			seeds = new ArrayList<>();
-			List<String> extractedSeedWords = polarityLexicon.getSeedWordsFromSemanticGraph(semanticGrapshs, knownModifiers);
+        if (useSeedWordsFromFile) {
+            seeds = polarityLexicon.getSeedWordsWithScores();
+        } else {
+            seeds = new ArrayList<>();
+            List<String> extractedSeedWords = polarityLexicon.getSeedWordsFromSemanticGraph(semanticGrapshs, knownModifiers);
             for (String word : extractedSeedWords) {
 
                 if (word.contains(" ")) {
@@ -50,15 +49,25 @@ public class Classification {
                         String modifier = splittedWord[i];
                         double modifierScore = 0;
                         if (knownModifiers.containsKey(modifier)) {
-                            modifierScore = actualWordScore > 0 ? knownModifiers.get(modifier).first : knownModifiers.get(modifier).second;
+                            Pair<Double, Double> modif = knownModifiers.get(modifier);
+                            modifierScore = actualWordScore > 0 ? modif.first : modif.second;
+                            if (modif.first == 0 && modif.second < 0) { //clearly a negative modifier
+                                modifierScore = modif.second;
+                            }
                         }
                         //should this be here?
                         /*if ((modifierScore - constructScore) > 0 && modifierScore > 0) {
                             constructScore = constructScore - constructScore * Math.abs(modifierScore);
                         } else {*/
-                            double sign = actualWordScore < 0 ? -1 : 1;
-                            constructScore = sign * (Math.abs(constructScore) + (1 - Math.abs(constructScore)) * modifierScore);
+                        double sign = actualWordScore < 0 ? -1 : 1;
+                        if (modifier.equals("not")) {
+                            sign = -1;
+                        }
+                        constructScore = sign * (Math.abs(constructScore) + (1 - Math.abs(constructScore)) * modifierScore);
                         /*}*/
+
+                        /*int sign = modifier.equals("not") ? -1 : 1;
+                        constructScore += sign * modifierScore;*/
                     }
                     word = removePOSsFromWord(word);
                     SeedScoreModel model = new SeedScoreModel(word, constructScore, true);
@@ -72,23 +81,23 @@ public class Classification {
                     seeds.add(model);
                 }
             }
-		}
-		
-		ArrayList<Tuple> initialTuples = PolarityAssigner
-				.initTupleArrayList(data);
+        }
 
-		ArrayList<Tuple> partiallyAssignedTuples = PolarityAssigner
-				.assignScoresToSeeds(initialTuples, seeds);
+        ArrayList<Tuple> initialTuples = PolarityAssigner
+                .initTupleArrayList(data);
 
-		ArrayList<Tuple> fullyAssignedTuples = PolarityAssigner.assignScores(
-				partiallyAssignedTuples, seeds);
+        ArrayList<Tuple> partiallyAssignedTuples = PolarityAssigner
+                .assignScoresToSeeds(initialTuples, seeds);
 
-		ArrayList<Tuple> fullyAssignedTuples2 = PolarityAssigner.assignScores(
-				fullyAssignedTuples, seeds);
+        ArrayList<Tuple> fullyAssignedTuples = PolarityAssigner.assignScores(
+                partiallyAssignedTuples, seeds);
 
-		//printResults(fullyAssignedTuples2);
-		return fullyAssignedTuples2;
-	}
+        ArrayList<Tuple> fullyAssignedTuples2 = PolarityAssigner.assignScores(
+                fullyAssignedTuples, seeds);
+
+        //printResults(fullyAssignedTuples2);
+        return fullyAssignedTuples2;
+    }
 
     private String removePOSsFromWord(String word) {
         if (word.contains("-" + Pos_NNRel.NN.NN.toString())) {
@@ -133,40 +142,40 @@ public class Classification {
         return modifiers;
     }
 
-	public double computeOverallScore(List<Tuple> data) {
-		return PolaritySummarization.computeOverallScore(data);
-	}
+    public double computeOverallScore(List<Tuple> data) {
+        return PolaritySummarization.computeOverallScore(data);
+    }
 
-	public HashMap<Double, Integer> computeScoreDistribution(List<Tuple> data) {
-		return PolaritySummarization.computeScoreDistribution(data);
-	}
+    public HashMap<Double, Integer> computeScoreDistribution(List<Tuple> data) {
+        return PolaritySummarization.computeScoreDistribution(data);
+    }
 
-	public double getAverageScoreForTarget(String target, List<Tuple> data) {
-		return PolaritySummarization.getAverageScoreForTarget(target, data);
-	}
+    public double getAverageScoreForTarget(String target, List<Tuple> data) {
+        return PolaritySummarization.getAverageScoreForTarget(target, data);
+    }
 
-	private void printResults(ArrayList<Tuple> tuples) {
-		System.out
-				.println("-------------------------------------------------------------------------------------------------------");
-		System.out.println("Score assignment:");
+    private void printResults(ArrayList<Tuple> tuples) {
+        System.out
+                .println("-------------------------------------------------------------------------------------------------------");
+        System.out.println("Score assignment:");
 
-		for (Tuple tuple : tuples) {
-			System.out.println("Source word/score :"
-					+ tuple.getSource().getValue() + "/"
-					+ tuple.getSource().getScore() + " "
-					+ tuple.getSource().getSentiWordScore());
-			if (tuple.getTarget() != null) {
-				System.out.println("Target word/score :"
-						+ tuple.getTarget().getValue() + "/"
-						+ tuple.getTarget().getScore() + " "
-						+ tuple.getTarget().getSentiWordScore());
-			}
-		}
-		System.out.println(tuples.size());
-	}
+        for (Tuple tuple : tuples) {
+            System.out.println("Source word/score :"
+                    + tuple.getSource().getValue() + "/"
+                    + tuple.getSource().getScore() + " "
+                    + tuple.getSource().getSentiWordScore());
+            if (tuple.getTarget() != null) {
+                System.out.println("Target word/score :"
+                        + tuple.getTarget().getValue() + "/"
+                        + tuple.getTarget().getScore() + " "
+                        + tuple.getTarget().getSentiWordScore());
+            }
+        }
+        System.out.println(tuples.size());
+    }
 
-	private void initReader() {
-		polarityLexicon = SentiWordNetService.getInstance();
-	}
+    private void initReader() {
+        polarityLexicon = SentiWordNetService.getInstance();
+    }
 
 }

@@ -137,6 +137,12 @@ public class SentiWordNetService implements IPolarityLexion {
                 }
             }
 
+            modifierDictionary.put(new Pair<>("ugly", new Pair<>(0.0, -0.625)), "");
+            modifierDictionary.put(new Pair<>("horrifying", new Pair<>(0.0, -0.625)), "");
+            modifierDictionary.put(new Pair<>("atrocious", new Pair<>(0.0, -0.625)), "");
+            modifierDictionary.put(new Pair<>("highly", new Pair<>(0.625, 0.0)), "");
+            modifierDictionary.put(new Pair<>("extremely", new Pair<>(0.625, 0.0)), "");
+
             _dict = new HashMap<String, Double>();
             for (Map.Entry<String, HashMap<Integer, Double>> entry : allScoresHash
                     .entrySet()) {
@@ -234,7 +240,7 @@ public class SentiWordNetService implements IPolarityLexion {
                 if (i > 0) {
                     int j = i - 1;
                     String nextWord = Helpers.extractByRegexOneGroup(wordsInSentence.get(j), WORD_AND_POS_REGEX);
-                    while (knownModifiers.containsKey(nextWord) && j > 0) {
+                    while ((knownModifiers.containsKey(nextWord) || nextWord.equals("not-RB") )&& j > 0) {
                         word = wordsInSentence.get(j) + " " + word;
                         j--;
                         nextWord = wordsInSentence.get(j);

@@ -66,11 +66,7 @@ public class ScoreEvaluationService extends EvaluationService {
             }
         }
 
-        System.out.println("truePositive:" + truePositive);
-        System.out.println("falsePositive:" + falsePositive);
-
         for (final EvaluationModel model : evaluationModels) {
-            boolean found = false;
             for (final Tuple tuple : tuples) {
                 if (tuple.getTupleType().equals(TupleType.Seed)
                         || tuple.getElements(ElementType.OPINION_WORD).size() <= 0)
@@ -80,18 +76,15 @@ public class ScoreEvaluationService extends EvaluationService {
                     if (model.getSentenceIndex() == tuple.getSentenceIndex()) {
                         double assignedScore = opinionWord.getScore();
                         double annotatedScore = model.getOpinionWordScore();
+                        falseNegative++;
                         if (Math.abs(assignedScore - annotatedScore) < ACCEPTABLE_ERROR) {
-                            found = true;
+                            falseNegative--;
                             break;
+                        } else {
+                            System.out.println("RECALL wrong value opinion word/score // annotated score:" + opinionWord.getValue() + "/" + assignedScore + "//" + annotatedScore + " sentence: " + model.getSentence());
                         }
                     }
                 }
-            }
-
-            if (!found) {
-                /*System.out.println(model.getElement()
-                        + " - " + model.getSentence());*/
-                falseNegative++;
             }
         }
     }
