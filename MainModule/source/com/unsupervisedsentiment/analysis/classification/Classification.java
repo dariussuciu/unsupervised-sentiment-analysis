@@ -45,8 +45,12 @@ public class Classification {
                     String actualWord = splittedWord[splittedWord.length - 1];
                     double actualWordScore = polarityLexicon.extract(actualWord, new String[]{SWNPos.Adjective.toString(), SWNPos.Adverb.toString()});
                     double constructScore = actualWordScore;
+                    String firstModifier = null;
                     for (int i = splittedWord.length - 2; i >= 0; i--) {
                         String modifier = splittedWord[i];
+                        if (firstModifier == null) {
+                            firstModifier = modifier;
+                        }
                         double modifierScore = 0;
                         if (knownModifiers.containsKey(modifier)) {
                             Pair<Double, Double> modif = knownModifiers.get(modifier);
@@ -71,9 +75,11 @@ public class Classification {
                     }
                     word = removePOSsFromWord(word);
                     SeedScoreModel model = new SeedScoreModel(word, constructScore, true);
+                    model.setModifier(firstModifier);
                     seeds.add(model);
                     actualWord = removePOSsFromWord(actualWord);
                     SeedScoreModel modelSolo = new SeedScoreModel(actualWord, constructScore, true);
+                    modelSolo.setModifier(firstModifier);
                     seeds.add(modelSolo);
                 } else {
                     double score = polarityLexicon.extract(word, new String[]{SWNPos.Adjective.toString()});

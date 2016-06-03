@@ -14,6 +14,7 @@ public class Word {
     private String initialValue;
     private String initialPos;
     private boolean hasModifier;
+    private String wordBefore;
 
 	public String getPosTag() {
 		return posTag;
@@ -171,5 +172,13 @@ public class Word {
 
     public void setHasModifier(boolean hasModifier) {
         this.hasModifier = hasModifier;
+    }
+
+    public String getWordBefore() {
+        return wordBefore;
+    }
+
+    public void setWordBefore(String wordBefore) {
+        this.wordBefore = wordBefore;
     }
 }

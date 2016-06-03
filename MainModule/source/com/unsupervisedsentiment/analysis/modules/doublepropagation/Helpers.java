@@ -151,14 +151,32 @@ public class Helpers {
 			final ElementType typeTarget, final String relation,
 			final Dependency dependency, final int sentenceIndex,
 			final String sentence, final boolean isNegatedTarget) {
+        String wordBefore = null;
+        String[] words = sentence.split(" ");
+        if (words.length > 0) {
+            int opinionPosition = getPositionOfWord(words, valueOpinion);
+            if (opinionPosition > 0) {
+                wordBefore = words[opinionPosition - 1];
+            }
+        }
 		final Word opinion = new Word(posOpinion, valueOpinion, typeSource);
 		opinion.setSentenceIndex(sentenceIndex);
+        opinion.setWordBefore(extractByRegexOneGroup(wordBefore, SentiWordNetService.WORD_AND_POS_REGEX));
 		final Word target = new Word(posTarget, valueTarget, typeTarget);
 		target.setSentenceIndex(sentenceIndex);
 
 		return new Pair(opinion, target, dependency, TupleType.Pair, relation,
 				sentenceIndex, sentence, isNegatedTarget);
 	}
+
+    public static int getPositionOfWord(String[] sentence, String word) {
+        for (int i = 0; i < sentence.length; i++) {
+            if (sentence[i].equals(word)) {
+                return i;
+            }
+        }
+        return 0;
+    }
 
 	public static Triple getTriple(final String valueSource,
 			final String posSource, final ElementType typeSource,
@@ -167,8 +185,17 @@ public class Helpers {
 			final String posH, final String relationHOpinion,
 			final String relationHTarget, final Dependency dependency,
 			final int sentenceIndex, final String sentence, final boolean isNegatedTarget) {
+        String wordBefore = null;
+        String[] words = sentence.split(" ");
+        if (words.length > 0) {
+            int opinionPosition = getPositionOfWord(words, valueSource);
+            if (opinionPosition > 0) {
+                wordBefore = words[opinionPosition - 1];
+            }
+        }
 		final Word opinion = new Word(posSource, valueSource, typeSource);
 		opinion.setSentenceIndex(sentenceIndex);
+        opinion.setWordBefore(extractByRegexOneGroup(wordBefore, SentiWordNetService.WORD_AND_POS_REGEX));
 		final Word target = new Word(posTarget, valueTarget, typeTarget);
 		target.setSentenceIndex(sentenceIndex);
 		final Word H = new Word(posH, valueH, ElementType.NONE);
@@ -541,6 +568,9 @@ public class Helpers {
 	}
 
     public static String extractByRegexOneGroup(String from, String regex) {
+        if (from == null) {
+            return null;
+        }
         Pattern p = Pattern.compile(regex);
         Matcher m = p.matcher(from);
 

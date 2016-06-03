@@ -5,6 +5,7 @@ public class SeedScoreModel {
 	private String seed;
 	private double score;
     private boolean hasModifier;
+    private String modifier;
 
 	public SeedScoreModel(String seed, double score, boolean hasModifier) {
 		super();
@@ -29,11 +30,19 @@ public class SeedScoreModel {
 		this.score = score;
 	}
 
-    public boolean isHasModifier() {
+    public boolean hasModifier() {
         return hasModifier;
     }
 
     public void setHasModifier(boolean hasModifier) {
         this.hasModifier = hasModifier;
+    }
+
+    public String getModifier() {
+        return modifier;
+    }
+
+    public void setModifier(String modifier) {
+        this.modifier = modifier;
     }
 }
