@@ -30,39 +30,32 @@ public class ScoreEvaluationService extends EvaluationService {
         falseNegative = 0;
 
         for (final Tuple tuple : tuples) {
-            if (tuple.getElements(ElementType.OPINION_WORD).size() <= 0)
-                continue;
+            for (final EvaluationModel model : evaluationModels) {
+                if (model.getSentenceIndex() == tuple.getSentenceIndex() && tuple.getSource().getValue().equals(model.getElement())) {
+                    double assignedScore = tuple.getSource().getScore();
+                    double annotatedScore = model.getOpinionWordScore();
+                    falsePositive++;
+                    if (Math.abs(assignedScore - annotatedScore) <= Math.abs(getDynamicThresholdBasedOnScore(assignedScore))) {
+                        if (!(annotatedScore > 0 && assignedScore < 0) || (annotatedScore < 0 && assignedScore > 0)) {
+                            truePositive++;
+                            falsePositive--;
 
-            List<Word> opinionWords = tuple
-                    .getElements(ElementType.OPINION_WORD);
-            for (final Word opinionWord : opinionWords) {
-                for (final EvaluationModel model : evaluationModels) {
-                    if (opinionWord.getValue().equals(model.getElement())) {
-                        double assignedScore = opinionWord.getScore();
-                        double annotatedScore = model.getOpinionWordScore();
-                        falsePositive++;
-                        if (Math.abs(assignedScore - annotatedScore) <= Math.abs(getDynamicThresholdBasedOnScore(assignedScore))) {
-                            if (!(annotatedScore > 0 && assignedScore < 0) || (annotatedScore < 0 && assignedScore > 0)) {
-                                truePositive++;
-                                falsePositive--;
-
-                                if (tuple.getSource() != null) {
-                                    Word initialWord = getInitialWordBySentenceIdx(tuple.getSentenceIndex(), tuple.getSource().getValue());
-                                    if (initialWord != null) {
-                                        truePositive++;
-                                    }
-                                }
-                                if (tuple.getTarget() != null) {
-                                    Word initialWord = getInitialWordBySentenceIdx(tuple.getSentenceIndex(), tuple.getTarget().getInitialValue());
-                                    if (initialWord != null) {
-                                        truePositive++;
-                                    }
+                            if (tuple.getSource() != null) {
+                                Word initialWord = getInitialWordBySentenceIdx(tuple.getSentenceIndex(), tuple.getSource().getValue());
+                                if (initialWord != null) {
+                                    truePositive++;
                                 }
                             }
-                            break;
-                        } else {
-                            System.out.println("wrong value opinion word/score // annotated score:" + opinionWord.getValue() + "/" + assignedScore + "//" + annotatedScore + " sentence: " + model.getSentence());
+                            if (tuple.getTarget() != null) {
+                                Word initialWord = getInitialWordBySentenceIdx(tuple.getSentenceIndex(), tuple.getTarget().getInitialValue());
+                                if (initialWord != null) {
+                                    truePositive++;
+                                }
+                            }
                         }
+                        break;
+                    } else {
+                        System.out.println("wrong value opinion word/score // annotated score:" + tuple.getSource().getValue() + "/" + assignedScore + "//" + annotatedScore + " sentence: " + model.getSentence());
                     }
                 }
             }
@@ -70,37 +63,31 @@ public class ScoreEvaluationService extends EvaluationService {
 
         for (final EvaluationModel model : evaluationModels) {
             for (final Tuple tuple : tuples) {
-                if (tuple.getTupleType().equals(TupleType.Seed)
-                        || tuple.getElements(ElementType.OPINION_WORD).size() <= 0)
-                    continue;
-                for (final Word opinionWord : tuple
-                        .getElements(ElementType.OPINION_WORD)) {
-                    if (model.getSentenceIndex() == tuple.getSentenceIndex()) {
-                        double assignedScore = opinionWord.getScore();
-                        double annotatedScore = model.getOpinionWordScore();
-                        falseNegative++;
-                        if (Math.abs(assignedScore - annotatedScore) < Math.abs(getDynamicThresholdBasedOnScore(assignedScore))) {
-                            falseNegative--;
-                            break;
-                        } else {
-                            boolean changedPOS = false;
-                            if (tuple.getSource() != null) {
-                                Word initialWord = getInitialWordBySentenceIdx(tuple.getSentenceIndex(), tuple.getSource().getValue());
-                                if (initialWord != null) {
-                                    changedPOS = true;
-                                    falseNegative--;
-                                }
+                if (model.getSentenceIndex() == tuple.getSentenceIndex() && model.getSentenceIndex() == tuple.getSentenceIndex()) {
+                    double assignedScore = tuple.getSource().getScore();
+                    double annotatedScore = model.getOpinionWordScore();
+                    falseNegative++;
+                    if (Math.abs(assignedScore - annotatedScore) < Math.abs(getDynamicThresholdBasedOnScore(assignedScore))) {
+                        falseNegative--;
+                        break;
+                    } else {
+                        boolean changedPOS = false;
+                        if (tuple.getSource() != null) {
+                            Word initialWord = getInitialWordBySentenceIdx(tuple.getSentenceIndex(), tuple.getSource().getValue());
+                            if (initialWord != null) {
+                                changedPOS = true;
+                                falseNegative--;
                             }
-                            if (tuple.getTarget() != null) {
-                                Word initialWord = getInitialWordBySentenceIdx(tuple.getSentenceIndex(), tuple.getTarget().getInitialValue());
-                                if (initialWord != null) {
-                                    changedPOS = true;
-                                    falseNegative--;
-                                }
+                        }
+                        if (tuple.getTarget() != null) {
+                            Word initialWord = getInitialWordBySentenceIdx(tuple.getSentenceIndex(), tuple.getTarget().getInitialValue());
+                            if (initialWord != null) {
+                                changedPOS = true;
+                                falseNegative--;
                             }
-                            if (!changedPOS) {
-                                System.out.println("RECALL wrong value opinion word/score // annotated score:" + opinionWord.getValue() + "/" + assignedScore + "//" + annotatedScore + " sentence: " + model.getSentence());
-                            }
+                        }
+                        if (!changedPOS) {
+                            System.out.println("RECALL wrong value opinion word/score // annotated score:" + tuple.getSource().getValue() + "/" + assignedScore + "//" + annotatedScore + " sentence: " + model.getSentence());
                         }
                     }
                 }

@@ -10,7 +10,7 @@ public class ScorePropagator {
 		for (Tuple tuple : data) {
 			if (tuple.getSource().getValue().toLowerCase()
 					.equals(assignedTuple.getSource().getValue().toLowerCase())
-					|| (tuple.getTarget() != null
+					/*|| (tuple.getTarget() != null
 							&& assignedTuple.getTarget() != null && tuple
 							.getTarget()
 							.getValue()
@@ -28,7 +28,8 @@ public class ScorePropagator {
 							.getValue()
 							.toLowerCase()
 							.equals(assignedTuple.getSource().getValue()
-									.toLowerCase()))) {
+									.toLowerCase()))*/
+                    ) {
 				if (tuple.getSource().getScore() == Classification.DEFAULT_SCORE) {
 					double score = assignedTuple.getSource().getScore();
 					if (tuple.isNegated()) {
@@ -42,9 +43,11 @@ public class ScorePropagator {
 				else {
 					double score = (assignedTuple.getSource().getScore() + tuple
 							.getSource().getScore()) / 2;
-                    if (assignedTuple.getSource().hasModifier()) {
+                    if (assignedTuple.getSource().hasModifier() && tuple.getSource().getWordBefore() != null && tuple.getSource().getWordBefore().equals(assignedTuple.getSource().getWordBefore())) {
                         score = assignedTuple.getSource().getScore();
                     } else if (tuple.getSource().hasModifier()) {
+                        score = tuple.getSource().getScore();
+                    } else if (assignedTuple.getSource().hasModifier() && tuple.getSource().getWordBefore() != null && !tuple.getSource().getWordBefore().equals(assignedTuple.getSource().getWordBefore())) {
                         score = tuple.getSource().getScore();
                     }
 					if (tuple.isNegated()) {

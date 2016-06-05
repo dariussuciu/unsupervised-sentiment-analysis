@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.model.DoublePropagationData;
@@ -83,10 +84,42 @@ public class DoublePropagationAlgorithm {
 
 		for (int i = 0; i < data.getSentancesSemanticGraphs().size(); i++) {
 			final SemanticGraph semanticGraph = data.getSentancesSemanticGraphs().get(i);
-			featuresIteration1.addAll(targetExtractorService.extractTargetsUsingR1(semanticGraph,
-					data.getExpandedOpinionWords(), data.getFeatureTuples(), i));
-			opinionWordsIteration1.addAll(opinionWordExtractorService.extractOpinionWordsUsingR4(semanticGraph,
-					data.getExpandedOpinionWords(), data.getExpandedOpinionWordsTuples(), i));
+
+            Set<Tuple> extractedFeatureTuples = targetExtractorService.extractTargetsUsingR1(semanticGraph,
+                    data.getExpandedOpinionWords(), data.getFeatureTuples(), i);
+            for (Tuple extractedFeatureTuple : extractedFeatureTuples) {
+                String sentence = semanticGraph.toRecoveredSentenceString();
+                String sentence2 = semanticGraph.toEnUncollapsedSentenceString();
+                String a = sentence2;
+                String wordBefore = null;
+                String[] words = sentence.split(" ");
+                if (words.length > 0) {
+                    int opinionPosition = Helpers.getPositionOfWord(words, extractedFeatureTuple.getSource().getValue());
+                    if (opinionPosition > 0) {
+                        wordBefore = words[opinionPosition - 1];
+                    }
+                }
+                extractedFeatureTuple.getSource().setWordBefore(wordBefore);
+            }
+			featuresIteration1.addAll(extractedFeatureTuples);
+
+            Set<Tuple> extractedOpinionTuples = opinionWordExtractorService.extractOpinionWordsUsingR4(semanticGraph,
+                    data.getExpandedOpinionWords(), data.getExpandedOpinionWordsTuples(), i);
+            for (Tuple extractedOpinionTuple : extractedOpinionTuples) {
+                String sentence = semanticGraph.toRecoveredSentenceString();
+                String sentence2 = semanticGraph.toEnUncollapsedSentenceString();
+                String a = sentence2;
+                String wordBefore = null;
+                String[] words = sentence.split(" ");
+                if (words.length > 0) {
+                    int opinionPosition = Helpers.getPositionOfWord(words, extractedOpinionTuple.getSource().getValue());
+                    if (opinionPosition > 0) {
+                        wordBefore = words[opinionPosition - 1];
+                    }
+                }
+                extractedOpinionTuple.getSource().setWordBefore(wordBefore);
+            }
+			opinionWordsIteration1.addAll(extractedOpinionTuples);
         }
 
 		data.getFeatureTuples().addAll(featuresIteration1);
@@ -94,10 +127,42 @@ public class DoublePropagationAlgorithm {
 
 		for (int i = 0; i < data.getSentancesSemanticGraphs().size(); i++) {
 			SemanticGraph semanticGraph = data.getSentancesSemanticGraphs().get(i);
-			featuresIteration2.addAll(targetExtractorService.extractTargetsUsingR3(semanticGraph, data.getFeatures(),
-					data.getFeatureTuples(), i));
-			opinionWordsIteration2.addAll(opinionWordExtractorService.extractOpinionWordsUsingR2(semanticGraph,
-					data.getFeatures(), data.getExpandedOpinionWordsTuples(), i));
+
+            Set<Tuple> extractedFeatureTuples = targetExtractorService.extractTargetsUsingR3(semanticGraph, data.getFeatures(),
+                    data.getFeatureTuples(), i);
+            for (Tuple extractedOpinionTuple : extractedFeatureTuples) {
+                String sentence = semanticGraph.toRecoveredSentenceString();
+                String sentence2 = semanticGraph.toEnUncollapsedSentenceString();
+                String a = sentence2;
+                String wordBefore = null;
+                String[] words = sentence.split(" ");
+                if (words.length > 0) {
+                    int opinionPosition = Helpers.getPositionOfWord(words, extractedOpinionTuple.getSource().getValue());
+                    if (opinionPosition > 0) {
+                        wordBefore = words[opinionPosition - 1];
+                    }
+                }
+                extractedOpinionTuple.getSource().setWordBefore(wordBefore);
+            }
+			featuresIteration2.addAll(extractedFeatureTuples);
+
+            Set<Tuple> extractedOpinionTuples = opinionWordExtractorService.extractOpinionWordsUsingR2(semanticGraph,
+                    data.getFeatures(), data.getExpandedOpinionWordsTuples(), i);
+            for (Tuple extractedOpinionTuple : extractedOpinionTuples) {
+                String sentence = semanticGraph.toRecoveredSentenceString();
+                String sentence2 = semanticGraph.toEnUncollapsedSentenceString();
+                String a = sentence2;
+                String wordBefore = null;
+                String[] words = sentence.split(" ");
+                if (words.length > 0) {
+                    int opinionPosition = Helpers.getPositionOfWord(words, extractedOpinionTuple.getSource().getValue());
+                    if (opinionPosition > 0) {
+                        wordBefore = words[opinionPosition - 1];
+                    }
+                }
+                extractedOpinionTuple.getSource().setWordBefore(wordBefore);
+            }
+            opinionWordsIteration2.addAll(extractedOpinionTuples);
 		}
 
 		featuresIteration1.addAll(featuresIteration2);

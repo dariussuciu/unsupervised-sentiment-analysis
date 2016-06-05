@@ -161,7 +161,7 @@ public class Helpers {
         }
 		final Word opinion = new Word(posOpinion, valueOpinion, typeSource);
 		opinion.setSentenceIndex(sentenceIndex);
-        opinion.setWordBefore(extractByRegexOneGroup(wordBefore, SentiWordNetService.WORD_AND_POS_REGEX));
+        opinion.setWordBefore(wordBefore);
 		final Word target = new Word(posTarget, valueTarget, typeTarget);
 		target.setSentenceIndex(sentenceIndex);
 
@@ -577,6 +577,6 @@ public class Helpers {
         if (m.find()) {
             return m.group(1);
         }
-        return "";
+        return from;
     }
 }

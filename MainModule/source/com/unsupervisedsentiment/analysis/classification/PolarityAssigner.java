@@ -8,6 +8,7 @@ import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
 
 import edu.stanford.nlp.util.Pair;
+import edu.stanford.nlp.util.SystemUtils;
 
 public class PolarityAssigner {
 
@@ -37,6 +38,9 @@ public class PolarityAssigner {
 
         Map<String, Pair<Double, Double>> knownModifiers = SentiWordNetService.getInstance().getModifiers();
         for (Tuple tuple : tuples) {
+            if (tuple.getSentence() == null || tuple.getSentence().equals("null")) {
+                continue;
+            }
             for (SeedScoreModel model : seeds) {
                 String seed = model.getSeed().trim();
                 String source = tuple.getSource().getValue();
@@ -54,6 +58,13 @@ public class PolarityAssigner {
                 }
                 if (seed.equals(source.trim())) {
                     double score = model.getScore();
+                    /*tuple.getSource().setScore(score);
+                    tuple.getSource().setHasModifier(model.hasModifier());
+                    if (tuple.getTarget() != null) {
+                        tuple.getTarget().setScore(score);
+                        tuple.getTarget().setHasModifier(model.hasModifier());
+                    }*/
+
                     if (tuple.getSource().getWordBefore() != null && model.getModifier() != null && tuple.getSource().getWordBefore().equals(model.getModifier())) {
                         tuple.getSource().setScore(score);
                         tuple.getSource().setHasModifier(true);
@@ -61,17 +72,21 @@ public class PolarityAssigner {
                             tuple.getTarget().setScore(score);
                             tuple.getTarget().setHasModifier(true);
                         }
-                    } else if (tuple.getSource().getWordBefore() != null && !knownModifiers.containsKey(tuple.getSource().getWordBefore()) && !model.hasModifier()) {
+                        break;
+                    } else if (tuple.getSource().getWordBefore() != null && !knownModifiers.containsKey(tuple.getSource().getWordBefore()) && model.getModifier() == null) {
                         tuple.getSource().setScore(score);
                         if (tuple.getTarget() != null) {
                             tuple.getTarget().setScore(score);
                         }
-                    } else if (tuple.getSource().getWordBefore() == null && !model.hasModifier()) {
+                        break;
+                    } else if (tuple.getSource().getWordBefore() == null && model.getModifier() == null) {
                         tuple.getSource().setScore(score);
                         if (tuple.getTarget() != null) {
                             tuple.getTarget().setScore(score);
                         }
+                        break;
                     }
+
                 }
             }
 

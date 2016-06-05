@@ -142,6 +142,13 @@ public class SentiWordNetService implements IPolarityLexion {
             modifierDictionary.put(new Pair<>("atrocious", new Pair<>(0.0, -0.625)), "");
             modifierDictionary.put(new Pair<>("highly", new Pair<>(0.625, 0.0)), "");
             modifierDictionary.put(new Pair<>("extremely", new Pair<>(0.625, 0.0)), "");
+            modifierDictionary.put(new Pair<>("excellent", new Pair<>(1.0, 0.0)), "");
+            modifierDictionary.put(new Pair<>("great", new Pair<>(0.8, 0.0)), "");
+            modifierDictionary.put(new Pair<>("good", new Pair<>(0.63, 0.0)), "");
+            modifierDictionary.put(new Pair<>("useful", new Pair<>(0.3, 0.0)), "");
+            modifierDictionary.put(new Pair<>("any", new Pair<>(0.0, -0.3)), "");
+            modifierDictionary.put(new Pair<>("really", new Pair<>(0.4, 0.0)), "");
+            modifierDictionary.put(new Pair<>("not", new Pair<>(0.0, 0.0)), "");
 
             _dict = new HashMap<String, Double>();
             for (Map.Entry<String, HashMap<Integer, Double>> entry : allScoresHash
@@ -192,6 +199,10 @@ public class SentiWordNetService implements IPolarityLexion {
     }
 
     public Double extract(String word, String[] pos) {
+        if (word.equals("comfortable")) //this is a SWN bug - most entries for comfortable have a negative score
+            return 0.5;
+        if (word.equals("great"))
+            return 0.8;
         Double total = new Double(0);
         if (_dict.get(word + pos[0]) != null)
             total += _dict.get(word + pos[0]) + total;
@@ -216,17 +227,17 @@ public class SentiWordNetService implements IPolarityLexion {
         return hash;
     }
 
-    public List<String> getSeedWordsFromSemanticGraph(List<SemanticGraph> graphs, Map<String, Pair<Double, Double>> knownModifiers) {
-        List<String> adjectives = new ArrayList<String>();
-        for (SemanticGraph sentence : graphs) {
+    public List<Pair<String, Integer>> getSeedWordsFromSemanticGraph(List<SemanticGraph> graphs, Map<String, Pair<Double, Double>> knownModifiers) {
+        List<Pair<String, Integer>> adjectives = new ArrayList<>();
+        for (int sentenceIndex = 0; sentenceIndex < graphs.size(); sentenceIndex++) {
             List<String> wordsInSentence = new ArrayList<String>();
 
-            Collection<IndexedWord> rootNodes = sentence.getRoots();
+            Collection<IndexedWord> rootNodes = graphs.get(sentenceIndex).getRoots();
             for (IndexedWord root : rootNodes) {
                 wordsInSentence.add(root.toString());
             }
 
-            ArrayList<IndexedWord> nodesList = new ArrayList<IndexedWord>(sentence.vertexSet());
+            ArrayList<IndexedWord> nodesList = new ArrayList<IndexedWord>(graphs.get(sentenceIndex).vertexSet());
             for (IndexedWord word : nodesList) {
                 wordsInSentence.add(word.toString());
             }
@@ -265,7 +276,7 @@ public class SentiWordNetService implements IPolarityLexion {
                     shouldAdd = true;
                 }
                 if (shouldAdd) {
-                    adjectives.add(word);
+                    adjectives.add(new Pair(word, sentenceIndex));
                 }
             }
         }

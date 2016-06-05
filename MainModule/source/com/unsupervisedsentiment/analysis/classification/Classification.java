@@ -11,6 +11,7 @@ import com.unsupervisedsentiment.analysis.core.constants.relations.Dep_ConjRel;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_NNRel;
 import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
 import com.unsupervisedsentiment.analysis.model.Tuple;
+import com.unsupervisedsentiment.analysis.modules.doublepropagation.Helpers;
 
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.util.Pair;
@@ -36,25 +37,26 @@ public class Classification {
             seeds = polarityLexicon.getSeedWordsWithScores();
         } else {
             seeds = new ArrayList<>();
-            List<String> extractedSeedWords = polarityLexicon.getSeedWordsFromSemanticGraph(semanticGrapshs, knownModifiers);
-            for (String word : extractedSeedWords) {
-
+            List<Pair<String, Integer>> extractedSeedWords = polarityLexicon.getSeedWordsFromSemanticGraph(semanticGrapshs, knownModifiers);
+            for (Pair wordPosition : extractedSeedWords) {
+                String word = (String) wordPosition.first;
+                int sentenceIndex = (int) wordPosition.second;
                 if (word.contains(" ")) {
                     word = removePOSsFromWord(word);
                     String[] splittedWord = word.split(" ");
                     String actualWord = splittedWord[splittedWord.length - 1];
-                    double actualWordScore = polarityLexicon.extract(actualWord, new String[]{SWNPos.Adjective.toString(), SWNPos.Adverb.toString()});
+                    double actualWordScore = polarityLexicon.extract(actualWord, new String[]{SWNPos.Adjective.toString()});
                     double constructScore = actualWordScore;
                     String firstModifier = null;
                     for (int i = splittedWord.length - 2; i >= 0; i--) {
-                        String modifier = splittedWord[i];
+                        String modifier = Helpers.extractByRegexOneGroup(splittedWord[i], SentiWordNetService.WORD_AND_POS_REGEX);
                         if (firstModifier == null) {
                             firstModifier = modifier;
                         }
                         double modifierScore = 0;
                         if (knownModifiers.containsKey(modifier)) {
                             Pair<Double, Double> modif = knownModifiers.get(modifier);
-                            modifierScore = actualWordScore > 0 ? modif.first : modif.second;
+                            modifierScore = actualWordScore >= 0 ? modif.first : modif.second;
                             if (modif.first == 0 && modif.second < 0) { //clearly a negative modifier
                                 modifierScore = modif.second;
                             }
@@ -74,12 +76,17 @@ public class Classification {
                         constructScore += sign * modifierScore;*/
                     }
                     word = removePOSsFromWord(word);
+                    SeedScoreModel modelModifier = new SeedScoreModel(firstModifier, constructScore, true);
+                    modelModifier.setSentenceIndex(sentenceIndex);
+                    seeds.add(modelModifier);
                     SeedScoreModel model = new SeedScoreModel(word, constructScore, true);
                     model.setModifier(firstModifier);
+                    model.setSentenceIndex(sentenceIndex);
                     seeds.add(model);
                     actualWord = removePOSsFromWord(actualWord);
                     SeedScoreModel modelSolo = new SeedScoreModel(actualWord, constructScore, true);
                     modelSolo.setModifier(firstModifier);
+                    modelSolo.setSentenceIndex(sentenceIndex);
                     seeds.add(modelSolo);
                 } else {
                     double score = polarityLexicon.extract(word, new String[]{SWNPos.Adjective.toString()});
@@ -102,6 +109,11 @@ public class Classification {
                 fullyAssignedTuples, seeds);
 
         //printResults(fullyAssignedTuples2);
+        /*for (Tuple tuple : fullyAssignedTuples2) {
+            if (tuple.getSource().getValue().contains("uneasy")) {
+                System.out.println(tuple.getSource().getValue() + ": " + tuple.getSource().getScore() + " - " + tuple.getSentence());
+            }
+        }*/
         return fullyAssignedTuples2;
     }
 

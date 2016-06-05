@@ -15,7 +15,7 @@ public interface IPolarityLexion {
 
 	ArrayList<SeedScoreModel> getSeedWordsWithScores();
 	
-	List<String> getSeedWordsFromSemanticGraph(List<SemanticGraph> graphs, Map<String, Pair<Double, Double>> knownModifiers);
+	List<Pair<String, Integer>> getSeedWordsFromSemanticGraph(List<SemanticGraph> graphs, Map<String, Pair<Double, Double>> knownModifiers);
 
     Map<String, Pair<Double, Double>> getModifiers();
 

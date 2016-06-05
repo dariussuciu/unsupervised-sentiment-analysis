@@ -6,8 +6,9 @@ public class SeedScoreModel {
 	private double score;
     private boolean hasModifier;
     private String modifier;
+    private int sentenceIndex;
 
-	public SeedScoreModel(String seed, double score, boolean hasModifier) {
+    public SeedScoreModel(String seed, double score, boolean hasModifier) {
 		super();
 		this.seed = seed;
 		this.score = score;
@@ -44,5 +45,13 @@ public class SeedScoreModel {
 
     public void setModifier(String modifier) {
         this.modifier = modifier;
+    }
+
+    public void setSentenceIndex(int sentenceIndex) {
+        this.sentenceIndex = sentenceIndex;
+    }
+
+    public int getSentenceIndex() {
+        return sentenceIndex;
     }
 }
