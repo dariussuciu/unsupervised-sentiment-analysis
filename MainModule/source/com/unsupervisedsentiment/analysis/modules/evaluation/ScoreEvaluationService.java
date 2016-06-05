@@ -14,6 +14,8 @@ import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 public class ScoreEvaluationService extends EvaluationService {
+    private final static boolean USE_DYNAMIC_THRESHOLD = true;
+    private final static int DYNAMIC_THRESHOLD_PERCENTAGE = 40;
     private double ACCEPTABLE_ERROR = 0.3;
 
     public ScoreEvaluationService(List<EvaluationModel> evaluationModels,
@@ -35,7 +37,7 @@ public class ScoreEvaluationService extends EvaluationService {
                     double assignedScore = tuple.getSource().getScore();
                     double annotatedScore = model.getOpinionWordScore();
                     falsePositive++;
-                    if (Math.abs(assignedScore - annotatedScore) <= Math.abs(getDynamicThresholdBasedOnScore(assignedScore))) {
+                    if (Math.abs(assignedScore - annotatedScore) <= Math.abs(USE_DYNAMIC_THRESHOLD ? getDynamicThresholdBasedOnScore(assignedScore) : DYNAMIC_THRESHOLD_PERCENTAGE)) {
                         if (!(annotatedScore > 0 && assignedScore < 0) || (annotatedScore < 0 && assignedScore > 0)) {
                             truePositive++;
                             falsePositive--;
@@ -97,7 +99,7 @@ public class ScoreEvaluationService extends EvaluationService {
 
     private double getDynamicThresholdBasedOnScore(double score) {
         double threshold = 0.1;
-        int percentage = 40;
+        int percentage = DYNAMIC_THRESHOLD_PERCENTAGE;
 
         if (score > 0) {
             threshold = (percentage / 100.0) * (1.0 - score);

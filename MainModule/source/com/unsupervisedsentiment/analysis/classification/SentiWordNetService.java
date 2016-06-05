@@ -131,6 +131,10 @@ public class SentiWordNetService implements IPolarityLexion {
 
                         allScoresHash.get(key).put(rank, score);
                         if (gloss.contains("intensifier") || gloss.contains("intensifiers")) {
+                            if (key.contains("wonderful")) {
+                                key = key.replace("#a", "");
+                                key = key + "ly#a";
+                            }
                             modifierDictionary.put(new Pair<>(key, new Pair<>(posScore, negScore)), gloss);
                         }
                     }
