@@ -15,13 +15,12 @@ import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 public class ScoreEvaluationService extends EvaluationService {
     private final static boolean USE_DYNAMIC_THRESHOLD = true;
-    private final static int DYNAMIC_THRESHOLD_PERCENTAGE = 40;
-    private double ACCEPTABLE_ERROR = 0.3;
+    private final static int DYNAMIC_THRESHOLD_PERCENTAGE = 20;
+    private double ACCEPTABLE_ERROR = 0.2;
 
     public ScoreEvaluationService(List<EvaluationModel> evaluationModels,
                                   Set<Tuple> tuples, double acceptableError) {
         super(evaluationModels, tuples);
-        ACCEPTABLE_ERROR = acceptableError;
     }
 
     @Override
@@ -37,7 +36,7 @@ public class ScoreEvaluationService extends EvaluationService {
                     double assignedScore = tuple.getSource().getScore();
                     double annotatedScore = model.getOpinionWordScore();
                     falsePositive++;
-                    if (Math.abs(assignedScore - annotatedScore) <= Math.abs(USE_DYNAMIC_THRESHOLD ? getDynamicThresholdBasedOnScore(assignedScore) : DYNAMIC_THRESHOLD_PERCENTAGE)) {
+                    if (Math.abs(assignedScore - annotatedScore) <= Math.abs(USE_DYNAMIC_THRESHOLD ? getDynamicThresholdBasedOnScore(assignedScore) : ACCEPTABLE_ERROR)) {
                         if (!(annotatedScore > 0 && assignedScore < 0) || (annotatedScore < 0 && assignedScore > 0)) {
                             truePositive++;
                             falsePositive--;
@@ -69,7 +68,7 @@ public class ScoreEvaluationService extends EvaluationService {
                     double assignedScore = tuple.getSource().getScore();
                     double annotatedScore = model.getOpinionWordScore();
                     falseNegative++;
-                    if (Math.abs(assignedScore - annotatedScore) < Math.abs(getDynamicThresholdBasedOnScore(assignedScore))) {
+                    if (Math.abs(assignedScore - annotatedScore) < Math.abs(USE_DYNAMIC_THRESHOLD ? getDynamicThresholdBasedOnScore(assignedScore) : ACCEPTABLE_ERROR)) {
                         falseNegative--;
                         break;
                     } else {
