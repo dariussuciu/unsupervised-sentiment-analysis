@@ -14,13 +14,16 @@ import com.unsupervisedsentiment.analysis.model.Word;
 import com.unsupervisedsentiment.analysis.modules.standfordparser.NLPService;
 
 public class ScoreEvaluationService extends EvaluationService {
-    private final static boolean USE_DYNAMIC_THRESHOLD = true;
-    private final static int DYNAMIC_THRESHOLD_PERCENTAGE = 20;
-    private double ACCEPTABLE_ERROR = 0.2;
+    private boolean USE_DYNAMIC_THRESHOLD;
+    private int DYNAMIC_THRESHOLD_PERCENTAGE;
+    private double ACCEPTABLE_ERROR;
 
     public ScoreEvaluationService(List<EvaluationModel> evaluationModels,
-                                  Set<Tuple> tuples, double acceptableError) {
+                                  Set<Tuple> tuples, double acceptableError, boolean useDynamicThreshold, int dynamicThresholdPercentage) {
         super(evaluationModels, tuples);
+        ACCEPTABLE_ERROR = acceptableError;
+        USE_DYNAMIC_THRESHOLD = useDynamicThreshold;
+        DYNAMIC_THRESHOLD_PERCENTAGE = dynamicThresholdPercentage;
     }
 
     @Override
@@ -124,9 +127,10 @@ public class ScoreEvaluationService extends EvaluationService {
             List<EvaluationModel> evaluationModels, Set<Tuple> tuples) {
         Config config = Initializer.getConfig();
         double acceptableError = Double.parseDouble(config
-                .getScoringThreshold());
-        ScoreEvaluationService scoreEvaluationService = new ScoreEvaluationService(
-                evaluationModels, tuples, acceptableError);
+                .getScoringThreshold().trim());
+        boolean useDynamicThreshold = config.useDynamicThreshold();
+        int dynamicThresholdPercentage = Integer.parseInt(config.getDynamicThresholdPercentage().trim());
+        ScoreEvaluationService scoreEvaluationService = new ScoreEvaluationService(evaluationModels, tuples, acceptableError, useDynamicThreshold, dynamicThresholdPercentage);
         if (config.getPrintEvaluationResultsToConsole()) {
             EvaluationResult scoreEvaluationResult = scoreEvaluationService
                     .getResults();

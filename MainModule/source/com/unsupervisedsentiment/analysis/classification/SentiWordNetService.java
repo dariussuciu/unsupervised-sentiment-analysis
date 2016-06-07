@@ -145,7 +145,7 @@ public class SentiWordNetService implements IPolarityLexion {
             modifierDictionary.put(new Pair<>("horrifying", new Pair<>(0.0, -0.625)), "");
             modifierDictionary.put(new Pair<>("atrocious", new Pair<>(0.0, -0.625)), "");
             modifierDictionary.put(new Pair<>("highly", new Pair<>(0.625, 0.0)), "");
-            modifierDictionary.put(new Pair<>("extremely", new Pair<>(0.625, 0.0)), "");
+            modifierDictionary.put(new Pair<>("extremely", new Pair<>(0.9, 0.0)), "");
             modifierDictionary.put(new Pair<>("excellent", new Pair<>(1.0, 0.0)), "");
             modifierDictionary.put(new Pair<>("great", new Pair<>(0.8, 0.0)), "");
             modifierDictionary.put(new Pair<>("good", new Pair<>(0.63, 0.0)), "");

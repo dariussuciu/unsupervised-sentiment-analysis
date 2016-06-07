@@ -40,6 +40,10 @@ public class Config {
 	
 	private boolean printEvaluationResultsToConsole;
 
+    private boolean useDynamicThreshold;
+
+    private String dynamicThresholdPercentage;
+
 	@XmlElement(name = "inputDirectory")
 	public String getInputDirectory() {
 		return inputDirectory.trim();
@@ -190,4 +194,21 @@ public class Config {
 		this.printEvaluationResultsToConsole = evaluateInput;
 	}
 
+    @XmlElement(name = "useDynamicThreshold")
+    public boolean useDynamicThreshold() {
+        return useDynamicThreshold;
+    }
+
+    public void setUseDynamicThreshold(boolean useDynamicThreshold) {
+        this.useDynamicThreshold = useDynamicThreshold;
+    }
+
+    @XmlElement(name = "dynamicThresholdPercentage")
+    public String getDynamicThresholdPercentage() {
+        return dynamicThresholdPercentage;
+    }
+
+    public void setDynamicThresholdPercentage(String dynamicThresholdPercentage) {
+        this.dynamicThresholdPercentage = dynamicThresholdPercentage;
+    }
 }
