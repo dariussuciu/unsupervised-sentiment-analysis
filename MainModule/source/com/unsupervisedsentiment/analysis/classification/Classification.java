@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.unsupervisedsentiment.analysis.classification.SentiWordNetService.SWNPos;
+import com.unsupervisedsentiment.analysis.core.Initializer;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Dep_ConjRel;
 import com.unsupervisedsentiment.analysis.core.constants.relations.Pos_NNRel;
 import com.unsupervisedsentiment.analysis.model.SeedScoreModel;
@@ -18,6 +19,8 @@ import edu.stanford.nlp.util.Pair;
 
 
 public class Classification {
+
+    private static final boolean USE_ADDITION = Initializer.getConfig().isUseAdditionForModifierScore();
 
     public static double DEFAULT_SCORE = -100;
 
@@ -69,7 +72,12 @@ public class Classification {
                         if (modifier.equals("not")) {
                             sign = -1;
                         }
-                        constructScore = sign * (Math.abs(constructScore) + (1 - Math.abs(constructScore)) * modifierScore);
+                        if (USE_ADDITION) {
+                            constructScore = sign * (modifierScore + actualWordScore);
+                            break;
+                        } else {
+                            constructScore = sign * (Math.abs(constructScore) + (1 - Math.abs(constructScore)) * modifierScore);
+                        }
                         /*}*/
 
                         /*int sign = modifier.equals("not") ? -1 : 1;

@@ -44,6 +44,8 @@ public class Config {
 
     private String dynamicThresholdPercentage;
 
+    private boolean useAdditionForModifierScore;
+
 	@XmlElement(name = "inputDirectory")
 	public String getInputDirectory() {
 		return inputDirectory.trim();
@@ -210,5 +212,14 @@ public class Config {
 
     public void setDynamicThresholdPercentage(String dynamicThresholdPercentage) {
         this.dynamicThresholdPercentage = dynamicThresholdPercentage;
+    }
+
+    @XmlElement(name = "useAdditionForModifierScore")
+    public boolean isUseAdditionForModifierScore() {
+        return useAdditionForModifierScore;
+    }
+
+    public void setUseAdditionForModifierScore(boolean useAdditionForModifierScore) {
+        this.useAdditionForModifierScore = useAdditionForModifierScore;
     }
 }
