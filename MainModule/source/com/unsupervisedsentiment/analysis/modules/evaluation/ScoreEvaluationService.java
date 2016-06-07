@@ -100,7 +100,7 @@ public class ScoreEvaluationService extends EvaluationService {
     }
 
     private double getDynamicThresholdBasedOnScore(double score) {
-        double threshold = 0.1;
+        double threshold = 0.0;
         int percentage = DYNAMIC_THRESHOLD_PERCENTAGE;
 
         if (score > 0) {
@@ -128,8 +128,8 @@ public class ScoreEvaluationService extends EvaluationService {
         Config config = Initializer.getConfig();
         double acceptableError = Double.parseDouble(config
                 .getScoringThreshold().trim());
-        boolean useDynamicThreshold = config.useDynamicThreshold();
-        int dynamicThresholdPercentage = Integer.parseInt(config.getDynamicThresholdPercentage().trim());
+        boolean useDynamicThreshold = config.getUseDynamicThreshold();
+        int dynamicThresholdPercentage = Integer.parseInt(config.getDynamicThresholdPercentage());
         ScoreEvaluationService scoreEvaluationService = new ScoreEvaluationService(evaluationModels, tuples, acceptableError, useDynamicThreshold, dynamicThresholdPercentage);
         if (config.getPrintEvaluationResultsToConsole()) {
             EvaluationResult scoreEvaluationResult = scoreEvaluationService

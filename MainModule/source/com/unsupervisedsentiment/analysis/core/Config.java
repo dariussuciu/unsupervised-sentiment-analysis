@@ -195,7 +195,7 @@ public class Config {
 	}
 
     @XmlElement(name = "useDynamicThreshold")
-    public boolean useDynamicThreshold() {
+    public boolean getUseDynamicThreshold() {
         return useDynamicThreshold;
     }
 
@@ -205,7 +205,7 @@ public class Config {
 
     @XmlElement(name = "dynamicThresholdPercentage")
     public String getDynamicThresholdPercentage() {
-        return dynamicThresholdPercentage;
+        return dynamicThresholdPercentage.trim();
     }
 
     public void setDynamicThresholdPercentage(String dynamicThresholdPercentage) {
